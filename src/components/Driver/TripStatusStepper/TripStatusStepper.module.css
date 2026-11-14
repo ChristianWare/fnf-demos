@@ -43,14 +43,14 @@
 }
 
 .stepCircle.completed {
-  background: #22c55e;
+  background: var(--green);
   color: white;
 }
 
 .stepCircle.current {
-  background: #3b82f6;
+  background: var(--midnight);
   color: white;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 4px var(--champagne);
 }
 
 .stepCircle.noShow {
@@ -66,7 +66,7 @@
 }
 
 .stepLabelCurrent {
-  color: #3b82f6;
+  color: var(--midnight);
   font-weight: 600;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .connectorCompleted {
-  background: #22c55e;
+  background: var(--green);
 }
 
 /* Current Status Card */
@@ -116,7 +116,7 @@
   font-size: 18px;
   font-weight: 600;
   color: white;
-  background: #3b82f6;
+  background: var(--midnight);
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -125,9 +125,9 @@
 }
 
 .advanceButton:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--midnight);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px var(--champagne);
 }
 
 .advanceButton:disabled {
@@ -253,9 +253,9 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  background: linear-gradient(135deg, var(--ivory) 0%, var(--ivory) 100%);
   border-radius: 12px;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid var(--champagne);
 }
 
 .futureIcon {
@@ -271,13 +271,13 @@
 
 .futureText strong {
   font-size: 16px;
-  color: #1e40af;
+  color: var(--midnight);
 }
 
 .futureText p {
   margin: 0;
   font-size: 14px;
-  color: #3b82f6;
+  color: var(--midnight);
 }
 
 /* Modal */
@@ -327,8 +327,8 @@
 
 .reasonInput:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--midnight);
+  box-shadow: 0 0 0 3px var(--ivory);
 }
 
 .modalActions {
@@ -358,7 +358,7 @@
   font-size: 14px;
   font-weight: 600;
   color: white;
-  background: #3b82f6;
+  background: var(--midnight);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -366,7 +366,7 @@
 }
 
 .confirmButton:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--midnight);
 }
 
 .confirmButton:disabled {
@@ -459,10 +459,10 @@
 
   /* Current step - highlighted */
   .mobileStep.mobileStepCurrent {
-    background: #eff6ff;
-    border-color: #3b82f6;
+    background: var(--ivory);
+    border-color: var(--midnight);
     border-width: 3px;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 4px 12px var(--champagne);
   }
 
   /* Upcoming step - dimmed */
@@ -494,14 +494,14 @@
   }
 
   .mobileStepCompleted .mobileStepNumber {
-    background: #22c55e;
+    background: var(--green);
     color: white;
   }
 
   .mobileStepCurrent .mobileStepNumber {
-    background: #3b82f6;
+    background: var(--midnight);
     color: white;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 0 0 4px var(--champagne);
   }
 
   .mobileStepUpcoming .mobileStepNumber {
@@ -533,7 +533,7 @@
   }
 
   .mobileStepCurrent .mobileStepLabel {
-    color: #1d4ed8;
+    color: var(--midnight);
   }
 
   .mobileStepUpcoming .mobileStepLabel {
@@ -551,11 +551,11 @@
   }
 
   .mobileStepCompleted .mobileStepStatus {
-    color: #22c55e;
+    color: var(--green);
   }
 
   .mobileStepCurrent .mobileStepStatus {
-    color: #3b82f6;
+    color: var(--midnight);
   }
 
   /* Icon on right side */
@@ -572,19 +572,19 @@
     font-size: 18px;
     font-weight: 700;
     color: white;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--midnight) 0%, var(--midnight) 100%);
     border: none;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     min-height: 60px;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 4px 12px var(--champagne);
   }
 
   .mobileStepAction:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, var(--midnight) 0%, var(--midnight) 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.45);
+    box-shadow: 0 6px 16px var(--champagne);
   }
 
   .mobileStepAction:active:not(:disabled) {

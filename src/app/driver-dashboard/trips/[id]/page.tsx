@@ -12,6 +12,9 @@ import TripStatusStepper from "@/components/Driver/TripStatusStepper/TripStatusS
 import FlightStatusCard from "@/components/admin/FlightStatusCard/FlightStatusCard";
 import Button from "@/components/shared/Button/Button";
 
+import Location from "@/components/shared/icons/Location/Location";
+import Car from "@/components/shared/icons/Car/Car";
+import Business from "@/components/shared/icons/Business/Business";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -281,7 +284,9 @@ export default async function DriverTripDetailPage({
               rel='noopener noreferrer'
               className={styles.navButton}
             >
-              <span className={styles.navIcon}>🗺️</span>
+              <span className={styles.navIcon}>
+                <Location aria-hidden='true' />
+              </span>
               Google Maps
             </a>
             <a
@@ -290,7 +295,9 @@ export default async function DriverTripDetailPage({
               rel='noopener noreferrer'
               className={styles.navButton}
             >
-              <span className={styles.navIcon}>🚗</span>
+              <span className={styles.navIcon}>
+                <Car aria-hidden='true' />
+              </span>
               Waze
             </a>
             <a
@@ -299,7 +306,9 @@ export default async function DriverTripDetailPage({
               rel='noopener noreferrer'
               className={styles.navButton}
             >
-              <span className={styles.navIcon}>🍎</span>
+              <span className={styles.navIcon}>
+                <Location aria-hidden='true' />
+              </span>
               Apple Maps
             </a>
           </div>
@@ -324,7 +333,7 @@ export default async function DriverTripDetailPage({
               border: "1px solid rgba(124, 58, 237, 0.2)",
             }}
           >
-            <span style={{ fontSize: 18 }}>🏢</span>
+            <Business aria-hidden='true' style={{ width: 18, height: 18 }} />
             <div>
               <div
                 style={{
@@ -358,10 +367,10 @@ export default async function DriverTripDetailPage({
           {customerPhone && (
             <div className={styles.contactButtons}>
               <a href={`tel:${customerPhone}`} className={styles.contactButton}>
-                📞 Call
+                Call
               </a>
               <a href={`sms:${customerPhone}`} className={styles.contactButton}>
-                💬 Text
+                Text
               </a>
             </div>
           )}
@@ -376,7 +385,7 @@ export default async function DriverTripDetailPage({
 
       {/* Trip Details */}
       <div className={styles.card}>
-        <h2 className={styles.sectionTitle}>📍 Route</h2>
+        <h2 className={styles.sectionTitle}>Route</h2>
 
         <div className={styles.routeTimeline}>
           {/* Pickup */}
@@ -465,7 +474,7 @@ export default async function DriverTripDetailPage({
         {/* Special Requests */}
         {booking.specialRequests && (
           <div className={styles.specialRequests}>
-            <h2 className='cardTitle h4'>⚠️ Special Requests</h2>
+            <h2 className='cardTitle h4'>Special Requests</h2>
             <div className={styles.specialRequestsText}>
               {booking.specialRequests}
             </div>
@@ -475,7 +484,7 @@ export default async function DriverTripDetailPage({
         {/* Flight Info + Live Status */}
         {(booking.flightAirline || booking.flightNumber) && (
           <div className={styles.flightInfo}>
-            <h2 className='cardTitle h4'>✈️ Flight Info</h2>
+            <h2 className='cardTitle h4'>Flight Info</h2>
             <div className={styles.flightInfoContent}>
               {booking.flightAirline && <span>{booking.flightAirline}</span>}
               {booking.flightNumber && (
@@ -523,7 +532,7 @@ export default async function DriverTripDetailPage({
 
       {/* Greetsign */}
       <div className={styles.card}>
-        <h2 className='cardTitle h4'>🪧 Meet & Greet</h2>
+        <h2 className='cardTitle h4'>Meet & Greet</h2>
         <p
           style={{
             fontSize: "1.25rem",

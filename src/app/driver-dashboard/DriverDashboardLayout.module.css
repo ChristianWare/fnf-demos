@@ -1,5 +1,5 @@
 .container {
-  padding: 10rem 0rem;
+  padding: 4rem 0rem 10rem;
 }
 
 .content {
@@ -55,6 +55,11 @@
   .AdminSideNavContainer {
     position: static;
     z-index: auto;
+  }
+
+  /* The bottom bar (DriverBottomBar) replaces the side nav at this size. */
+  .left {
+    display: none;
   }
 
   .right {

@@ -11,6 +11,7 @@ import DriverSearchFormClient from "@/app/driver-dashboard/trips/DriverSearchFor
 import DriverClearFiltersButton from "@/app/driver-dashboard/trips/Driverclearfiltersbutton";
 import DriverFilterSelectClient from "@/components/Driver/DriverFilterSelectClient/DriverFilterSelectClient";
 
+import RouteDot from "@/components/shared/RouteDot/RouteDot";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -753,11 +754,15 @@ export default async function DriverTripsPage({
                         />
                         <div className={styles.routeCell}>
                           <div className={styles.routeFrom}>
-                            <span className={styles.routeIcon}>📍</span>
+                            <span className={styles.routeIcon}>
+                              <RouteDot kind='pickup' />
+                            </span>
                             {pickupShort}
                           </div>
                           <div className={styles.routeTo}>
-                            <span className={styles.routeIcon}>🏁</span>
+                            <span className={styles.routeIcon}>
+                              <RouteDot kind='dropoff' />
+                            </span>
                             {dropoffShort}
                           </div>
                         </div>

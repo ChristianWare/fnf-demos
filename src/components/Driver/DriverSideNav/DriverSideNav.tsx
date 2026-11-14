@@ -6,62 +6,15 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import FalseButton from "@/components/shared/FalseButton/FalseButton";
-import House from "@/components/shared/icons/House/House";
-import Calendar from "@/components/shared/icons/Calendar/Calendar";
-import Bell from "@/components/shared/icons/Bell/Bell";
-import Users from "@/components/shared/icons/Users/Users";
-import Cog from "@/components/shared/icons/Cog/Cog";
 import Arrow from "@/components/shared/icons/Arrow/Arrow";
 import BadgeCount from "@/app/admin/BadgeCount/BadgeCount";
-import Appointments from "@/components/shared/icons/Appointments/Appointments";
 import Modal from "@/components/shared/Modal/Modal";
-import Money from "@/components/shared/icons/Money/Money";
 import LoadingPulse from "@/components/shared/LoadingPulse/LoadingPulse";
-
-const NAV_ITEMS = [
-  {
-    title: "Overview",
-    href: "/driver-dashboard",
-    key: "overview",
-    icon: <House />,
-  },
-  {
-    title: "Profile",
-    href: "/driver-dashboard/profile",
-    key: "profile",
-    icon: <Users />,
-  },
-  {
-    title: "Earnings",
-    href: "/driver-dashboard/earnings",
-    key: "earnings",
-    icon: <Money />,
-  },
-  {
-    title: "Trips",
-    href: "/driver-dashboard/trips",
-    key: "trips",
-    icon: <Appointments />,
-  },
-  {
-    title: "Notifications",
-    href: "/driver-dashboard/notifications",
-    key: "notifications",
-    icon: <Bell />,
-  },
-  {
-    title: "Schedule",
-    href: "/driver-dashboard/schedule",
-    key: "schedule",
-    icon: <Calendar />,
-  },
-  {
-    title: "Support",
-    href: "/driver-dashboard/support",
-    key: "support",
-    icon: <Cog />,
-  },
-];
+import {
+  DRIVER_NAV_GROUPS,
+  driverNavBadge,
+  isDriverNavActive,
+} from "./driverNav";
 
 export type DriverSideNavProps = {
   unreadNotificationsCount?: number;
@@ -77,10 +30,10 @@ export default function DriverSideNav({
   const [isOpen, setIsOpen] = useState(false);
   const [menuModalOpen, setMenuModalOpen] = useState(false);
   const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window !== "undefined") return window.innerWidth <= 568;
-    return false;
-  });
+  // Starts open on the server and the first render; the effect below folds
+  // it right after load. Reading the window size here made the server and
+  // browser disagree. (At 1068px and below the bottom bar replaces it.)
+  const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
   const navigating = navigatingTo !== null && pathname !== navigatingTo;
@@ -157,59 +110,44 @@ export default function DriverSideNav({
             <div
               className={`${styles.linksWrapper} ${navigating ? styles.linksHidden : ""}`}
             >
-              {NAV_ITEMS.map(({ title, href, icon }) => {
-                const isRoot = href === "/driver-dashboard";
-                const active = isRoot
-                  ? pathname === "/driver-dashboard"
-                  : pathname === href || pathname.startsWith(href + "/");
+              {DRIVER_NAV_GROUPS.map((group) => (
+                <div key={group.label} className={styles.group}>
+                  <p className={styles.groupLabel}>{group.label}</p>
+                  {group.items.map(({ title, href, icon, key }) => {
+                    const active = isDriverNavActive(pathname, href);
+                    const badgeValue = driverNavBadge(key, {
+                      unreadNotificationsCount,
+                      tripsNeedAttentionCount,
+                      documentsAlertCount,
+                    });
 
-                const showNotificationsBadge =
-                  href === "/driver-dashboard/notifications" &&
-                  unreadNotificationsCount > 0;
-
-                const showTripsBadge =
-                  href === "/driver-dashboard/trips" &&
-                  tripsNeedAttentionCount > 0;
-
-                const showDocsBadge =
-                  href === "/driver-dashboard/profile" &&
-                  documentsAlertCount > 0;
-
-                const badgeValue = showNotificationsBadge
-                  ? unreadNotificationsCount
-                  : showTripsBadge
-                    ? tripsNeedAttentionCount
-                    : showDocsBadge
-                      ? documentsAlertCount
-                      : 0;
-
-                const showBadge = badgeValue > 0;
-
-                return (
-                  <li key={href} className={styles.navItem}>
-                    <Link
-                      href={href}
-                      className={`${styles.navLink} ${active ? styles.navLinkActive : ""}`}
-                      onClick={() => {
-                        setIsOpen(false);
-                        setNavigatingTo(href);
-                      }}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <span className={styles.navIcon}>{icon}</span>
-                      <span className={styles.title}>{title}</span>
-                      {showBadge ? (
-                        <BadgeCount value={badgeValue} max={99} />
-                      ) : null}
-                    </Link>
-                  </li>
-                );
-              })}
+                    return (
+                      <li key={href} className={styles.navItem}>
+                        <Link
+                          href={href}
+                          className={`${styles.navLink} ${active ? styles.navLinkActive : ""}`}
+                          onClick={() => {
+                            setIsOpen(false);
+                            setNavigatingTo(href);
+                          }}
+                          aria-current={active ? "page" : undefined}
+                        >
+                          <span className={styles.navIcon}>{icon}</span>
+                          <span className={styles.title}>{title}</span>
+                          {badgeValue > 0 ? (
+                            <BadgeCount value={badgeValue} max={99} />
+                          ) : null}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </div>
+              ))}
 
               {/* Full sign out button — hidden at ≤1068px via CSS */}
               <div className={styles.actionBtns}>
                 <button className={styles.signOutBtn} onClick={() => signOut()}>
-                  Sign Out <Arrow className={styles.arrow} />
+                  Sign out <Arrow className={styles.arrow} />
                 </button>
               </div>
 

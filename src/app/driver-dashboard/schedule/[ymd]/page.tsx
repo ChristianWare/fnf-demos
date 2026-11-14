@@ -10,6 +10,7 @@ import * as tz from "@/lib/timezone";
 import Arrow from "@/components/shared/icons/Arrow/Arrow";
 import Button from "@/components/shared/Button/Button";
 
+import RouteDot from "@/components/shared/RouteDot/RouteDot";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -222,7 +223,9 @@ export default async function DriverScheduleDayPage({
                 <div className={styles.tripBody}>
                   <div className={styles.tripRoute}>
                     <div className={styles.tripRouteItem}>
-                      <span className={styles.routeIcon}>📍</span>
+                      <span className={styles.routeIcon}>
+                      <RouteDot kind='pickup' />
+                    </span>
                       <div>
                         <div className={styles.routeLabel}>Pickup</div>
                         <div className={styles.routeAddress}>
@@ -231,7 +234,9 @@ export default async function DriverScheduleDayPage({
                       </div>
                     </div>
                     <div className={styles.tripRouteItem}>
-                      <span className={styles.routeIcon}>🏁</span>
+                      <span className={styles.routeIcon}>
+                      <RouteDot kind='dropoff' />
+                    </span>
                       <div>
                         <div className={styles.routeLabel}>Dropoff</div>
                         <div className={styles.routeAddress}>
@@ -293,13 +298,13 @@ export default async function DriverScheduleDayPage({
                     <div className={styles.tripExtras}>
                       {trip.passengers && (
                         <span className={styles.extraPill}>
-                          👤 {trip.passengers} passenger
+                          {trip.passengers} passenger
                           {trip.passengers !== 1 ? "s" : ""}
                         </span>
                       )}
                       {trip.luggage && (
                         <span className={styles.extraPill}>
-                          🧳 {trip.luggage} bag{trip.luggage !== 1 ? "s" : ""}
+                          {trip.luggage} bag{trip.luggage !== 1 ? "s" : ""}
                         </span>
                       )}
                       {trip.specialRequests && (

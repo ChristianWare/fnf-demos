@@ -1,11 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { BookingStatus } from "@prisma/client";
 import toast from "react-hot-toast";
 import styles from "./TripStatusStepper.module.css";
+import Listing from "@/components/shared/icons/Listing/Listing";
+import Car from "@/components/shared/icons/Car/Car";
+import Location from "@/components/shared/icons/Location/Location";
+import Users from "@/components/shared/icons/Users/Users";
+import Close from "@/components/shared/icons/Close/Close";
+import Clock from "@/components/shared/icons/Clock/Clock";
+import Payment from "@/components/shared/icons/Payment/Payment";
+import Edit from "@/components/shared/icons/Edit/Edit";
+import RefundIcon from "@/components/shared/icons/RefundIcon/RefundIcon";
+import Calendar from "@/components/shared/icons/Calendar/Calendar";
 import { driverUpdateTripStatus } from "../../../../actions/driver-dashboard/driverUpdateTripStatus";
 // Status order for the stepper
 const STATUS_ORDER: BookingStatus[] = [
@@ -73,21 +83,39 @@ const NEXT_ACTION_LABELS: Record<BookingStatus, string> = {
 };
 
 // Icons for each status
-const STATUS_ICONS: Record<BookingStatus, string> = {
-  [BookingStatus.ASSIGNED]: "📋",
-  [BookingStatus.EN_ROUTE]: "🚗",
-  [BookingStatus.ARRIVED]: "📍",
-  [BookingStatus.IN_PROGRESS]: "👥",
-  [BookingStatus.COMPLETED]: "✅",
-  [BookingStatus.NO_SHOW]: "❌",
-  [BookingStatus.CANCELLED]: "🚫",
-  [BookingStatus.PENDING_REVIEW]: "⏳",
-  [BookingStatus.PENDING_PAYMENT]: "💳",
-  [BookingStatus.CONFIRMED]: "✓",
-  [BookingStatus.DECLINED]: "✗",
-  [BookingStatus.DRAFT]: "📝",
-  [BookingStatus.REFUNDED]: "💰",
-  [BookingStatus.PARTIALLY_REFUNDED]: "💰",
+// A tick for finished states (the shared Check icon is wrapped in a div,
+// which can't sit inside these spans).
+const Tick = () => (
+  <svg
+    viewBox='0 0 24 24'
+    width='1em'
+    height='1em'
+    fill='none'
+    stroke='currentColor'
+    strokeWidth={2.5}
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    aria-hidden='true'
+  >
+    <path d='M4 12.5 9.5 18 20 6.5' />
+  </svg>
+);
+
+const STATUS_ICONS: Record<BookingStatus, ReactNode> = {
+  [BookingStatus.ASSIGNED]: <Listing aria-hidden='true' />,
+  [BookingStatus.EN_ROUTE]: <Car aria-hidden='true' />,
+  [BookingStatus.ARRIVED]: <Location aria-hidden='true' />,
+  [BookingStatus.IN_PROGRESS]: <Users aria-hidden='true' />,
+  [BookingStatus.COMPLETED]: <Tick />,
+  [BookingStatus.NO_SHOW]: <Close aria-hidden='true' />,
+  [BookingStatus.CANCELLED]: <Close aria-hidden='true' />,
+  [BookingStatus.PENDING_REVIEW]: <Clock aria-hidden='true' />,
+  [BookingStatus.PENDING_PAYMENT]: <Payment aria-hidden='true' />,
+  [BookingStatus.CONFIRMED]: <Tick />,
+  [BookingStatus.DECLINED]: <Close aria-hidden='true' />,
+  [BookingStatus.DRAFT]: <Edit aria-hidden='true' />,
+  [BookingStatus.REFUNDED]: <RefundIcon aria-hidden='true' />,
+  [BookingStatus.PARTIALLY_REFUNDED]: <RefundIcon aria-hidden='true' />,
 };
 
 type TripStatusStepperProps = {
@@ -296,7 +324,9 @@ export default function TripStatusStepper({
         </div>
 
         <div className={styles.futureTripBanner}>
-          <span className={styles.futureIcon}>📅</span>
+          <span className={styles.futureIcon}>
+            <Calendar aria-hidden='true' />
+          </span>
           <div className={styles.futureText}>
             <strong>Scheduled for {formattedDate}</strong>
             <p>Trip controls will be available 3 hours before your pickup.</p>
@@ -358,7 +388,11 @@ export default function TripStatusStepper({
           }`}
         >
           <span className={styles.completedIcon}>
-            {currentStatus === BookingStatus.COMPLETED ? "✅" : "❌"}
+            {currentStatus === BookingStatus.COMPLETED ? (
+              <Tick />
+            ) : (
+              <Close aria-hidden='true' />
+            )}
           </span>
           <span className={styles.completedText}>
             {currentStatus === BookingStatus.COMPLETED

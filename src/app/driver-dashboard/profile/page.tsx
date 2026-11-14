@@ -272,19 +272,19 @@ export default async function DriverProfilePage() {
           <div className={styles.cardBody}>
             <div className={styles.quickLinks}>
               <Link href='/driver-dashboard/trips' className={styles.quickLink}>
-                📋 View All Trips
+                View All Trips
               </Link>
               <Link
                 href='/driver-dashboard/earnings'
                 className={styles.quickLink}
               >
-                💰 Earnings Details
+                Earnings Details
               </Link>
               <Link
                 href='/driver-dashboard/support'
                 className={styles.quickLink}
               >
-                🆘 Get Support
+                Get Support
               </Link>
             </div>
           </div>
