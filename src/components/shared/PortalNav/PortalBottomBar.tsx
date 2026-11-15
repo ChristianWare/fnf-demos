@@ -13,7 +13,7 @@ import { signOut } from "next-auth/react";
 import BadgeCount from "@/app/admin/BadgeCount/BadgeCount";
 import Arrow from "@/components/shared/icons/Arrow/Arrow";
 import {
-  isPortalNavActive,
+  activePortalHref,
   type PortalExtraLink,
   type PortalNavItem,
 } from "./portalNav";
@@ -49,8 +49,12 @@ export default function PortalBottomBar({
 
   const tabs = items.filter((i) => tabKeys.includes(i.key));
   const more = items.filter((i) => !tabKeys.includes(i.key));
-  const isActive = (href: string) =>
-    isPortalNavActive(pathname, href, rootHref);
+  const activeHref = activePortalHref(
+    pathname,
+    items.map((i) => i.href),
+    rootHref,
+  );
+  const isActive = (href: string) => href === activeHref;
   const moreActive = more.some((i) => isActive(i.href));
   const moreBadge = more.reduce((n, i) => n + (i.badge ?? 0), 0);
 

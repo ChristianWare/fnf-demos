@@ -36,6 +36,7 @@ import { localToUtcIso } from "@/lib/timezone";
 import { calcQuoteCents } from "@/lib/pricing/calcQuote";
 import { useDirtyForm } from "@/components/shared/DirtyFormProvider/DirtyFormProvider";
 import Button from "@/components/shared/Button/Button";
+import Check from "@/components/shared/icons/Check/Check";
 import { SITE } from "@/config/site";
 import {
   BOOKING_LEAD_MINUTES,
@@ -47,6 +48,7 @@ import {
   stopSurchargeCents,
 } from "@/lib/booking/rules";
 import { PlacesAutocomplete } from "@/lib/placesAutocomplete";
+import type { RideAgainPrefill } from "@/components/Dashboard/RideAgain/rideAgainPrefill";
 // ───────────── Types ─────────────
 
 type PricingStrategy = "POINT_TO_POINT" | "HOURLY" | "FLAT";
@@ -122,6 +124,17 @@ type CorporateAccountDTO = {
 
 // Steps: 1 Trip → 2 Vehicle → 3 Review → 4 Confirmed
 type WizardStep = 1 | 2 | 3 | 4;
+
+/**
+ * "Book again" from the corporate dashboard: a past ride's passenger,
+ * route, service, vehicle and party size. The date and time are left to
+ * pick. Built on the server (corporate/bookings/new?again=<ride>).
+ */
+export type CorporateRideAgainPrefill = RideAgainPrefill & {
+  corporatePassengerId?: string;
+  costCenter?: string;
+  projectCode?: string;
+};
 
 type SavedLeg = {
   id: string;
@@ -222,6 +235,7 @@ export default function CorporateNewBookingWizard({
   passengers,
   corporateAccount,
   companyTimezone,
+  initialPrefill,
 }: {
   serviceTypes: ServiceTypeDTO[];
   vehicles: VehicleDTO[];
@@ -229,7 +243,9 @@ export default function CorporateNewBookingWizard({
   passengers: PassengerDTO[];
   corporateAccount: CorporateAccountDTO;
   companyTimezone: string;
+  initialPrefill?: CorporateRideAgainPrefill;
 }) {
+  const again = initialPrefill;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -237,31 +253,51 @@ export default function CorporateNewBookingWizard({
   const [bookingId, setBookingId] = useState<string>("");
 
   // ─── Passenger state ───
-  const [corporatePassengerId, setCorporatePassengerId] = useState<string>("");
+  const [corporatePassengerId, setCorporatePassengerId] = useState<string>(
+    again?.corporatePassengerId ?? "",
+  );
   const [newPassengerMode, setNewPassengerMode] = useState(false);
   const [newPassengerName, setNewPassengerName] = useState("");
   const [newPassengerEmail, setNewPassengerEmail] = useState("");
   const [newPassengerPhone, setNewPassengerPhone] = useState("");
-  const [costCenter, setCostCenter] = useState("");
-  const [projectCode, setProjectCode] = useState("");
+  const [costCenter, setCostCenter] = useState(again?.costCenter ?? "");
+  const [projectCode, setProjectCode] = useState(again?.projectCode ?? "");
 
   // ─── Trip state ───
-  const [serviceTypeId, setServiceTypeId] = useState<string>("");
+  const [serviceTypeId, setServiceTypeId] = useState<string>(
+    again && serviceTypes.some((s) => s.id === again.serviceTypeId)
+      ? again.serviceTypeId
+      : "",
+  );
   const [pickupAtDate, setPickupAtDate] = useState<string>("");
   const [pickupAtTime, setPickupAtTime] = useState<string>("");
-  const [passengers_count, setPassengersCount] = useState<number>(0);
-  const [luggage, setLuggage] = useState<number>(0);
-  const [hoursRequested, setHoursRequested] = useState<number>(2);
+  const [passengers_count, setPassengersCount] = useState<number>(
+    again?.passengers ?? 0,
+  );
+  const [luggage, setLuggage] = useState<number>(again?.luggage ?? 0);
+  const [hoursRequested, setHoursRequested] = useState<number>(
+    again?.hoursRequested ?? 2,
+  );
 
-  const [route, setRoute] = useState<RoutePickerValue | null>(null);
+  const [route, setRoute] = useState<RoutePickerValue | null>(
+    (again?.route as RoutePickerValue | undefined) ?? null,
+  );
   const pickupInputRef = useRef<HTMLInputElement | null>(null);
   const dropoffInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [vehicleId, setVehicleId] = useState<string>("");
+  const [vehicleId, setVehicleId] = useState<string>(
+    again?.vehicleId && vehicles.some((v) => v.id === again.vehicleId)
+      ? again.vehicleId
+      : "",
+  );
   const [specialRequests, setSpecialRequests] = useState<string>("");
 
-  const [pickupAirportId, setPickupAirportId] = useState<string>("");
-  const [dropoffAirportId, setDropoffAirportId] = useState<string>("");
+  const [pickupAirportId, setPickupAirportId] = useState<string>(
+    again?.pickupAirportId ?? "",
+  );
+  const [dropoffAirportId, setDropoffAirportId] = useState<string>(
+    again?.dropoffAirportId ?? "",
+  );
 
   // ─── Flight info ───
   const [flightAirline, setFlightAirline] = useState<string>("");
@@ -1105,7 +1141,9 @@ export default function CorporateNewBookingWizard({
                 <p className='subheading'>
                   {isMultiLeg
                     ? `Adding ride ${savedLegs.length + 1} to your trip`
-                    : "Select a passenger, service, date/time, and route for this trip."}
+                    : again
+                      ? "Booking a past ride again: the passenger, route and car are filled in. Pick the date and time."
+                      : "Select a passenger, service, date/time, and route for this trip."}
                 </p>
                 {isMultiLeg && (
                   <div
@@ -1119,7 +1157,7 @@ export default function CorporateNewBookingWizard({
                     }}
                   >
                     <strong>
-                      🗓️ {savedLegs.length} ride
+                      {savedLegs.length} ride
                       {savedLegs.length > 1 ? "s" : ""} added
                     </strong>
                     <span style={{ opacity: 0.7, marginLeft: 8 }}>
@@ -1460,6 +1498,7 @@ export default function CorporateNewBookingWizard({
                     ) : (
                       <input
                         ref={pickupInputRef}
+                        defaultValue={again?.route?.pickup?.address}
                         placeholder='Enter pickup address'
                         autoComplete='off'
                         className='input emptySmall'
@@ -1588,7 +1627,7 @@ export default function CorporateNewBookingWizard({
                     }}
                     className={styles.addStopBtn}
                   >
-                    <span>➕</span> Add a stop
+                    + Add a stop
                     <span className={styles.addStopFee}>
                       ({EXTRA_STOP_FEE_LABEL})
                     </span>
@@ -1597,7 +1636,7 @@ export default function CorporateNewBookingWizard({
                   {(route?.stops?.length ?? 0) > 0 && (
                     <div className={styles.stopSurchargeInfo}>
                       <span>
-                        🛑 {route?.stops?.length} extra stop
+                        {route?.stops?.length} extra stop
                         {(route?.stops?.length ?? 0) > 1 ? "s" : ""}
                       </span>
                       <span className={styles.stopSurchargeAmount}>
@@ -1642,6 +1681,7 @@ export default function CorporateNewBookingWizard({
                     ) : (
                       <input
                         ref={dropoffInputRef}
+                        defaultValue={again?.route?.dropoff?.address}
                         placeholder='Enter dropoff address'
                         autoComplete='off'
                         className='input emptySmall'
@@ -1727,7 +1767,7 @@ export default function CorporateNewBookingWizard({
                           gap: 8,
                         }}
                       >
-                        ✈️ Flight Information{" "}
+                        Flight information{" "}
                         <span style={{ fontWeight: 400, opacity: 0.7 }}>
                           (optional)
                         </span>
@@ -2064,7 +2104,7 @@ export default function CorporateNewBookingWizard({
                           className='cardTitle h6'
                           style={{ marginBottom: 8, opacity: 0.7 }}
                         >
-                          🛑 Extra Stops ({route?.stops?.length})
+                          Extra stops ({route?.stops?.length})
                         </div>
                       </div>
                       {route?.stops?.map((stop, index) => (
@@ -2130,7 +2170,7 @@ export default function CorporateNewBookingWizard({
                           className='cardTitle h6'
                           style={{ marginBottom: 8, opacity: 0.7 }}
                         >
-                          ✈️ Flight Information
+                          Flight information
                         </div>
                       </div>
                       {flightAirline && (
@@ -2160,7 +2200,7 @@ export default function CorporateNewBookingWizard({
                       className='cardTitle h6'
                       style={{ marginBottom: 8, opacity: 0.7 }}
                     >
-                      💰 Pricing
+                      Pricing
                     </div>
                   </div>
                   {selectedVehicle?.callForPricing ? (
@@ -2193,7 +2233,7 @@ export default function CorporateNewBookingWizard({
                   )}
 
                   <div className={styles.billingNote}>
-                    🏢 This ride will appear on your next{" "}
+                    This ride will appear on your next{" "}
                     <strong>
                       {corporateAccount.billingCycle
                         .replaceAll("_", " ")
@@ -2210,7 +2250,7 @@ export default function CorporateNewBookingWizard({
                     style={{ background: "rgba(0,0,0,0.02)" }}
                   >
                     <div className='cardTitle h5' style={{ marginBottom: 12 }}>
-                      <span style={{ marginRight: 10 }}>🗓️</span> Your multi-day
+                      Your multi-day
                       trip ({savedLegs.length + 1} rides)
                     </div>
                     {savedLegs.map((leg, idx) => (
@@ -2371,7 +2411,9 @@ export default function CorporateNewBookingWizard({
             {/* ═══════════ STEP 4: Confirmed ═══════════ */}
             {step === 4 && (
               <div className={`${styles.stepPane} ${styles.confirmedPane}`}>
-                <div className={styles.confirmedIcon}>✅</div>
+                <div className={styles.confirmedIcon} aria-hidden='true'>
+                  <Check />
+                </div>
                 <h2 className='underline'>
                   {isMultiLeg ? "Trip Booked!" : "Ride Booked!"}
                 </h2>
@@ -2428,7 +2470,7 @@ export default function CorporateNewBookingWizard({
                   />
 
                   <div className={styles.billingNote}>
-                    🏢 Billed to <strong>{corporateAccount.name}</strong> — this
+                    Billed to <strong>{corporateAccount.name}</strong> — this
                     ride will appear on your next{" "}
                     <strong>
                       {corporateAccount.billingCycle

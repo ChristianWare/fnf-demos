@@ -14,7 +14,7 @@ import Arrow from "@/components/shared/icons/Arrow/Arrow";
 import BadgeCount from "@/app/admin/BadgeCount/BadgeCount";
 import LoadingPulse from "@/components/shared/LoadingPulse/LoadingPulse";
 import {
-  isPortalNavActive,
+  activePortalHref,
   type PortalExtraLink,
   type PortalNavGroup,
 } from "./portalNav";
@@ -37,6 +37,11 @@ export default function PortalSideNav({
   const pathname = usePathname() ?? "";
   const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
   const navigating = navigatingTo !== null && navigatingTo !== pathname;
+  const activeHref = activePortalHref(
+    pathname,
+    groups.flatMap((g) => g.items.map((i) => i.href)),
+    rootHref,
+  );
 
   // The new page has arrived: drop the pulse.
   useEffect(() => {
@@ -60,7 +65,7 @@ export default function PortalSideNav({
           <p className={styles.groupLabel}>{group.label}</p>
           <ul className={styles.group}>
             {group.items.map((item) => {
-              const active = isPortalNavActive(pathname, item.href, rootHref);
+              const active = item.href === activeHref;
               return (
                 <li key={item.key}>
                   <Link

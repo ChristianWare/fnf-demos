@@ -35,3 +35,20 @@ export function isPortalNavActive(
     ? pathname === rootHref
     : pathname === href || pathname.startsWith(href + "/");
 }
+
+/**
+ * The one page to highlight: the most specific match, so "Book a ride"
+ * (/corporate/bookings/new) wins over "Bookings" (/corporate/bookings).
+ */
+export function activePortalHref(
+  pathname: string,
+  hrefs: string[],
+  rootHref: string,
+): string | null {
+  let best: string | null = null;
+  for (const href of hrefs) {
+    if (!isPortalNavActive(pathname, href, rootHref)) continue;
+    if (!best || href.length > best.length) best = href;
+  }
+  return best;
+}

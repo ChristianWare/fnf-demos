@@ -4,6 +4,8 @@ import styles from "./CorporateLayout.module.css";
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 import CorporateSideNav from "@/components/corporate/CorporateSideNav/CorporateSideNav";
+import CorporateBottomBar from "@/components/corporate/CorporateBottomBar/CorporateBottomBar";
+import theme from "@/components/shared/DashboardTheme/DashboardTheme.module.css";
 import Nav from "@/components/shared/Nav/Nav";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import { db } from "@/lib/db";
@@ -76,23 +78,29 @@ export default async function CorporateLayout({
     );
   }
 
-  // Count upcoming rides for badge
+  // Badges: rides booked from now on, and invoices waiting to be paid.
   const now = new Date();
-  const upcomingRidesCount = await db.booking.count({
-    where: {
-      corporateAccountId: account.id,
-      pickupAt: { gte: now },
-      NOT: {
-        status: {
-          in: ["CANCELLED", "REFUNDED", "NO_SHOW"] as any,
+  const [upcomingRidesCount, invoicesDueCount] = await Promise.all([
+    db.booking.count({
+      where: {
+        corporateAccountId: account.id,
+        pickupAt: { gte: now },
+        NOT: {
+          status: {
+            in: ["CANCELLED", "REFUNDED", "NO_SHOW"] as any,
+          },
         },
       },
-    },
-  });
+    }),
+    db.corporateInvoice.count({
+      where: {
+        corporateAccountId: account.id,
+        status: { in: ["SENT", "PARTIALLY_PAID", "OVERDUE"] },
+      },
+    }),
+  ]);
 
-  const fullName = session.user?.name?.trim() ?? "";
-  const firstName = fullName.split(/\s+/)[0] || "";
-  const displayName = firstName || "there";
+  const canBook = account.status === "ACTIVE";
 
   return (
     <main>
@@ -101,23 +109,41 @@ export default async function CorporateLayout({
         <section className={styles.container}>
           <div className={styles.content}>
             <div className={styles.left}>
-              <p className={styles.companyLabel}>
-                {account.name} — Corporate Dashboard
-              </p>
-              <h1 className={`${styles.heading} h2`}>Welcome {displayName}!</h1>
-
               <div className={styles.sideNavContainer}>
                 <CorporateSideNav
+                  roles={roles}
+                  canBook={canBook}
                   upcomingRidesCount={upcomingRidesCount}
-                  accountStatus={account.status}
+                  invoicesDueCount={invoicesDueCount}
                 />
               </div>
             </div>
 
-            <div className={styles.right}>{children}</div>
+            <div className={`${styles.right} ${theme.theme}`}>
+              {/* A suspended account can't book: say so on every page. */}
+              {!canBook ? (
+                <div className={styles.statusBanner} role='status'>
+                  <strong>
+                    {account.status === "SUSPENDED"
+                      ? "Account suspended."
+                      : "Account closed."}
+                  </strong>{" "}
+                  New bookings are paused. Contact {SITE.name} to sort it out;
+                  your bookings, invoices and reports are still here.
+                </div>
+              ) : null}
+              {children}
+            </div>
           </div>
         </section>
       </LayoutWrapper>
+      {/* Tablets and phones: the bottom bar replaces the side nav. */}
+      <CorporateBottomBar
+        roles={roles}
+        canBook={canBook}
+        upcomingRidesCount={upcomingRidesCount}
+        invoicesDueCount={invoicesDueCount}
+      />
     </main>
   );
 }

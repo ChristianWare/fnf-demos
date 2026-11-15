@@ -203,8 +203,8 @@ export default function SettingsClient({
       <div className={styles.header}>
         <h2 className='heading h3'>Settings</h2>
         <p className={styles.meta}>
-          Manage your corporate account settings. Payment terms are set by {SITE.name}
-          Transportation.
+          Manage your corporate account settings. Payment terms are set by{" "}
+          {SITE.name}.
         </p>
       </div>
 
@@ -286,14 +286,14 @@ export default function SettingsClient({
                   disabled={isPending}
                   type='button'
                   text={isPending ? "Redirecting…" : "Update Card"}
-                  btnType='greenReg'
+                  btnType='blackReg'
                   onClick={handleAddOrUpdateCard}
                 />
                 <Button
                   disabled={isPending}
                   type='button'
                   text='Remove Card'
-                  btnType='blackReg'
+                  btnType='redReg'
                   onClick={() => setRemoveModalOpen(true)}
                 />
                 {/* <button
@@ -332,7 +332,7 @@ export default function SettingsClient({
                 <Button
                   type='button'
                   text={isPending ? "Redirecting…" : "Add Credit Card"}
-                  btnType='greenReg'
+                  btnType='blackReg'
                   disabled={isPending}
                   onClick={handleAddOrUpdateCard}
                 />
@@ -489,7 +489,7 @@ export default function SettingsClient({
           </p>
 
           <div className={styles.removeCardWarning}>
-            <strong>⚠️ Please note:</strong>
+            <strong>Please note:</strong>
             <ul className={styles.warningList}>
               <li>Future invoices will not be auto-charged</li>
               <li>You will need to pay invoices manually</li>

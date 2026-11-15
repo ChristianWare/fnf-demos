@@ -63,3 +63,16 @@
 .option:hover {
   background-color: var(--ivory);
 }
+
+/* In a list row: a square icon button, the menu opening to the left. */
+.compact .button {
+  justify-content: center;
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+}
+
+.compact .panel {
+  right: 0;
+  left: auto;
+}
