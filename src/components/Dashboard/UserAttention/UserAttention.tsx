@@ -21,6 +21,8 @@ export type UserAttentionItem = {
 type Props = {
   items: UserAttentionItem[];
   timeZone: string;
+  /** "Needs your attention" on the overview; "Due now" on Payments. */
+  title?: string;
 };
 
 function formatMoney(cents: number, currency = "USD") {
@@ -30,7 +32,11 @@ function formatMoney(cents: number, currency = "USD") {
   }).format(cents / 100);
 }
 
-export default function UserAttention({ items, timeZone }: Props) {
+export default function UserAttention({
+  items,
+  timeZone,
+  title = "Needs your attention",
+}: Props) {
   if (items.length === 0) return null;
 
   const when = (iso: string) =>
@@ -47,7 +53,7 @@ export default function UserAttention({ items, timeZone }: Props) {
     <section className={styles.container} aria-labelledby='attention-title'>
       <header className={styles.top}>
         <h2 id='attention-title' className='cardTitle h4'>
-          Needs your attention
+          {title}
         </h2>
         <span className={styles.count}>{items.length}</span>
       </header>
