@@ -28,7 +28,7 @@
   margin: 0;
   background-color: var(--cream);
   padding: 1rem;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .rows {
@@ -71,14 +71,14 @@
   padding: 10px 14px;
   background: rgba(245, 158, 11, 0.08);
   border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: 8px;
+  border-radius: 4px;
   line-height: 1.5;
 }
 
 .input {
   border: 1px solid var(--stroke);
   background: var(--white);
-  border-radius: 5px;
+  border-radius: 4px;
   padding: 0.9rem 1rem;
   font-size: 1.4rem;
   color: var(--black);

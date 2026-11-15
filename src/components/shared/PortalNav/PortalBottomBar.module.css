@@ -1,5 +1,5 @@
-/* The driver's bottom bar and its More sheet, at 1068px and below. Hidden
-   on desktop, where the side nav is. */
+/* A dashboard's bottom bar and its More sheet (driver, customer), at
+   1068px and below. Hidden on desktop, where the side nav is. */
 
 .bar,
 .overlay,
@@ -235,7 +235,7 @@
   }
 
   /* Room at the bottom of the page for the bar. */
-  :global(body:has([data-driver-bar])) {
+  :global(body:has([data-portal-bar])) {
     padding-bottom: calc(64px + env(safe-area-inset-bottom));
   }
 }

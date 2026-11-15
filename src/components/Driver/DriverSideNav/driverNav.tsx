@@ -1,8 +1,11 @@
 // The driver dashboard's pages, grouped. The desktop side nav and, at
 // 1068px and below, the bottom bar (first four) and its More sheet (the
-// rest) both list them from here.
+// rest) both list them from here, through the shared PortalNav.
 
-import type { ReactNode } from "react";
+import type {
+  PortalNavGroup,
+  PortalNavItem,
+} from "@/components/shared/PortalNav/portalNav";
 import House from "@/components/shared/icons/House/House";
 import Calendar from "@/components/shared/icons/Calendar/Calendar";
 import Bell from "@/components/shared/icons/Bell/Bell";
@@ -20,14 +23,7 @@ export type DriverNavKey =
   | "notifications"
   | "support";
 
-export type DriverNavItem = {
-  title: string;
-  /** A shorter name for the bottom bar. */
-  short: string;
-  href: string;
-  key: DriverNavKey;
-  icon: ReactNode;
-};
+export type DriverNavItem = PortalNavItem & { key: DriverNavKey };
 
 export const DRIVER_NAV_GROUPS: { label: string; items: DriverNavItem[] }[] = [
   {
@@ -106,13 +102,6 @@ export const DRIVER_TAB_KEYS: DriverNavKey[] = [
   "earnings",
 ];
 
-/** Overview only matches the dashboard itself; the rest match sub-pages. */
-export function isDriverNavActive(pathname: string, href: string) {
-  return href === "/driver-dashboard"
-    ? pathname === "/driver-dashboard"
-    : pathname === href || pathname.startsWith(href + "/");
-}
-
 /** The count badge for a page, if any. */
 export function driverNavBadge(
   key: DriverNavKey,
@@ -126,4 +115,18 @@ export function driverNavBadge(
   if (key === "trips") return counts.tripsNeedAttentionCount ?? 0;
   if (key === "profile") return counts.documentsAlertCount ?? 0;
   return 0;
+}
+
+export type DriverNavCounts = {
+  unreadNotificationsCount?: number;
+  tripsNeedAttentionCount?: number;
+  documentsAlertCount?: number;
+};
+
+/** The groups, with each page's count badge filled in. */
+export function driverNavGroups(counts: DriverNavCounts): PortalNavGroup[] {
+  return DRIVER_NAV_GROUPS.map((g) => ({
+    label: g.label,
+    items: g.items.map((i) => ({ ...i, badge: driverNavBadge(i.key, counts) })),
+  }));
 }

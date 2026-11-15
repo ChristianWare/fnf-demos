@@ -93,7 +93,7 @@
 
 .item {
   border: 1px solid var(--stroke);
-  border-radius: 5px;
+  border-radius: 4px;
   padding: 1rem;
 }
 
@@ -131,18 +131,24 @@
 
 .secondaryBtn {
   text-decoration: none;
-  border-radius: 10px;
-  padding: 0.9rem 1rem;
+  border-radius: 4px;
+  min-height: 40px;
+  padding: 0 1.4rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   line-height: 1;
   white-space: nowrap;
   border: 1px solid var(--stroke);
-  background: var(--cream);
-  color: var(--black);
+  background: var(--white);
+  color: var(--midnight);
+  transition: border-color 0.2s ease;
+}
+
+.secondaryBtn:hover {
+  border-color: var(--midnight);
 }
 
 .empty {
@@ -181,4 +187,24 @@
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* An address on its lines: the place's name (or street) in bold, the rest
+   in the regular weight. */
+.place {
+  font-weight: normal;
+  line-height: 1.4;
+}
+
+.place > span:first-child {
+  font-family: var(--SofiaSansBold);
+}
+
+.tripMetaLine .place {
+  text-align: right;
+}
+
+.item {
+  border-radius: 4px;
+  background-color: var(--white);
 }
