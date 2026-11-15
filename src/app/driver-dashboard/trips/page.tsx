@@ -12,6 +12,12 @@ import DriverClearFiltersButton from "@/app/driver-dashboard/trips/Driverclearfi
 import DriverFilterSelectClient from "@/components/Driver/DriverFilterSelectClient/DriverFilterSelectClient";
 
 import RouteDot from "@/components/shared/RouteDot/RouteDot";
+import {
+  FINISHED_TRIP_STATUSES,
+  isTripPrivate,
+  privateAddress,
+  privateName,
+} from "@/lib/tripPrivacy";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -254,14 +260,24 @@ function buildWhere(args: {
         ? [where.AND]
         : [];
 
+    // Names, phones and addresses only find rides that aren't over yet;
+    // once a ride is finished those details are hidden from the driver, so
+    // searching for them mustn't reveal which ride they belong to.
     const searchConditions: Prisma.BookingWhereInput[] = [
       { id: { contains: needle, mode: "insensitive" } },
-      { guestName: { contains: needle, mode: "insensitive" } },
-      { guestPhone: { contains: needle, mode: "insensitive" } },
-      { pickupAddress: { contains: needle, mode: "insensitive" } },
-      { dropoffAddress: { contains: needle, mode: "insensitive" } },
-      { user: { is: { name: { contains: needle, mode: "insensitive" } } } },
-      { user: { is: { phone: { contains: needle, mode: "insensitive" } } } },
+      {
+        status: { notIn: [...FINISHED_TRIP_STATUSES] as BookingStatus[] },
+        OR: [
+          { guestName: { contains: needle, mode: "insensitive" } },
+          { guestPhone: { contains: needle, mode: "insensitive" } },
+          { pickupAddress: { contains: needle, mode: "insensitive" } },
+          { dropoffAddress: { contains: needle, mode: "insensitive" } },
+          { user: { is: { name: { contains: needle, mode: "insensitive" } } } },
+          {
+            user: { is: { phone: { contains: needle, mode: "insensitive" } } },
+          },
+        ],
+      },
     ];
 
     if (isConfirmationCode) {
@@ -650,22 +666,34 @@ export default async function DriverTripsPage({
                   const pickupEta = tz.formatEta(b.pickupAt, now);
                   const confirmationCode = getConfirmationCode(b.id);
 
-                  const customerName =
+                  // Finished rides: no phone, short name, area only.
+                  const isPrivate = isTripPrivate(b.status);
+                  const fullName =
                     b.user?.name?.trim() || b.guestName?.trim() || "Customer";
-                  const customerPhone =
-                    b.user?.phone?.trim() || b.guestPhone?.trim() || null;
+                  const customerName = isPrivate
+                    ? privateName(fullName)
+                    : fullName;
+                  const customerPhone = isPrivate
+                    ? null
+                    : b.user?.phone?.trim() || b.guestPhone?.trim() || null;
+                  const pickupAddress = isPrivate
+                    ? privateAddress(b.pickupAddress)
+                    : b.pickupAddress;
+                  const dropoffAddress = isPrivate
+                    ? privateAddress(b.dropoffAddress)
+                    : b.dropoffAddress;
 
                   const earnings = b.assignment?.driverPaymentCents ?? null;
                   const tone = badgeTone(b.status as BookingStatus);
 
                   const pickupShort =
-                    b.pickupAddress.length > 30
-                      ? b.pickupAddress.slice(0, 30) + "..."
-                      : b.pickupAddress;
+                    pickupAddress.length > 30
+                      ? pickupAddress.slice(0, 30) + "..."
+                      : pickupAddress;
                   const dropoffShort =
-                    b.dropoffAddress.length > 30
-                      ? b.dropoffAddress.slice(0, 30) + "..."
-                      : b.dropoffAddress;
+                    dropoffAddress.length > 30
+                      ? dropoffAddress.slice(0, 30) + "..."
+                      : dropoffAddress;
 
                   return (
                     <tr key={b.id} className={styles.tr}>

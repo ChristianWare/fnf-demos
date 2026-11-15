@@ -17,6 +17,12 @@ import Car from "@/components/shared/icons/Car/Car";
 import Business from "@/components/shared/icons/Business/Business";
 import AddressLines from "@/components/shared/AddressLines/AddressLines";
 import { relativeFromNow } from "@/lib/relativeTime";
+import {
+  isTripPrivate,
+  privateAddress,
+  privateName,
+  PRIVATE_CONTACT_NOTE,
+} from "@/lib/tripPrivacy";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -160,7 +166,11 @@ export default async function DriverTripDetailPage({
   const driverId = await resolveSessionUserId(session);
   if (!driverId) redirect("/");
 
-  const { timezone: companyTz } = await getCompanySettings();
+  const {
+    timezone: companyTz,
+    dispatchPhone,
+    dispatchPhoneRaw,
+  } = await getCompanySettings();
 
   const booking = await db.booking.findUnique({
     where: { id },
@@ -199,23 +209,29 @@ export default async function DriverTripDetailPage({
     redirect("/driver-dashboard");
   }
 
+  // Once the ride is over, the passenger's contact details and exact
+  // addresses are hidden from the driver (admins still see them). See
+  // tripPrivacy.ts.
+  const isPrivate = isTripPrivate(booking.status, isAdmin);
+  const shownAddress = (address: string) =>
+    isPrivate ? privateAddress(address) : address;
+
   // Customer info
   const isCorporateBooking = Boolean(booking.corporateAccountId);
-  const customerName =
+  const fullCustomerName =
     booking.user?.name?.trim() ||
     booking.guestName?.trim() ||
     (booking as any).corporatePassenger?.name?.trim() ||
     "Customer";
-  const customerPhone =
-    booking.user?.phone ||
-    booking.guestPhone ||
-    (booking as any).corporatePassenger?.phone ||
-    null;
-  const customerEmail =
-    booking.user?.email ||
-    booking.guestEmail ||
-    (booking as any).corporatePassenger?.email ||
-    null;
+  const customerName = isPrivate
+    ? privateName(fullCustomerName)
+    : fullCustomerName;
+  const customerPhone = isPrivate
+    ? null
+    : booking.user?.phone ||
+      booking.guestPhone ||
+      (booking as any).corporatePassenger?.phone ||
+      null;
   const corporateAccountName = (booking as any).corporateAccount?.name ?? null;
   const corporatePassengerDepartment =
     (booking as any).corporatePassenger?.department ?? null;
@@ -321,7 +337,7 @@ export default async function DriverTripDetailPage({
       />
 
       {/* Special requests: before arriving, not after */}
-      {booking.specialRequests && (
+      {booking.specialRequests && !isPrivate && (
         <p className={styles.requests}>
           <strong>Special requests:</strong> {booking.specialRequests}
         </p>
@@ -344,7 +360,26 @@ export default async function DriverTripDetailPage({
                   : ""}
               </p>
             )}
-            {customerPhone ? (
+            {isPrivate ? (
+              <p className={styles.privateNote}>
+                {PRIVATE_CONTACT_NOTE}
+                {dispatchPhone ? (
+                  <>
+                    {" "}
+                    <a
+                      href={
+                        dispatchPhoneRaw
+                          ? `tel:+1${dispatchPhoneRaw}`
+                          : `tel:${dispatchPhone}`
+                      }
+                      className={styles.privateLink}
+                    >
+                      {dispatchPhone}
+                    </a>
+                  </>
+                ) : null}
+              </p>
+            ) : customerPhone ? (
               <>
                 <p className={styles.phoneDisplay}>{customerPhone}</p>
                 <div className={styles.contactButtons}>
@@ -410,7 +445,9 @@ export default async function DriverTripDetailPage({
       {/* Airport pickups: the flight, and the sign for the curb */}
       {isAirportPickup && (
         <div className={styles.card}>
-          <h2 className='cardTitle h4'>Flight and meet &amp; greet</h2>
+          <h2 className='cardTitle h4'>
+            {isActive ? <>Flight and meet &amp; greet</> : "Flight"}
+          </h2>
           {hasFlight ? (
             <>
               <div className={styles.flightInfoContent}>
@@ -433,18 +470,20 @@ export default async function DriverTripDetailPage({
           ) : (
             <p className={styles.muted}>No flight details on this booking.</p>
           )}
-          <div className={styles.greet}>
-            <p className={styles.muted}>
-              Show a full-screen sign with the passenger&apos;s name at
-              arrivals.
-            </p>
-            <Button
-              href={`/driver-dashboard/trips/${booking.id}/greetsign`}
-              text='Open greet sign'
-              btnType='black'
-              arrow
-            />
-          </div>
+          {isActive && (
+            <div className={styles.greet}>
+              <p className={styles.muted}>
+                Show a full-screen sign with the passenger&apos;s name at
+                arrivals.
+              </p>
+              <Button
+                href={`/driver-dashboard/trips/${booking.id}/greetsign`}
+                text='Open greet sign'
+                btnType='black'
+                arrow
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -461,6 +500,13 @@ export default async function DriverTripDetailPage({
           </p>
         )}
 
+        {isPrivate && (
+          <p className={styles.privacyNote}>
+            Exact addresses are hidden once a trip is over, to protect the
+            passenger&apos;s privacy. Named places keep their name.
+          </p>
+        )}
+
         <div className={styles.routeTimeline}>
           <div className={styles.routePoint}>
             <div className={`${styles.routeMarker} ${styles.markerPickup}`}>
@@ -469,7 +515,7 @@ export default async function DriverTripDetailPage({
             <div className={styles.routeDetails}>
               <div className={styles.routeLabel}>Pickup · {pickupTime}</div>
               <AddressLines
-                address={booking.pickupAddress}
+                address={shownAddress(booking.pickupAddress)}
                 className={styles.routeAddress}
               />
             </div>
@@ -485,7 +531,7 @@ export default async function DriverTripDetailPage({
                   Stop {index + 1} · ~{stop.waitTimeMinutes ?? 5} min wait
                 </div>
                 <AddressLines
-                  address={stop.address}
+                  address={shownAddress(stop.address)}
                   className={styles.routeAddress}
                 />
               </div>
@@ -499,7 +545,7 @@ export default async function DriverTripDetailPage({
             <div className={styles.routeDetails}>
               <div className={styles.routeLabel}>Drop-off</div>
               <AddressLines
-                address={booking.dropoffAddress}
+                address={shownAddress(booking.dropoffAddress)}
                 className={styles.routeAddress}
               />
             </div>

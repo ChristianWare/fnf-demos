@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { auth } from "../../../../../../auth";
 import styles from "./GreetsignPage.module.css";
 import { SITE } from "@/config/site";
+import { isTripPrivate } from "@/lib/tripPrivacy";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -51,6 +52,7 @@ export default async function GreetsignPage({
     where: { id },
     select: {
       id: true,
+      status: true,
       user: { select: { name: true } },
       guestName: true,
       corporatePassenger: { select: { name: true } },
@@ -66,6 +68,12 @@ export default async function GreetsignPage({
   const isAdmin = roles?.includes("ADMIN");
   if (!isAdmin && booking.assignment?.driverId !== driverId) {
     redirect("/driver-dashboard");
+  }
+
+  // The sign shows the passenger's full name, so it's only for rides that
+  // aren't over yet.
+  if (isTripPrivate(booking.status, isAdmin)) {
+    redirect(`/driver-dashboard/trips/${booking.id}`);
   }
 
   const passengerName =

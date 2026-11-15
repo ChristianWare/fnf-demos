@@ -156,6 +156,25 @@
   color: var(--steel);
 }
 
+/* After the ride: no phone, dispatch instead. */
+.privateNote {
+  margin-top: 0.6rem;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid var(--stroke);
+  border-left: 3px solid var(--steel);
+  border-radius: 4px;
+  background: var(--ivory);
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: var(--slate);
+}
+
+.privateLink {
+  font-family: var(--SofiaSansBold);
+  color: var(--midnight);
+  white-space: nowrap;
+}
+
 .contactButtons {
   display: flex;
   gap: 1rem;
@@ -280,6 +299,13 @@
   font-family: var(--SofiaSansBold);
   font-size: 1.5rem;
   color: var(--slate);
+}
+
+.privacyNote {
+  margin-top: 0.6rem;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: var(--steel);
 }
 
 .routeTimeline {
