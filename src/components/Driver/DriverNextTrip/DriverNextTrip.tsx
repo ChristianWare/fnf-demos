@@ -9,6 +9,7 @@
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import Location from "@/components/shared/icons/Location/Location";
 import Phone from "@/components/shared/icons/Phone/Phone";
+import AddressLines from "@/components/shared/AddressLines/AddressLines";
 import styles from "./DriverNextTrip.module.css";
 
 export type NextTripData = {
@@ -209,7 +210,10 @@ export default function DriverNextTrip({
             aria-hidden='true'
           />
           <span className={styles.stopLabel}>Pickup</span>
-          <span className={styles.stopAddress}>{trip.pickupAddress}</span>
+          <AddressLines
+            address={trip.pickupAddress}
+            className={styles.stopAddress}
+          />
         </li>
         <li className={styles.stop}>
           <span
@@ -217,7 +221,10 @@ export default function DriverNextTrip({
             aria-hidden='true'
           />
           <span className={styles.stopLabel}>Drop-off</span>
-          <span className={styles.stopAddress}>{trip.dropoffAddress}</span>
+          <AddressLines
+            address={trip.dropoffAddress}
+            className={styles.stopAddress}
+          />
         </li>
       </ol>
 

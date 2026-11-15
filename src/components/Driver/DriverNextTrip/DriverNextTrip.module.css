@@ -128,6 +128,11 @@
   color: var(--steel);
 }
 
+/* Place name in bold, then street and city on their own lines. */
+.stopAddress > span:first-child {
+  font-family: var(--SofiaSansBold);
+}
+
 .stopAddress {
   grid-column: 2;
   font-family: var(--SofiaSansRegular);

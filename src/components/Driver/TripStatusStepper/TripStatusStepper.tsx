@@ -124,6 +124,8 @@ type TripStatusStepperProps = {
   arrivedAt?: Date | string | null; // When driver arrived (for no-show timer)
   initialWaitMinutes?: number; // Pre-calculated on server
   pickupAt: Date | string; // Pickup time to check if trip is today
+  /** The passenger's phone, for the Call button in the phone action bar. */
+  customerPhone?: string | null;
 };
 
 export default function TripStatusStepper({
@@ -132,6 +134,7 @@ export default function TripStatusStepper({
   arrivedAt,
   initialWaitMinutes = 15,
   pickupAt,
+  customerPhone = null,
 }: TripStatusStepperProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -444,102 +447,27 @@ export default function TripStatusStepper({
         })}
       </div>
 
-      {/* Mobile Stacked Steps */}
-      <div className={styles.mobileSteps}>
-        {STATUS_ORDER.map((status, index) => {
-          const isCompleted = index < currentIndex;
-          const isCurrent = index === currentIndex;
-          const isUpcoming = index > currentIndex;
-
-          const stepClass = isCompleted
-            ? styles.mobileStepCompleted
-            : isCurrent
-              ? styles.mobileStepCurrent
-              : styles.mobileStepUpcoming;
-
-          return (
-            <div key={status} className={`${styles.mobileStep} ${stepClass}`}>
-              <div className={styles.mobileStepNumber}>
-                {isCompleted ? "✓" : index + 1}
-              </div>
-              <div className={styles.mobileStepContent}>
-                <span className={styles.mobileStepLabel}>
-                  {STATUS_LABELS[status]}
-                </span>
-                <span className={styles.mobileStepStatus}>
-                  {isCompleted
-                    ? "Completed"
-                    : isCurrent
-                      ? "Current Step"
-                      : "Upcoming"}
-                </span>
-                {/* Show action button inside current step */}
-                {isCurrent && nextStatus && (
-                  <button
-                    className={styles.mobileStepAction}
-                    onClick={handleAdvance}
-                    disabled={isPending}
-                  >
-                    {isPending
-                      ? "Updating..."
-                      : NEXT_ACTION_LABELS[currentStatus]}
-                  </button>
-                )}
-              </div>
-              <span className={styles.mobileStepIcon}>
-                {STATUS_ICONS[status]}
-              </span>
-            </div>
-          );
-        })}
-
-        {/* Mobile Secondary Actions */}
-        {(prevStatus || canMarkNoShow) && (
-          <div className={styles.mobileSecondaryActions}>
-            {prevStatus && (
-              <button
-                className={styles.goBackButton}
-                onClick={() => setShowGoBackModal(true)}
-                disabled={isPending}
-              >
-                ← Go Back
-              </button>
-            )}
-            {canMarkNoShow && (
-              <button
-                className={styles.noShowButton}
-                onClick={() => setShowNoShowModal(true)}
-                disabled={isPending || noShowWaitRemaining > 0}
-              >
-                {noShowWaitRemaining > 0
-                  ? `No-Show (${noShowWaitRemaining}m)`
-                  : "Mark No-Show"}
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Desktop Current Status Display */}
+      {/* The next step. On phones the button (with Call) is a bar fixed to
+          the bottom of the screen, always within reach. */}
       <div className={styles.currentStatusCard}>
-        <div className={styles.currentStatusHeader}>
-          <span className={styles.currentStatusIcon}>
-            {STATUS_ICONS[currentStatus]}
-          </span>
-          <span className={styles.currentStatusLabel}>
-            {STATUS_LABELS[currentStatus]}
-          </span>
-        </div>
-
-        {/* Main Action Button */}
         {nextStatus && (
-          <button
-            className={styles.advanceButton}
-            onClick={handleAdvance}
-            disabled={isPending}
-          >
-            {isPending ? "Updating..." : NEXT_ACTION_LABELS[currentStatus]}
-          </button>
+          <div className={styles.actionBar} data-trip-action-bar>
+            <button
+              className={styles.advanceButton}
+              onClick={handleAdvance}
+              disabled={isPending}
+            >
+              {isPending ? "Updating..." : NEXT_ACTION_LABELS[currentStatus]}
+            </button>
+            {customerPhone ? (
+              <a
+                href={`tel:${customerPhone.replace(/[^\d+]/g, "")}`}
+                className={styles.barCall}
+              >
+                Call
+              </a>
+            ) : null}
+          </div>
         )}
 
         {/* Secondary Actions */}

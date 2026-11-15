@@ -36,6 +36,10 @@ export default function DriverBottomBar(counts: Props) {
   const sheetOpen = sheetOpenOn === pathname;
   const closeSheet = () => setSheetOpenOn(null);
 
+  // A trip's own page (and its greet sign) has its own bar at the bottom:
+  // the next-step button and Call. This one steps aside there.
+  const onTripPage = /^\/driver-dashboard\/trips\/[^/]+/.test(pathname);
+
   const tabs = DRIVER_NAV_ITEMS.filter((i) => DRIVER_TAB_KEYS.includes(i.key));
   const more = DRIVER_NAV_ITEMS.filter((i) => !DRIVER_TAB_KEYS.includes(i.key));
   const moreActive = more.some((i) => isDriverNavActive(pathname, i.href));
@@ -56,6 +60,8 @@ export default function DriverBottomBar(counts: Props) {
       window.removeEventListener("keydown", onKey);
     };
   }, [sheetOpen]);
+
+  if (onTripPage) return null;
 
   return (
     <>
