@@ -56,8 +56,18 @@ export default async function CorporateLayout({
             <div className={styles.noAccount}>
               <h1 className='h2'>No Corporate Account</h1>
               <p className='subheading'>
-                Your account is not linked to a corporate account. Please
-                contact {SITE.name} for assistance.
+                {roles.includes("ADMIN") ? (
+                  <>
+                    You&apos;re not linked to a corporate account yet. To use
+                    this dashboard, open your profile in Admin → Users and,
+                    under Manage roles → Corporate, link yourself to an account.
+                  </>
+                ) : (
+                  <>
+                    Your account is not linked to a corporate account. Please
+                    contact {SITE.name} for assistance.
+                  </>
+                )}
               </p>
             </div>
           </section>

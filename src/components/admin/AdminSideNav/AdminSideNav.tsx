@@ -140,6 +140,9 @@ useEffect(() => {
                 <Link href='/driver-dashboard' className={styles.drvrDshbrdBtn}>
                   Driver Dashboard <Arrow className={styles.arrow} />
                 </Link>
+                <Link href='/corporate' className={styles.dshbrdBtn}>
+                  Corporate Dashboard <Arrow className={styles.arrow} />
+                </Link>
                 <button className={styles.signOutBtn} onClick={() => signOut()}>
                   Sign Out <SignOutLogo className={styles.signOutLogo} />
                 </button>
@@ -180,6 +183,13 @@ useEffect(() => {
               onClick={() => setMenuModalOpen(false)}
             >
               Driver Dashboard <Arrow className={styles.modalArrow} />
+            </Link>
+            <Link
+              href='/corporate'
+              className={styles.modalNavLink}
+              onClick={() => setMenuModalOpen(false)}
+            >
+              Corporate Dashboard <Arrow className={styles.modalArrow} />
             </Link>
           </div>
 

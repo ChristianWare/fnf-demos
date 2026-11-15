@@ -25,6 +25,7 @@ import { signOut, useSession } from "next-auth/react";
 import NavProgress from "@/components/shared/NavProgress/NavProgress";
 import Users from "@/components/shared/icons/Users/Users";
 import Driver from "@/components/shared/icons/Driver/Driver";
+import Business from "@/components/shared/icons/Business/Business";
 import SignOutLogo from "@/components/shared/icons/SignOutLogo/SignOutLogo";
 import {
   ADMIN_NAV_GROUPS,
@@ -68,6 +69,11 @@ const ADMIN_MENU_GROUPS: AdminNavGroup[] = [
         title: "Driver dashboard",
         href: "/driver-dashboard",
         icon: <Driver />,
+      },
+      {
+        title: "Corporate dashboard",
+        href: "/corporate",
+        icon: <Business />,
       },
     ],
   },

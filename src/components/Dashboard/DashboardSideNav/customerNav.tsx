@@ -136,5 +136,7 @@ export function customerExtraLinks(roles: string[]): PortalExtraLink[] {
     links.push({ title: "Admin dashboard", href: "/admin" });
   if (roles.includes("DRIVER"))
     links.push({ title: "Driver dashboard", href: "/driver-dashboard" });
+  if (roles.includes("CORPORATE"))
+    links.push({ title: "Corporate dashboard", href: "/corporate" });
   return links;
 }
