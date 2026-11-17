@@ -9,6 +9,7 @@ import {
   statusesInGroup,
   type StatusGroupKey,
 } from "@/lib/booking/bookingsChart";
+import { phoneSearchTerms } from "@/lib/phone";
 
 export type PaymentFilter = "any" | "paid" | "unpaid";
 export type AssignmentFilter = "any" | "assigned" | "unassigned";
@@ -127,7 +128,9 @@ export function buildBookingsWhere(
       { id: { contains: needle, mode: "insensitive" } },
       { guestName: { contains: needle, mode: "insensitive" } },
       { guestEmail: { contains: needle, mode: "insensitive" } },
-      { guestPhone: { contains: needle, mode: "insensitive" } },
+      ...phoneSearchTerms(needle).map((t): Prisma.BookingWhereInput => ({
+        guestPhone: { contains: t, mode: "insensitive" },
+      })),
       { pickupAddress: { contains: needle, mode: "insensitive" } },
       { dropoffAddress: { contains: needle, mode: "insensitive" } },
       { user: { is: { name: { contains: needle, mode: "insensitive" } } } },
@@ -147,11 +150,11 @@ export function buildBookingsWhere(
           is: { email: { contains: needle, mode: "insensitive" } },
         },
       },
-      {
+      ...phoneSearchTerms(needle).map((t): Prisma.BookingWhereInput => ({
         corporatePassenger: {
-          is: { phone: { contains: needle, mode: "insensitive" } },
+          is: { phone: { contains: t, mode: "insensitive" } },
         },
-      },
+      })),
       { costCenter: { contains: needle, mode: "insensitive" } },
       { projectCode: { contains: needle, mode: "insensitive" } },
     ];

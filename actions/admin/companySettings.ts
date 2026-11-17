@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { auth } from "../../auth";
 import { revalidatePath } from "next/cache";
 import { SITE } from "@/config/site";
+import { formatPhone } from "@/lib/phone";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -152,9 +153,11 @@ export async function getCompanySettings(): Promise<CompanySettingsData> {
   }
 
   return {
-    dispatchPhone: row?.dispatchPhone ?? DEFAULTS.dispatchPhone,
+    dispatchPhone: formatPhone(row?.dispatchPhone ?? DEFAULTS.dispatchPhone),
     dispatchPhoneRaw: row?.dispatchPhoneRaw ?? DEFAULTS.dispatchPhoneRaw,
-    emergencyPhone: row?.emergencyPhone ?? DEFAULTS.emergencyPhone,
+    emergencyPhone: formatPhone(
+      row?.emergencyPhone ?? DEFAULTS.emergencyPhone,
+    ),
     emergencyPhoneRaw: row?.emergencyPhoneRaw ?? DEFAULTS.emergencyPhoneRaw,
     supportEmail: row?.supportEmail ?? DEFAULTS.supportEmail,
     officeName: row?.officeName ?? DEFAULTS.officeName,
@@ -246,9 +249,9 @@ export async function saveCompanySettings(formData: FormData) {
   const str = (key: string) => String(formData.get(key) ?? "").trim();
 
   const data = {
-    dispatchPhone: str("dispatchPhone"),
+    dispatchPhone: formatPhone(str("dispatchPhone")),
     dispatchPhoneRaw: str("dispatchPhoneRaw"),
-    emergencyPhone: str("emergencyPhone"),
+    emergencyPhone: formatPhone(str("emergencyPhone")),
     emergencyPhoneRaw: str("emergencyPhoneRaw"),
     supportEmail: str("supportEmail"),
     officeName: str("officeName"),

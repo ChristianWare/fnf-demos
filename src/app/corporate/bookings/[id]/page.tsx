@@ -26,6 +26,7 @@ import Plane from "@/components/shared/icons/Plane/Plane";
 import RedoIcon from "@/components/shared/icons/RedoIcon/RedoIcon";
 import { relativeFromNow } from "@/lib/relativeTime";
 import { SITE } from "@/config/site";
+import { formatPhone, phoneTel } from "@/lib/phone";
 
 export const metadata = { title: "Booking Details | Corporate" };
 export const runtime = "nodejs";
@@ -118,14 +119,6 @@ function badgeTone(status: BookingStatus): BadgeTone {
   if (status === "REFUNDED" || status === "PARTIALLY_REFUNDED")
     return "neutral";
   return "neutral";
-}
-
-function formatPhone(raw: string): string {
-  const digits = raw.replace(/\D/g, "");
-  const d =
-    digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
-  if (d.length !== 10) return raw;
-  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
 }
 
 export default async function CorporateBookingDetailPage({
@@ -404,7 +397,7 @@ export default async function CorporateBookingDetailPage({
           <KeyVal
             k="Phone"
             v={
-              <a href={`tel:${passengerPhone}`} className={styles.inlineLink}>
+              <a href={`tel:${phoneTel(passengerPhone)}`} className={styles.inlineLink}>
                 {formatPhone(passengerPhone)}
               </a>
             }
@@ -442,14 +435,14 @@ export default async function CorporateBookingDetailPage({
               {driverPhone && (
                 <div className={styles.driverContact}>
                   <a
-                    href={`tel:${driverPhone}`}
+                    href={`tel:${phoneTel(driverPhone)}`}
                     className={styles.contactButton}
                   >
                     <Phone className={styles.contactIcon} aria-hidden="true" />
                     Call
                   </a>
                   <a
-                    href={`sms:${driverPhone}`}
+                    href={`sms:${phoneTel(driverPhone)}`}
                     className={styles.contactButton}
                   >
                     Text
@@ -651,7 +644,7 @@ export default async function CorporateBookingDetailPage({
           </p>
           <div className={styles.helpActions}>
             {supportPhone && (
-              <a href={`tel:${supportPhone}`} className={styles.helpButton}>
+              <a href={`tel:${phoneTel(supportPhone)}`} className={styles.helpButton}>
                 <Phone className={styles.contactIcon} aria-hidden="true" />
                 Call {supportPhone}
               </a>

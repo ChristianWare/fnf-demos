@@ -13,6 +13,7 @@ import {
   updateProfileEmail,
   updateProfilePassword,
 } from "../../../../actions/auth/profileActions";
+import { formatPhone, formatPhoneInput } from "@/lib/phone";
 
 function formatDate(iso: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -250,7 +251,7 @@ export default function DashboardProfile({
   const [phoneJustSaved, setPhoneJustSaved] = useState(false);
   const [phonePending, startPhoneTransition] = useTransition();
 
-  const [phone, setPhone] = useState(user.phone ?? "");
+  const [phone, setPhone] = useState(formatPhone(user.phone));
 
   const phoneLocked = !phoneEditing;
   const phoneDisabled = phoneLocked || phonePending;
@@ -264,7 +265,7 @@ export default function DashboardProfile({
   // Dirty tracking — phone
   const phoneChangedFields = useMemo(() => {
     const fields: string[] = [];
-    if (phone !== (user.phone ?? "")) fields.push("Phone Number");
+    if (phone !== formatPhone(user.phone)) fields.push("Phone Number");
     return fields;
   }, [phone, user.phone]);
 
@@ -276,7 +277,7 @@ export default function DashboardProfile({
   );
 
   const handlePhoneCancel = useCallback(() => {
-    setPhone(user.phone ?? "");
+    setPhone(formatPhone(user.phone));
     setPhoneEditing(false);
   }, [user.phone]);
 
@@ -582,7 +583,7 @@ export default function DashboardProfile({
                 type='tel'
                 className={styles.input}
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
                 placeholder='(602) 555-1234'
                 maxLength={20}
                 disabled={phoneDisabled}

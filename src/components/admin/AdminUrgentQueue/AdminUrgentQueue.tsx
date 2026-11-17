@@ -1,6 +1,7 @@
 import styles from "./AdminUrgentQueue.module.css";
 import BadgeCount from "@/app/admin/BadgeCount/BadgeCount";
 import Link from "next/link";
+import { formatPhone } from "@/lib/phone";
 
 export type UrgentBookingItem = {
   id: string;
@@ -264,7 +265,9 @@ function TripDetailsRow({
                 <div className='miniNote'>Email: {b.guestEmail}</div>
               ) : null}
               {b.guestPhone ? (
-                <div className='miniNote'>Phone: {b.guestPhone}</div>
+                <div className='miniNote'>
+                  Phone: {formatPhone(b.guestPhone)}
+                </div>
               ) : null}
             </div>
           ) : null}

@@ -9,6 +9,7 @@ import { adminCreateInvoice } from "../../../../../actions/admin/invoices/adminC
 import { adminSearchUsers } from "../../../../../actions/admin/users/adminSearchUsers";
 import InvoiceAddressFields from "../InvoiceAddressFields/InvoiceAddressFields";
 import type { FromAddressMode } from "@/lib/invoice/invoiceAddress";
+import { formatPhone, formatPhoneInput } from "@/lib/phone";
 
 type UserLite = {
   id: string;
@@ -28,17 +29,6 @@ type LineItem = {
 function uid() {
   return Math.random().toString(36).slice(2, 9);
 }
-function formatPhoneInput(raw: string): string {
-  const d = raw
-    .replace(/\D/g, "")
-    .replace(/^1(?=\d{10})/, "")
-    .slice(0, 10);
-  if (d.length === 0) return "";
-  if (d.length < 4) return `(${d}`;
-  if (d.length < 7) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
-  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
-}
-
 function dollarsToCents(s: string): number {
   const n = parseFloat(String(s).replace(/[^0-9.]/g, ""));
   return Number.isFinite(n) ? Math.round(n * 100) : 0;
@@ -259,7 +249,9 @@ export default function NewInvoiceForm({
                   </div>
                   <div className={styles.selectedEmail}>
                     {selectedUser.email}
-                    {selectedUser.phone ? ` · ${selectedUser.phone}` : ""}
+                    {selectedUser.phone
+                      ? ` · ${formatPhone(selectedUser.phone)}`
+                      : ""}
                   </div>
                 </div>
                 <button

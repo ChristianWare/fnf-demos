@@ -7,6 +7,7 @@ import {
 } from "../../../../actions/admin/customers/adminSearchCustomers";
 import { statusBadge } from "@/lib/booking/rideBadges";
 import styles from "./CustomerLookup.module.css";
+import { formatPhone } from "@/lib/phone";
 
 /** Debounced people search (accounts and past guests). */
 export function useCustomerSearch(
@@ -58,7 +59,7 @@ function Suggestion({ p }: { p: CustomerMatch }) {
         {p.userId ? <span className={styles.tag}>Has an account</span> : null}
       </span>
       <span className={styles.meta}>
-        {[p.email, p.phone].filter(Boolean).join(" · ")}
+        {[p.email, formatPhone(p.phone)].filter(Boolean).join(" · ")}
       </span>
       <span className={styles.history}>{historyLine(p)}</span>
     </>

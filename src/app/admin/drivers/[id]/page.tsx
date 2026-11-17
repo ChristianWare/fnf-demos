@@ -19,6 +19,7 @@ import KpiCard from "../../reports/KpiCard";
 import reportStyles from "../../reports/AdminReportsPage.module.css";
 import DriverProfileForm from "./DriverProfileForm";
 import styles from "../AdminDriversPage.module.css";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -186,7 +187,7 @@ export default async function AdminDriverPage({
         <h1 className={`${styles.heading} h2`}>{name}</h1>
         <p className={styles.subcopy}>
           {driver.email}
-          {driver.phone ? ` · ${driver.phone}` : ""} ·{" "}
+          {driver.phone ? ` · ${formatPhone(driver.phone)}` : ""} ·{" "}
           {profile && !profile.paidPerRide
             ? "Not paid per ride"
             : profile?.payPercent == null

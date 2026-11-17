@@ -62,6 +62,7 @@ import {
   type RideKind,
 } from "@/lib/booking/rules";
 import { PlacesAutocomplete } from "@/lib/placesAutocomplete";
+import { formatPhone, formatPhoneInput, phoneDigits } from "@/lib/phone";
 
 type PricingStrategy = "POINT_TO_POINT" | "HOURLY" | "FLAT";
 type AirportLeg = "NONE" | "PICKUP" | "DROPOFF";
@@ -189,19 +190,6 @@ function centsToUsd(cents: number) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-}
-
-/** Format a phone string as (XXX) XXX-XXXX if 10 digits */
-function formatPhone(raw: string | null | undefined): string {
-  if (!raw) return "";
-  const digits = raw.replace(/\D/g, "");
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-  }
-  if (digits.length === 11 && digits.startsWith("1")) {
-    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-  }
-  return raw;
 }
 
 function isValidEmail(v: string) {
@@ -373,7 +361,7 @@ export default function BookingWizard({
       guestName: "",
       guestEmail: "",
       guestPhone: "",
-      contactPhone: userPhone ?? "",
+      contactPhone: phoneDigits(userPhone),
     },
   });
 
@@ -3056,7 +3044,7 @@ export default function BookingWizard({
                             Phone
                           </label>
                           <input
-                            value={formatPhone(guestPhone) || ""}
+                            value={formatPhoneInput(guestPhone)}
                             onChange={(e) => {
                               const digits = e.target.value
                                 .replace(/\D/g, "")
@@ -3087,7 +3075,7 @@ export default function BookingWizard({
                           Phone number for this trip
                         </label>
                         <input
-                          value={formatPhone(watch("contactPhone")) || ""}
+                          value={formatPhoneInput(watch("contactPhone"))}
                           onChange={(e) => {
                             // Store raw digits only
                             const digits = e.target.value

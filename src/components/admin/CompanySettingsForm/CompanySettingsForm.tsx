@@ -13,6 +13,7 @@ import { saveCompanySettings } from "../../../../actions/admin/companySettings";
 import { useDirtyForm } from "@/components/shared/DirtyFormProvider/DirtyFormProvider";
 import Button from "@/components/shared/Button/Button";
 import { SITE } from "@/config/site";
+import { formatPhoneInput, phoneDigits } from "@/lib/phone";
 
 type Props = {
   initial: {
@@ -135,20 +136,6 @@ function formatTime(time24: string): string {
   const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
   const ampm = h < 12 ? "AM" : "PM";
   return `${hour12}:${mStr} ${ampm}`;
-}
-
-function formatPhoneNumber(value: string): string {
-  const digits = value.replace(/\D/g, "");
-  const limited = digits.slice(0, 10);
-  if (limited.length === 0) return "";
-  if (limited.length <= 3) return `(${limited}`;
-  if (limited.length <= 6)
-    return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
-  return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
-}
-
-function getRawPhone(value: string): string {
-  return value.replace(/\D/g, "");
 }
 
 function parseInitialHours(hoursJson: string): WeekHours {
@@ -341,9 +328,9 @@ export default function CompanySettingsForm({ initial }: Props) {
     fd.set("companyTagline", companyTagline);
     fd.set("logoUrl", logoUrl);
     fd.set("dispatchPhone", dispatchPhone);
-    fd.set("dispatchPhoneRaw", getRawPhone(dispatchPhone));
+    fd.set("dispatchPhoneRaw", phoneDigits(dispatchPhone));
     fd.set("emergencyPhone", emergencyPhone);
-    fd.set("emergencyPhoneRaw", getRawPhone(emergencyPhone));
+    fd.set("emergencyPhoneRaw", phoneDigits(emergencyPhone));
     fd.set("supportEmail", supportEmail);
     fd.set("emailSenderName", emailSenderName);
     fd.set("emailReplyTo", emailReplyTo);
@@ -634,13 +621,13 @@ export default function CompanySettingsForm({ initial }: Props) {
   const handleDispatchPhoneChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setDispatchPhone(formatPhoneNumber(e.target.value));
+    setDispatchPhone(formatPhoneInput(e.target.value));
   };
 
   const handleEmergencyPhoneChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setEmergencyPhone(formatPhoneNumber(e.target.value));
+    setEmergencyPhone(formatPhoneInput(e.target.value));
   };
 
   const handleDayToggle = (day: keyof WeekHours) => {

@@ -14,6 +14,7 @@ import {
 } from "../../../../actions/corporate/corporateSettingsActions";
 import Button from "@/components/shared/Button/Button";
 import { SITE } from "@/config/site";
+import { formatPhone, formatPhoneInput } from "@/lib/phone";
 
 /* ─────────────────────────────────────────────
    Types
@@ -128,7 +129,7 @@ export default function SettingsClient({
 
   // ─── Contact info form ───
   const [title, setTitle] = useState(contact.title);
-  const [phone, setPhone] = useState(contact.phone);
+  const [phone, setPhone] = useState(formatPhone(contact.phone));
 
   // ─── Remove card modal ───
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
@@ -456,7 +457,7 @@ export default function SettingsClient({
                 type='tel'
                 className='inputBorder'
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
                 placeholder='(555) 123-4567'
               />
             </div>

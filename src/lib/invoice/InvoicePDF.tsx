@@ -4,6 +4,7 @@ import { Document, Page, Text, View, Image } from "@react-pdf/renderer";
 import type { InvoiceData } from "./types";
 import { formatMoney } from "./types";
 import { pdfStyles as s } from "./InvoicePDF.styles";
+import { formatPhone } from "@/lib/phone";
 
 function StatusBadge({ status }: { status: string }) {
   const tone =
@@ -59,7 +60,9 @@ export default function InvoicePDF({ invoice }: { invoice: InvoiceData }) {
                 <Text style={s.companyDetails}>{invoice.company.city}</Text>
               ) : null}
               {invoice.company.phone ? (
-                <Text style={s.companyDetails}>{invoice.company.phone}</Text>
+                <Text style={s.companyDetails}>
+                  {formatPhone(invoice.company.phone)}
+                </Text>
               ) : null}
               {invoice.company.email ? (
                 <Text style={s.companyDetails}>{invoice.company.email}</Text>
@@ -115,7 +118,9 @@ export default function InvoicePDF({ invoice }: { invoice: InvoiceData }) {
             <Text style={s.customerDetail}>{invoice.customer.email}</Text>
           ) : null}
           {invoice.customer.phone ? (
-            <Text style={s.customerDetail}>{invoice.customer.phone}</Text>
+            <Text style={s.customerDetail}>
+              {formatPhone(invoice.customer.phone)}
+            </Text>
           ) : null}
         </View>
 
@@ -442,7 +447,7 @@ export default function InvoicePDF({ invoice }: { invoice: InvoiceData }) {
           </Text>
           <Text style={s.footerSmall}>
             Questions? Contact us at{" "}
-            {invoice.company.email || invoice.company.phone}
+            {invoice.company.email || formatPhone(invoice.company.phone)}
           </Text>
         </View>
       </Page>

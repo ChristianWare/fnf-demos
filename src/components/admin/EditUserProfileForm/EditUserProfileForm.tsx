@@ -7,18 +7,12 @@ import toast from "react-hot-toast";
 import { updateUserProfile } from "../../../../actions/admin/users";
 import { useDirtyForm } from "@/components/shared/DirtyFormProvider/DirtyFormProvider";
 import Button from "@/components/shared/Button/Button";
+import { formatPhone, formatPhoneInput } from "@/lib/phone";
 
 interface Props {
   userId: string;
   initialName: string | null;
   initialPhone: string | null;
-}
-
-function formatPhone(value: string): string {
-  const digits = value.replace(/\D/g, "").slice(0, 10);
-  if (digits.length < 4) return digits;
-  if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 }
 
 export default function EditUserProfileForm({
@@ -33,7 +27,7 @@ export default function EditUserProfileForm({
   const [justSaved, setJustSaved] = useState(false);
 
   const [name, setName] = useState(initialName ?? "");
-  const [phone, setPhone] = useState(formatPhone(initialPhone ?? ""));
+  const [phone, setPhone] = useState(formatPhone(initialPhone));
 
   const [prevName, setPrevName] = useState(initialName);
   const [prevPhone, setPrevPhone] = useState(initialPhone);
@@ -44,19 +38,19 @@ export default function EditUserProfileForm({
   }
   if (initialPhone !== prevPhone) {
     setPrevPhone(initialPhone);
-    setPhone(formatPhone(initialPhone ?? ""));
+    setPhone(formatPhone(initialPhone));
   }
 
   const isDirty =
     isEditing &&
     (name.trim() !== (initialName ?? "") ||
-      phone.trim() !== formatPhone(initialPhone ?? ""));
+      phone.trim() !== formatPhone(initialPhone));
 
   useDirtyForm("edit-user-profile", isDirty, "edit-user-profile-section");
 
   const handleCancel = useCallback(() => {
     setName(initialName ?? "");
-    setPhone(formatPhone(initialPhone ?? ""));
+    setPhone(formatPhone(initialPhone));
     setIsEditing(false);
   }, [initialName, initialPhone]);
 
@@ -109,7 +103,7 @@ export default function EditUserProfileForm({
             <input
               type='tel'
               className={`inputBorder ${styles.input}`}
-              value={formatPhone(initialPhone ?? "")}
+              value={formatPhone(initialPhone)}
               disabled
               readOnly
               placeholder='No phone set'
@@ -160,7 +154,7 @@ export default function EditUserProfileForm({
             type='tel'
             className={`inputBorder ${styles.input}`}
             value={phone}
-            onChange={(e) => setPhone(formatPhone(e.target.value))}
+            onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
             placeholder='(480) 555-0123'
             disabled={isPending}
           />

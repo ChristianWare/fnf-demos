@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { submitCorporateInquiry } from "../../../../actions/corporate/submitCorporateInquiry";
 import styles from "./SimpleForm.module.css";
+import { formatPhoneInput } from "@/lib/phone";
 
 type Values = {
   companyName: string;
@@ -27,6 +28,7 @@ export default function CorporateInquiryForm() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<Values>();
+  const phoneField = register("phone");
 
   const onSubmit: SubmitHandler<Values> = async (values) => {
     setStatus("idle");
@@ -68,7 +70,14 @@ export default function CorporateInquiryForm() {
         </label>
         <label className={styles.field}>
           Phone
-          <input type="tel" {...register("phone")} />
+          <input
+            type="tel"
+            {...phoneField}
+            onChange={(e) => {
+              e.target.value = formatPhoneInput(e.target.value);
+              phoneField.onChange(e);
+            }}
+          />
         </label>
       </div>
 

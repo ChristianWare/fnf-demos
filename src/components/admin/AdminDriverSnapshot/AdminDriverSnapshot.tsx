@@ -6,6 +6,7 @@ import * as tz from "@/lib/timezone";
 import Link from "next/link";
 import Image from "next/image";
 import DefaultProfileImg from "../../../../public/images/placeholder.jpg";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -332,7 +333,7 @@ export default async function AdminDriverSnapshot() {
                             href={`tel:${driver.phone.replace(/[^0-9+]/g, "")}`}
                             className={styles.phoneLink}
                           >
-                            {driver.phone}
+                            {formatPhone(driver.phone)}
                           </a>
                         ) : (
                           <span className={styles.noPhone}>No phone</span>

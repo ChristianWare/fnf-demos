@@ -3,6 +3,7 @@
 import styles from "./Adminupcomingrides.module.css";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { formatPhone } from "@/lib/phone";
 
 export type UpcomingRideItem = {
   id: string;
@@ -233,14 +234,6 @@ export default function AdminUpcomingRides({
     };
     return map[timePeriod];
   }, [timePeriod, counts]);
-
-  function formatPhone(raw: string): string {
-    const digits = raw.replace(/\D/g, "");
-    const d =
-      digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
-    if (d.length !== 10) return raw;
-    return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
-  }
 
   return (
     <section className={styles.container} aria-label='Upcoming rides'>

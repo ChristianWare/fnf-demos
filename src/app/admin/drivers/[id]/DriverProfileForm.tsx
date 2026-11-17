@@ -8,6 +8,7 @@ import {
   type DriverProfileInput,
 } from "../../../../../actions/admin/drivers";
 import styles from "../AdminDriversPage.module.css";
+import { formatPhone, formatPhoneInput } from "@/lib/phone";
 
 type Values = Omit<DriverProfileInput, "userId">;
 
@@ -40,8 +41,15 @@ function Field({
           className={styles.textField}
           name={name}
           type={type}
-          defaultValue={value}
+          defaultValue={type === "tel" ? formatPhone(value) : value}
           placeholder={placeholder}
+          onChange={
+            type === "tel"
+              ? (e) => {
+                  e.target.value = formatPhoneInput(e.target.value);
+                }
+              : undefined
+          }
         />
       )}
       {hint ? <span className='miniNote'>{hint}</span> : null}

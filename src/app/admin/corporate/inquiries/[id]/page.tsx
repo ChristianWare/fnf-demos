@@ -6,6 +6,7 @@ import InquiryActionsClient from "./InquiryActionsClient";
 import DeleteInquiryDangerZoneClient from "./DeleteInquiryDangerZoneClient";
 import { getCompanySettings } from "../../../../../../actions/admin/companySettings";
 import { formatDateTime } from "@/lib/timezone";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -76,7 +77,7 @@ export default async function CorporateInquiryDetailPage({
         <div className={styles.kvGrid}>
           <KeyVal k='Contact Name' v={inquiry.contactName} />
           <KeyVal k='Email' v={inquiry.email} />
-          <KeyVal k='Phone' v={inquiry.phone || "—"} />
+          <KeyVal k='Phone' v={formatPhone(inquiry.phone) || "—"} />
           <KeyVal
             k='Est. Monthly Rides'
             v={inquiry.estimatedMonthlyRides || "—"}

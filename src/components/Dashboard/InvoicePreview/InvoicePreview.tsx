@@ -5,6 +5,7 @@ import styles from "./InvoicePreview.module.css";
 import type { InvoiceData } from "@/lib/invoice/types";
 import { formatMoney } from "@/lib/invoice/types";
 import Logo from "@/components/shared/Logo/Logo";
+import { formatPhone } from "@/lib/phone";
 
 type Props = {
   invoice: InvoiceData;
@@ -48,7 +49,7 @@ export default function InvoicePreview({
             <div className={styles.companyDetails}>
               {invoice.company.address && <p>{invoice.company.address}</p>}
               {invoice.company.city && <p>{invoice.company.city}</p>}
-              {invoice.company.phone && <p>{invoice.company.phone}</p>}
+              {invoice.company.phone && <p>{formatPhone(invoice.company.phone)}</p>}
               {invoice.company.email && <p>{invoice.company.email}</p>}
             </div>
           </div>
@@ -112,7 +113,7 @@ export default function InvoicePreview({
           <div className={styles.customerInfo}>
             <p className={styles.customerName}>{invoice.customer.name}</p>
             <p>{invoice.customer.email}</p>
-            {invoice.customer.phone && <p>{invoice.customer.phone}</p>}
+            {invoice.customer.phone && <p>{formatPhone(invoice.customer.phone)}</p>}
           </div>
         </section>
 
@@ -371,7 +372,7 @@ export default function InvoicePreview({
           <p>Thank you for choosing {invoice.company.name}!</p>
           <p className={styles.footerSmall}>
             Questions? Contact us at{" "}
-            {invoice.company.email || invoice.company.phone}
+            {invoice.company.email || formatPhone(invoice.company.phone)}
           </p>
         </footer>
       </div>

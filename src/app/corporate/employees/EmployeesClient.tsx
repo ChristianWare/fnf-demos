@@ -10,6 +10,7 @@ import {
   editEmployee,
   toggleEmployeeActive,
 } from "../../../../actions/corporate/corporateEmployeeActions";
+import { formatPhone } from "@/lib/phone";
 
 /* ─────────────────────────────────────────────
    Types
@@ -374,7 +375,9 @@ export default function EmployeesClient({
                         <span className={styles.cellStrong}>{emp.email}</span>
                       )}
                       {emp.phone && (
-                        <span className={styles.cellSub}>{emp.phone}</span>
+                        <span className={styles.cellSub}>
+                          {formatPhone(emp.phone)}
+                        </span>
                       )}
                       {!emp.email && !emp.phone && (
                         <span className={styles.cellSub}>—</span>

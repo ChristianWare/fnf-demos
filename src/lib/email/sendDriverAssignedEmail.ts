@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
 import { SITE } from "@/config/site";
+import { formatPhone } from "@/lib/phone";
 
 function requireEnv(name: string) {
   const v = process.env[name];
@@ -72,7 +73,7 @@ export async function sendDriverAssignedEmail(args: {
   const currency = args.currency || "usd";
 
   const customerName = args.customerName?.trim() || "Customer";
-  const customerPhone = args.customerPhone?.trim() || null;
+  const customerPhone = formatPhone(args.customerPhone) || null;
   const vehicleName = args.vehicleName?.trim() || null;
   const vehiclePlate = args.vehiclePlate?.trim() || null;
   const specialRequests = args.specialRequests?.trim() || null;

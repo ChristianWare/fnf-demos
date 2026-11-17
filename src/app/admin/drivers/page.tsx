@@ -18,6 +18,7 @@ import BookingsTimeControls from "../bookings/BookingsTimeControls";
 import DriverPerformanceSection from "../reports/DriverPerformanceSection";
 import FillMissingPay, { type MissingPayRow } from "./FillMissingPay";
 import styles from "./AdminDriversPage.module.css";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -371,7 +372,9 @@ export default async function AdminDriversPage({
                         </Link>
                         <div className='miniNote'>{d.email}</div>
                       </td>
-                      <td className={styles.td}>{d.phone ?? "—"}</td>
+                      <td className={styles.td}>
+                        {d.phone ? formatPhone(d.phone) : "—"}
+                      </td>
                       <td className={`${styles.td} ${styles.num}`}>
                         {p && !p.paidPerRide
                           ? "Not per ride"

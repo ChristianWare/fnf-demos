@@ -23,6 +23,7 @@ import {
   privateName,
   PRIVATE_CONTACT_NOTE,
 } from "@/lib/tripPrivacy";
+import { formatPhone, phoneTel } from "@/lib/phone";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -381,16 +382,18 @@ export default async function DriverTripDetailPage({
               </p>
             ) : customerPhone ? (
               <>
-                <p className={styles.phoneDisplay}>{customerPhone}</p>
+                <p className={styles.phoneDisplay}>
+                  {formatPhone(customerPhone)}
+                </p>
                 <div className={styles.contactButtons}>
                   <a
-                    href={`tel:${customerPhone}`}
+                    href={`tel:${phoneTel(customerPhone)}`}
                     className={styles.contactButton}
                   >
                     Call
                   </a>
                   <a
-                    href={`sms:${customerPhone}`}
+                    href={`sms:${phoneTel(customerPhone)}`}
                     className={`${styles.contactButton} ${styles.contactButtonOutline}`}
                   >
                     Text

@@ -49,6 +49,7 @@ import {
 } from "@/lib/booking/rules";
 import { PlacesAutocomplete } from "@/lib/placesAutocomplete";
 import type { RideAgainPrefill } from "@/components/Dashboard/RideAgain/rideAgainPrefill";
+import { formatPhoneInput } from "@/lib/phone";
 // ───────────── Types ─────────────
 
 type PricingStrategy = "POINT_TO_POINT" | "HOURLY" | "FLAT";
@@ -1314,7 +1315,9 @@ export default function CorporateNewBookingWizard({
                         <input
                           className='input emptySmall'
                           value={newPassengerPhone}
-                          onChange={(e) => setNewPassengerPhone(e.target.value)}
+                          onChange={(e) =>
+                            setNewPassengerPhone(formatPhoneInput(e.target.value))
+                          }
                           placeholder='Optional'
                           inputMode='tel'
                         />

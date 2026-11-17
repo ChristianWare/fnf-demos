@@ -11,6 +11,7 @@ import Location from "@/components/shared/icons/Location/Location";
 import Phone from "@/components/shared/icons/Phone/Phone";
 import AddressLines from "@/components/shared/AddressLines/AddressLines";
 import styles from "./DriverNextTrip.module.css";
+import { formatPhone } from "@/lib/phone";
 
 export type NextTripData = {
   id: string;
@@ -165,7 +166,7 @@ export default function DriverNextTrip({
                   }
                   className={styles.inlineLink}
                 >
-                  {dispatchPhone}
+                  {formatPhone(dispatchPhone)}
                 </a>
                 .
               </>
@@ -241,7 +242,7 @@ export default function DriverNextTrip({
                 aria-label={`Call ${trip.customerName}`}
               >
                 <Phone className={styles.callIcon} aria-hidden='true' />
-                {trip.customerPhone}
+                {formatPhone(trip.customerPhone)}
               </a>
             ) : null}
           </dd>

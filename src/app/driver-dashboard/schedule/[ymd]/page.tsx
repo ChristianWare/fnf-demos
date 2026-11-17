@@ -16,6 +16,7 @@ import {
   privateAddress,
   privateName,
 } from "@/lib/tripPrivacy";
+import { formatPhone, phoneTel } from "@/lib/phone";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -274,10 +275,10 @@ export default async function DriverScheduleDayPage({
                         </span>
                       ) : customerPhone ? (
                         <a
-                          href={`tel:${customerPhone}`}
+                          href={`tel:${phoneTel(customerPhone)}`}
                           className={styles.detailValueLink}
                         >
-                          {customerPhone}
+                          {formatPhone(customerPhone)}
                         </a>
                       ) : (
                         <span className={styles.detailValueMuted}>

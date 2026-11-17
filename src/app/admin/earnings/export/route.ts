@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "../../../../../auth";
 import { db } from "@/lib/db";
 import { findTripCashPayments } from "@/lib/earnings/tripCash";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -227,7 +228,7 @@ export async function GET(req: Request) {
       "Customer";
     const customerEmail = (b?.user?.email || "").trim();
     const guestEmail = (b?.guestEmail || "").trim();
-    const guestPhone = (b?.guestPhone || "").trim();
+    const guestPhone = formatPhone(b?.guestPhone);
 
     const paidAtUtc = p.paidAt ? new Date(p.paidAt).toISOString() : "";
     const pickupAtUtc = b?.pickupAt ? new Date(b.pickupAt).toISOString() : "";
@@ -275,7 +276,7 @@ export async function GET(req: Request) {
       csvEscape(customerName),
       csvEscape((b?.user?.email || "").trim()),
       csvEscape((b?.guestEmail || "").trim()),
-      csvEscape((b?.guestPhone || "").trim()),
+      csvEscape(formatPhone(b?.guestPhone)),
       csvEscape(b?.pickupAt ? new Date(b.pickupAt).toISOString() : ""),
       csvEscape(b?.pickupAddress ?? ""),
       csvEscape(b?.dropoffAddress ?? ""),

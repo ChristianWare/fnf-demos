@@ -3,6 +3,7 @@
 import { Document, Page, Text, View } from "@react-pdf/renderer";
 import { formatMoney } from "./types";
 import { pdfStyles as s } from "./InvoicePDF.styles";
+import { formatPhone } from "@/lib/phone";
 
 export type InvoiceReceiptPDFData = {
   invoiceNumber: string;
@@ -64,7 +65,7 @@ export default function InvoiceReceiptPDF({
                 <Text style={s.companyDetails}>{data.company.city}</Text>
               ) : null}
               {data.company.phone ? (
-                <Text style={s.companyDetails}>{data.company.phone}</Text>
+                <Text style={s.companyDetails}>{formatPhone(data.company.phone)}</Text>
               ) : null}
               {data.company.email ? (
                 <Text style={s.companyDetails}>{data.company.email}</Text>
@@ -105,7 +106,7 @@ export default function InvoiceReceiptPDF({
             <Text style={s.customerDetail}>{data.customer.email}</Text>
           ) : null}
           {data.customer.phone ? (
-            <Text style={s.customerDetail}>{data.customer.phone}</Text>
+            <Text style={s.customerDetail}>{formatPhone(data.customer.phone)}</Text>
           ) : null}
         </View>
 
@@ -192,7 +193,7 @@ export default function InvoiceReceiptPDF({
           </Text>
           <Text style={s.footerSmall}>
             Questions? Contact us at{" "}
-            {data.company.email || data.company.phone}
+            {data.company.email || formatPhone(data.company.phone)}
           </Text>
         </View>
       </Page>

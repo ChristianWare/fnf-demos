@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { trashBookings } from "../../../../actions/admin/bookingTrash";
 import toast from "react-hot-toast";
 import BulkConfirmModal from "@/components/admin/BulkConfirmModal/BulkConfirmModal";
+import { formatPhone } from "@/lib/phone";
 
 export type RecentBookingRequestItem = {
   id: string;
@@ -375,7 +376,9 @@ export default function AdminRecentBookingRequests({
                 const customerLine =
                   b.customer.kind === "guest"
                     ? `${b.customer.name}${b.customer.email ? ` • ${b.customer.email}` : ""}${
-                        b.customer.phone ? ` • ${b.customer.phone}` : ""
+                        b.customer.phone
+                          ? ` • ${formatPhone(b.customer.phone)}`
+                          : ""
                       }`
                     : b.customer.kind === "corporate"
                       ? `${b.customer.name} • ${b.customer.accountName}`

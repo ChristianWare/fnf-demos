@@ -2,6 +2,7 @@
 
 import styles from "./AdminTodaysRides.module.css";
 import Link from "next/link";
+import { formatPhone } from "@/lib/phone";
 
 export type TodaysRideItem = {
   id: string;
@@ -143,14 +144,6 @@ export default function AdminTodaysRides({
       pickupTime < now && i.status !== "COMPLETED" && i.status !== "CANCELLED"
     );
   }).length;
-
-  function formatPhone(raw: string): string {
-    const digits = raw.replace(/\D/g, "");
-    const d =
-      digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
-    if (d.length !== 10) return raw;
-    return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
-  }
 
   return (
     <section className={styles.container} aria-label="Today's rides">

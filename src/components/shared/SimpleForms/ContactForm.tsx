@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import styles from "./SimpleForm.module.css";
+import { formatPhoneInput } from "@/lib/phone";
 
 type Values = {
   website: string; // honeypot — must stay empty
@@ -24,6 +25,7 @@ export default function ContactForm() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<Values>();
+  const phoneField = register("phone", { required: true });
 
   const onSubmit: SubmitHandler<Values> = async (values) => {
     setStatus("idle");
@@ -68,7 +70,14 @@ export default function ContactForm() {
         </label>
         <label className={styles.field}>
           Phone
-          <input type="tel" {...register("phone", { required: true })} />
+          <input
+            type="tel"
+            {...phoneField}
+            onChange={(e) => {
+              e.target.value = formatPhoneInput(e.target.value);
+              phoneField.onChange(e);
+            }}
+          />
           {errors.phone && <span className={styles.error}>Required</span>}
         </label>
       </div>

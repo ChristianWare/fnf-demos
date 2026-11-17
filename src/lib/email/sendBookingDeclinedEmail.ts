@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
 import { SITE } from "@/config/site";
+import { formatPhone } from "@/lib/phone";
 
 function requireEnv(name: string) {
   const v = process.env[name];
@@ -53,7 +54,7 @@ export async function sendBookingDeclinedEmail(args: {
   const confirmationCode = args.bookingId.slice(0, 8).toUpperCase();
   const declineReason = args.declineReason?.trim() || null;
   const contactEmail = args.contactEmail || SITE.email.support;
-  const contactPhone = args.contactPhone || null;
+  const contactPhone = formatPhone(args.contactPhone) || null;
 
   const subject = `Booking Update – Unable to Accommodate Your Request | ${SITE.name}`;
 

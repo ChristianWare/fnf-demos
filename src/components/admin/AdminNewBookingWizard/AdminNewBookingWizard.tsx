@@ -67,13 +67,7 @@ import { useDirtyForm } from "@/components/shared/DirtyFormProvider/DirtyFormPro
 import Button from "@/components/shared/Button/Button";
 import AdminChargeCardOnFileButton from "@/components/admin/AdminChargeCardOnFileButton/AdminChargeCardOnFileButton";
 import { PlacesAutocomplete } from "@/lib/placesAutocomplete";
-
-function formatPhone(raw: string): string {
-  const digits = raw.replace(/\D/g, "").slice(0, 10);
-  if (digits.length < 4) return digits;
-  if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-}
+import { formatPhone, formatPhoneInput } from "@/lib/phone";
 
 type PricingStrategy = "POINT_TO_POINT" | "HOURLY" | "FLAT";
 type AirportLeg = "NONE" | "PICKUP" | "DROPOFF";
@@ -1956,7 +1950,7 @@ export default function AdminNewBookingWizard({
                           </div>
                           <div className='miniNote'>
                             {selectedUser.phone
-                              ? `📞 ${selectedUser.phone}`
+                              ? `📞 ${formatPhone(selectedUser.phone)}`
                               : "📞 No phone on file"}
                           </div>
                           <div
@@ -2224,7 +2218,7 @@ export default function AdminNewBookingWizard({
                                       value={newPassengerPhone}
                                       onChange={(e) => {
                                         resetCreatedBooking();
-                                        setNewPassengerPhone(e.target.value);
+                                        setNewPassengerPhone(formatPhoneInput(e.target.value));
                                       }}
                                       placeholder='Optional'
                                       inputMode='tel'
@@ -2356,7 +2350,7 @@ export default function AdminNewBookingWizard({
                               value={customerPhone}
                               onChange={(v) => {
                                 resetCreatedBooking();
-                                setCustomerPhone(formatPhone(v));
+                                setCustomerPhone(formatPhoneInput(v));
                               }}
                               onPick={pickCustomer}
                               placeholder='(602) 555-1234'
@@ -3373,7 +3367,7 @@ export default function AdminNewBookingWizard({
                         />
                         <SummaryRow
                           label='Phone'
-                          value={selectedUser?.phone || "No phone on file"}
+                          value={formatPhone(selectedUser?.phone) || "No phone on file"}
                         />
                       </>
                     ) : customerKind === "corporate" ? (

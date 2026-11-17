@@ -18,6 +18,7 @@ import {
   privateAddress,
   privateName,
 } from "@/lib/tripPrivacy";
+import { formatPhone, phoneSearchTerms } from "@/lib/phone";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -269,13 +270,15 @@ function buildWhere(args: {
         status: { notIn: [...FINISHED_TRIP_STATUSES] as BookingStatus[] },
         OR: [
           { guestName: { contains: needle, mode: "insensitive" } },
-          { guestPhone: { contains: needle, mode: "insensitive" } },
+          ...phoneSearchTerms(needle).map((t): Prisma.BookingWhereInput => ({
+            guestPhone: { contains: t, mode: "insensitive" },
+          })),
           { pickupAddress: { contains: needle, mode: "insensitive" } },
           { dropoffAddress: { contains: needle, mode: "insensitive" } },
           { user: { is: { name: { contains: needle, mode: "insensitive" } } } },
-          {
-            user: { is: { phone: { contains: needle, mode: "insensitive" } } },
-          },
+          ...phoneSearchTerms(needle).map((t): Prisma.BookingWhereInput => ({
+            user: { is: { phone: { contains: t, mode: "insensitive" } } },
+          })),
         ],
       },
     ];
@@ -762,7 +765,7 @@ export default async function DriverTripsPage({
                           </Link>
                           {customerPhone && (
                             <div className={styles.cellSub}>
-                              {customerPhone}
+                              {formatPhone(customerPhone)}
                             </div>
                           )}
                         </div>

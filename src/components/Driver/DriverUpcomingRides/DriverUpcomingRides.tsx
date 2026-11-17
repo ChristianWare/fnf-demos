@@ -4,6 +4,7 @@ import styles from "./DriverUpcomingRides.module.css";
 import Link from "next/link";
 
 import RouteDot from "@/components/shared/RouteDot/RouteDot";
+import { formatPhone } from "@/lib/phone";
 export type UpcomingRideItem = {
   id: string;
   status: string;
@@ -223,7 +224,7 @@ export default function DriverUpcomingRides({
                         </Link>
                         {b.customerPhone && (
                           <div className={styles.cellSub}>
-                            {b.customerPhone}
+                            {formatPhone(b.customerPhone)}
                           </div>
                         )}
                       </div>

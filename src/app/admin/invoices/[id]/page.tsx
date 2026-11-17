@@ -9,6 +9,7 @@ import InvoicePdfPanel from "./InvoicePdfPanel";
 import InvoiceAddressCard from "./InvoiceAddressCard";
 import { getCompanySettings } from "../../../../../actions/admin/companySettings";
 import { defaultFromAddress } from "@/lib/invoice/invoiceAddress";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -287,7 +288,9 @@ export default async function AdminInvoiceDetailPage({ params }: Props) {
                 <span className={styles.customerLine}>{customerEmail}</span>
               )}
               {customerPhone && (
-                <span className={styles.customerLine}>{customerPhone}</span>
+                <span className={styles.customerLine}>
+                  {formatPhone(customerPhone)}
+                </span>
               )}
               {invoice.user && (
                 <Link

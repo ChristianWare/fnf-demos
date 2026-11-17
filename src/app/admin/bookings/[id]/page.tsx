@@ -53,6 +53,7 @@ import BookingCompletionChecklist from "@/components/admin/BookingCompletionChec
 import EditHoursClient from "./EditHoursClient";
 import { SITE } from "@/config/site";
 import { EXTRA_STOP_FEE_CENTS } from "@/lib/pricing/calcQuote";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -150,14 +151,6 @@ function formatMoney(cents: number | null | undefined, currency = "USD") {
     currency,
     maximumFractionDigits: 2,
   }).format(n);
-}
-
-function formatPhone(raw: string): string {
-  const digits = raw.replace(/\D/g, "");
-  const d =
-    digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
-  if (d.length !== 10) return raw;
-  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
 }
 
 function getEventActorLabel(
@@ -610,7 +603,7 @@ export default async function AdminBookingDetailPage({
     const parts = [
       "Guest checkout",
       gEmail ? `${gName} (${gEmail})` : gName,
-      gPhone ? gPhone : null,
+      gPhone ? formatPhone(gPhone) : null,
     ].filter(Boolean);
     createdByDisplay = parts.join(" \u2022 ");
   }

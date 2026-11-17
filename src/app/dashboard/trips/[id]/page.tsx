@@ -30,6 +30,7 @@ import Phone from "@/components/shared/icons/Phone/Phone";
 import Email from "@/components/shared/icons/Email/Email";
 import Plane from "@/components/shared/icons/Plane/Plane";
 import { relativeFromNow } from "@/lib/relativeTime";
+import { phoneTel } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -599,14 +600,14 @@ export default async function UserTripDetailPage({
               {driverPhone && (
                 <div className={styles.driverContact}>
                   <a
-                    href={`tel:${driverPhone}`}
+                    href={`tel:${phoneTel(driverPhone)}`}
                     className={styles.contactButton}
                   >
                     <Phone className={styles.contactIcon} aria-hidden='true' />
                     Call
                   </a>
                   <a
-                    href={`sms:${driverPhone}`}
+                    href={`sms:${phoneTel(driverPhone)}`}
                     className={styles.contactButton}
                   >
                     Text

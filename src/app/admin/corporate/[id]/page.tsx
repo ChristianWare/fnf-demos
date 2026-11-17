@@ -15,6 +15,7 @@ import VehicleUsageChart from "@/components/admin/VehicleUsageChart/VehicleUsage
 import DirtyFormProvider from "@/components/shared/DirtyFormProvider/DirtyFormProvider";
 import { getCompanySettings } from "../../../../../actions/admin/companySettings";
 import * as tz from "@/lib/timezone";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -627,7 +628,7 @@ export default async function CorporateAccountDetailPage({
                           {p.email || "—"}
                         </td>
                         <td className={styles.td} data-label='Phone'>
-                          {p.phone || "—"}
+                          {p.phone ? formatPhone(p.phone) : "—"}
                         </td>
                         <td className={styles.td} data-label='Department'>
                           {p.department || "—"}

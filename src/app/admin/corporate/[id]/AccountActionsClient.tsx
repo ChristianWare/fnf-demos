@@ -14,6 +14,7 @@ import {
 } from "../../../../../actions/corporate/corporateAdminActions";
 import Button from "@/components/shared/Button/Button";
 import { SITE } from "@/config/site";
+import { formatPhoneInput } from "@/lib/phone";
 
 /* ─────────────────────────────────────────────
    Edit Payment Settings (inline toggle)
@@ -600,7 +601,7 @@ export function AddPassengerClient({ accountId }: { accountId: string }) {
                   type='tel'
                   className='inputBorder'
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
                   placeholder='(555) 123-4567'
                 />
               </div>

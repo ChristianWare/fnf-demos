@@ -6,6 +6,7 @@ import styles from "./AdminTextAlertsForm.module.css";
 import { saveMyAdminTextAlertSettings } from "../../../../actions/admin/notificationSettings";
 import { EVENT_META } from "@/lib/notifications/events";
 import { SMS_CARRIERS } from "@/lib/sms/carriers";
+import { formatPhone, formatPhoneInput } from "@/lib/phone";
 
 type Props = {
   initial: {
@@ -19,16 +20,9 @@ type Props = {
 /** Sensible starting point: the alert that actually costs money to miss. */
 const DEFAULT_PICK = ["BOOKING_REQUESTED"];
 
-function formatPhone(digits: string) {
-  const d = digits.replace(/\D/g, "").slice(0, 10);
-  if (d.length < 4) return d;
-  if (d.length < 7) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
-  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
-}
-
 export default function AdminTextAlertsForm({ initial }: Props) {
   const [enabled, setEnabled] = useState(initial.smsEnabled);
-  const [phone, setPhone] = useState(formatPhone(initial.smsTo ?? ""));
+  const [phone, setPhone] = useState(formatPhone(initial.smsTo));
   const [carrier, setCarrier] = useState(initial.smsCarrier ?? "");
   const [events, setEvents] = useState<string[]>(
     initial.smsEvents.length > 0 ? initial.smsEvents : DEFAULT_PICK,
@@ -111,7 +105,7 @@ export default function AdminTextAlertsForm({ initial }: Props) {
                 placeholder='(480) 555-1234'
                 className={styles.input}
                 value={phone}
-                onChange={(e) => setPhone(formatPhone(e.target.value))}
+                onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
               />
             </div>
 

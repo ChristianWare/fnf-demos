@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import { SITE } from "@/config/site";
+import { formatPhone } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -74,7 +75,7 @@ function emailHtml(payload: ContactPayload, submittedAt: string) {
             <tr>
               <td style="width:180px; padding:6px 0; opacity:.8">Phone</td>
               <td style="padding:6px 0;">
-                <a href="tel:${escapeHtml(phone.replace(/\D/g, ""))}" style="color:#4e94ec; text-decoration:none">${escapeHtml(phone)}</a>
+                <a href="tel:${escapeHtml(phone.replace(/\D/g, ""))}" style="color:#4e94ec; text-decoration:none">${escapeHtml(formatPhone(phone))}</a>
               </td>
             </tr>
             ${serviceNeeded ? `<tr><td style="width:180px; padding:6px 0; opacity:.8">Service Needed</td><td style="padding:6px 0; font-weight:600">${escapeHtml(serviceNeeded)}</td></tr>` : ""}
@@ -89,7 +90,7 @@ function emailHtml(payload: ContactPayload, submittedAt: string) {
           </div>
 
           <div style="margin-top:20px; padding:12px 14px; background:#f8fbff; border:1px solid #e5f0ff; border-radius:12px; font-size:13px; color:${ink}">
-            <strong>Reply tip:</strong> Hit reply to contact <a href="mailto:${encodeURIComponent(email)}" style="color:#4e94ec; text-decoration:none">${escapeHtml(email)}</a> or call <a href="tel:${escapeHtml(phone.replace(/\D/g, ""))}" style="color:#4e94ec; text-decoration:none">${escapeHtml(phone)}</a>.
+            <strong>Reply tip:</strong> Hit reply to contact <a href="mailto:${encodeURIComponent(email)}" style="color:#4e94ec; text-decoration:none">${escapeHtml(email)}</a> or call <a href="tel:${escapeHtml(phone.replace(/\D/g, ""))}" style="color:#4e94ec; text-decoration:none">${escapeHtml(formatPhone(phone))}</a>.
           </div>
         </td>
       </tr>
