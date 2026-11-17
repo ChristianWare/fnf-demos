@@ -7,6 +7,7 @@ import SessionProviderWrap from "@/components/Providers/SessionProvider";
 import ToastsProvider from "@/components/Providers/ToastsProvider";
 import SmoothScroll from "@/components/shared/SmoothScroll/SmoothScroll";
 import ScrollToTop from "@/components/shared/ScrollToTop/ScrollToTop";
+import ScrollProgress from "@/components/shared/ScrollProgress/ScrollProgress";
 import PlausibleProvider from "next-plausible";
 import { SITE } from "@/config/site";
 import { buildBusinessSchema } from "@/lib/schema";
@@ -121,6 +122,8 @@ export default async function RootLayout({
               <ScrollToTop />
               {children}
               <Footer />
+              {/* How far down the page you are, bottom right (public pages). */}
+              <ScrollProgress />
             </SmoothScroll>
           </SessionProviderWrap>
         </PlausibleProvider>
