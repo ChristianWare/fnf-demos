@@ -6,6 +6,7 @@ import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import { SITE } from "@/config/site";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
+import { getMarket } from "@/lib/market";
 import styles from "./ReviewsSection.module.css";
 
 type Review = {
@@ -32,17 +33,20 @@ const REVIEWS: Review[] = [
   {
     quote: "[Review placeholder — shows the operator's real Google reviews]",
     name: "Rider name",
-    trip: "Night on the Strip",
+    trip: "", // The market's night out (reviewTrip).
     rating: 5,
   },
 ];
 
 export default async function ReviewsSection() {
-  const s = await getCompanySettings();
+  const [s, market] = await Promise.all([getCompanySettings(), getMarket()]);
+  const reviews = REVIEWS.map((r) =>
+    r.trip ? r : { ...r, trip: market.copy.reviewTrip },
+  );
   const company = s.companyName || SITE.name;
   const googleUrl =
     s.googleBusinessUrl ||
-    `https://www.google.com/search?q=${encodeURIComponent(`${company} ${SITE.market.city} reviews`)}`;
+    `https://www.google.com/search?q=${encodeURIComponent(`${company} ${market.city} reviews`)}`;
 
   return (
     <section className={styles.section}>
@@ -59,7 +63,7 @@ export default async function ReviewsSection() {
         </div>
 
         <ul className={styles.cards}>
-          {REVIEWS.map((r, i) => (
+          {reviews.map((r, i) => (
             <li key={i} className={styles.card}>
               <div className={styles.cardTop}>
                 <Stars rating={r.rating} />

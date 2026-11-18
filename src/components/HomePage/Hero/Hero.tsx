@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import { db } from "@/lib/db";
+import { getMarket, getPhotos } from "@/lib/market";
 import HeroBooking, { type HeroService } from "../HeroBooking/HeroBooking";
 import styles from "./Hero.module.css";
 
@@ -21,14 +22,19 @@ async function bookableServices(): Promise<HeroService[]> {
 }
 
 export default async function Hero() {
-  const services = await bookableServices();
+  const [services, market, photos] = await Promise.all([
+    bookableServices(),
+    getMarket(),
+    getPhotos(),
+  ]);
+  const [line1, line2] = market.copy.hero.heading;
 
   return (
     <section id='hero' className={styles.hero}>
       <div className={styles.frame}>
         <Image
-          src='/images/other/herov.jpg'
-          alt='Black car waiting for a rider in Las Vegas'
+          src={photos.hero.src}
+          alt={photos.hero.alt}
           fill
           priority
           sizes='100vw'
@@ -40,16 +46,10 @@ export default async function Hero() {
       <div className={styles.content}>
         <div className={styles.copy}>
           <h1 className={styles.heading}>
-            {/* The quiet way <br />
-            through Las Vegas. */}
-            Executive Black Car <br className={styles.br} />
-            Service in Las Vegas
+            {line1} <br className={styles.br} />
+            {line2}
           </h1>
-          <p className={styles.subhead}>
-            Black car service in Las Vegas, from Harry Reid International to the
-            Strip, Henderson, Summerlin and beyond. Your price shows before you
-            book, and your chauffeur tracks your flight.
-          </p>
+          <p className={styles.subhead}>{market.copy.hero.subhead}</p>
         </div>
         <HeroBooking services={services} />
       </div>

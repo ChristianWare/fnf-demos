@@ -5,6 +5,7 @@ import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import styles from "./HowItWorks.module.css";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
+import { getMarket } from "@/lib/market";
 
 const STEPS = [
   {
@@ -26,7 +27,8 @@ const AFTER = [
   { label: "Chauffeur details", value: "Before your pickup" },
 ];
 
-export default function HowItWorks() {
+export default async function HowItWorks() {
+  const market = await getMarket();
   return (
     <section className={styles.section}>
       <LayoutWrapper>
@@ -45,7 +47,7 @@ export default function HowItWorks() {
           <div className={styles.photo}>
             <Image
               src='/img2.png'
-              alt='Black SUV on a desert highway outside Las Vegas'
+              alt={market.copy.roadAlt}
               fill
               sizes='(max-width: 1068px) 100vw, 55vw'
               className={styles.img}

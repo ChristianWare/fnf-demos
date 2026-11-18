@@ -15,6 +15,8 @@ import {
 } from "@/lib/booking/rules";
 import styles from "./WhySection.module.css";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
+import { useMarket } from "@/components/Providers/MarketProvider";
+import { airportBookHref, type Market } from "@/markets";
 
 type Reason = {
   /** Short name on the track. */
@@ -26,12 +28,13 @@ type Reason = {
 };
 
 // Numbers come from the booking rules (src/config/site.ts → booking), so
-// this section always says what the booking tool does.
-const REASONS: Reason[] = [
+// this section always says what the booking tool does. The local details
+// come from the market.
+const reasonsFor = (market: Market): Reason[] => [
   {
     tag: "Price",
     title: "Your price",
-    copy: "See the total for your vehicle and route in the booking tool. No surge after the fight, the concert or the game.",
+    copy: `See the total for your vehicle and route in the booking tool. No surge after ${market.copy.noSurgeAfter}.`,
     stats: [
       { label: "Surge pricing", value: "4" },
       { label: "Price shown", value: "436" },
@@ -56,7 +59,7 @@ const REASONS: Reason[] = [
   {
     tag: "Chauffeurs",
     title: "A chauffeur",
-    copy: "Professional, licensed chauffeurs who know the casino porte-cocheres, the convention halls and everywhere else.",
+    copy: `Professional, licensed chauffeurs who know ${market.copy.chauffeursKnow}.`,
     stats: [
       { label: "Pickups", value: "1" },
       { label: "Knows", value: "436" },
@@ -78,6 +81,9 @@ const REASONS: Reason[] = [
 ];
 
 export default function WhySection() {
+  const market = useMarket();
+  const REASONS = reasonsFor(market);
+  const bookAirport = airportBookHref(market.airports[0]);
   const [active, setActive] = useState(0);
   const reason = REASONS[active];
 
@@ -122,7 +128,7 @@ export default function WhySection() {
               </Link> */}
               <div className={styles.link}>
                 <ArrowButton
-                  href='/book?trip=from-airport&airport=LAS'
+                  href={bookAirport}
                   text='Book an airport pickup'
                   variant='midnight'
                   className={styles.cardBtn}
@@ -132,8 +138,8 @@ export default function WhySection() {
 
             <div className={styles.media}>
               <Image
-                src='/images/other/vegas.jpg'
-                alt='Black car on the road in Las Vegas'
+                src={market.images.city.src}
+                alt={market.images.city.alt}
                 fill
                 sizes='(max-width: 1068px) 100vw, 60vw'
                 className={styles.img}
@@ -172,7 +178,7 @@ export default function WhySection() {
             </div>
             <div className={styles.linkii}>
               <ArrowButton
-                href='/book?trip=from-airport&airport=LAS'
+                href={bookAirport}
                 text='Book an airport pickup'
                 variant='midnight'
                 className={styles.cardBtn}

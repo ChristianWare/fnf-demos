@@ -6,10 +6,11 @@ import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { SITE } from "@/config/site";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
+import { getMarket } from "@/lib/market";
 import styles from "./ClosingCta.module.css";
 
 export default async function ClosingCta() {
-  const s = await getCompanySettings();
+  const [s, market] = await Promise.all([getCompanySettings(), getMarket()]);
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
     ? `+1${s.dispatchPhoneRaw}`
@@ -20,8 +21,8 @@ export default async function ClosingCta() {
       <LayoutWrapper>
         <div className={styles.box}>
           <Image
-            src='/images/other/vegasAirport.jpg'
-            alt='Las Vegas freeway at night'
+            src={market.images.closing.src}
+            alt={market.images.closing.alt}
             fill
             sizes='100vw'
             className={styles.img}
@@ -29,7 +30,7 @@ export default async function ClosingCta() {
           <div className={styles.shade} aria-hidden='true' />
 
           <div className={styles.content}>
-            <h2 className={styles.heading}>Your go to ride in Las Vegas</h2>
+            <h2 className={styles.heading}>{market.copy.closingHeading}</h2>
             <p className={styles.copy}>
               Book online in two minutes, or call us any time.
             </p>

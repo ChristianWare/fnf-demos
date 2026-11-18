@@ -14,13 +14,15 @@ import {
 import { BUSINESS_REF } from "@/lib/schema";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import FaqList, { type FaqItem } from "./FaqList";
+import { getMarket } from "@/lib/market";
+import type { Market } from "@/markets";
 import styles from "./FaqSection.module.css";
 
-const FAQS: FaqItem[] = [
+const faqsFor = (market: Market): FaqItem[] => [
   {
     topic: "Booking",
     question: "How far ahead should I book?",
-    answer: `Book at least ${BOOKING_LEAD_HOURS} hours ahead online. For conventions, fight weekends and holidays, book as early as you can; cars run out first on the biggest weekends.`,
+    answer: `Book at least ${BOOKING_LEAD_HOURS} hours ahead online. For ${market.copy.bookEarlyFor}, book as early as you can; cars run out first on the biggest weekends.`,
   },
   {
     topic: "Airport pickups",
@@ -46,19 +48,21 @@ const FAQS: FaqItem[] = [
   },
 ];
 
-const faqSchema = {
+const faqSchemaFor = (faqs: FaqItem[]) => ({
   "@context": "https://schema.org",
   "@type": "FAQPage",
   about: BUSINESS_REF,
-  mainEntity: FAQS.map((f) => ({
+  mainEntity: faqs.map((f) => ({
     "@type": "Question",
     name: f.question,
     acceptedAnswer: { "@type": "Answer", text: f.answer },
   })),
-};
+});
 
 export default async function FaqSection() {
-  const s = await getCompanySettings();
+  const [s, market] = await Promise.all([getCompanySettings(), getMarket()]);
+  const FAQS = faqsFor(market);
+  const faqSchema = faqSchemaFor(FAQS);
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
     ? `+1${s.dispatchPhoneRaw}`

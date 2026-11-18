@@ -5,6 +5,7 @@ import "./globals.css";
 import Footer from "@/components/shared/Footer/Footer";
 import SessionProviderWrap from "@/components/Providers/SessionProvider";
 import ToastsProvider from "@/components/Providers/ToastsProvider";
+import MarketProvider from "@/components/Providers/MarketProvider";
 import SmoothScroll from "@/components/shared/SmoothScroll/SmoothScroll";
 import ScrollToTop from "@/components/shared/ScrollToTop/ScrollToTop";
 import ScrollProgress from "@/components/shared/ScrollProgress/ScrollProgress";
@@ -12,6 +13,7 @@ import PlausibleProvider from "next-plausible";
 import { SITE } from "@/config/site";
 import { buildBusinessSchema } from "@/lib/schema";
 import { getCompanySettings } from "../../actions/admin/companySettings";
+import { getMarket } from "@/lib/market";
 
 const SofiaSansExtraCondensedBold = localFont({
   src: "../../public/fonts/SofiaSansExtraCondensed-Bold.ttf",
@@ -81,6 +83,7 @@ export default async function RootLayout({
   // If the database can't be reached, the schema falls back to site config.
   const settings = await getCompanySettings().catch(() => ({}));
   const businessSchema = buildBusinessSchema(settings);
+  const market = await getMarket();
 
   return (
     <html lang='en'>
@@ -100,7 +103,7 @@ export default async function RootLayout({
           content='black-translucent'
         />
         <meta name='apple-mobile-web-app-title' content={SITE.name} />
-        <link rel='apple-touch-icon' href='/apple-touch-icon.png' />
+        {/* Icons: src/app/favicon.ico, icon.svg and apple-icon.png. */}
       </head>
       <body
         className={`${SofiaSansExtraCondensedBold.variable} ${SofiaSansRegular.variable} ${SofiaSansLight.variable} ${SofiaSansBold.variable} ${SofiaSansExtraCondensedExtraBold.variable}`}
@@ -117,14 +120,16 @@ export default async function RootLayout({
           enabled={true}
         >
           <SessionProviderWrap>
-            <ToastsProvider />
-            <SmoothScroll>
-              <ScrollToTop />
-              {children}
-              <Footer />
-              {/* How far down the page you are, bottom right (public pages). */}
-              <ScrollProgress />
-            </SmoothScroll>
+            <MarketProvider market={market}>
+              <ToastsProvider />
+              <SmoothScroll>
+                <ScrollToTop />
+                {children}
+                <Footer />
+                {/* How far down the page you are, bottom right (public pages). */}
+                <ScrollProgress />
+              </SmoothScroll>
+            </MarketProvider>
           </SessionProviderWrap>
         </PlausibleProvider>
       </body>

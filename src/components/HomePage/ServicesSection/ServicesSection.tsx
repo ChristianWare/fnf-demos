@@ -18,6 +18,8 @@ import {
   HOURLY_MIN_HOURS,
   MEET_AND_GREET_FREE,
 } from "@/lib/booking/rules";
+import { useMarket } from "@/components/Providers/MarketProvider";
+import type { Market } from "@/markets";
 import styles from "./ServicesSection.module.css";
 
 type Service = {
@@ -32,19 +34,16 @@ type Service = {
   alt: string;
 };
 
-// Numbers come from the booking rules (src/config/site.ts → booking).
-const SERVICES: Service[] = [
+// Numbers come from the booking rules (src/config/site.ts → booking); the
+// airports, venues and local notes from the market.
+const servicesFor = ({ copy: { services: m } }: Market): Service[] => [
   {
     slug: "airport-transfers",
     title: "Airport transfers",
-    phrase: "LAS, HND and VGT",
-    desc: "Harry Reid International, Henderson Executive and North Las Vegas, with flight tracking and meet & greet.",
+    phrase: m.airportPhrase,
+    desc: m.airportDesc,
     rows: [
-      {
-        label: "Airports",
-        value:
-          "Harry Reid (LAS), Henderson Executive (HND) and North Las Vegas (VGT).",
-      },
+      { label: "Airports", value: m.airportList },
       {
         label: "Flight tracking",
         value: "On every pickup, so a delay moves your pickup time with it.",
@@ -106,12 +105,9 @@ const SERVICES: Service[] = [
         value:
           "Send a car for a client or speaker and bill it to your account.",
       },
-      {
-        label: "Conventions",
-        value: "Shuttles between hotels and the convention center.",
-      },
+      { label: "Conventions", value: m.conventions },
     ],
-    note: "Convention weeks sell out first. Reserve cars for CES and the big shows early.",
+    note: m.conventionNote,
     img: "/img8.jpg",
     alt: "Executive with a coffee in the back of a car",
   },
@@ -125,17 +121,14 @@ const SERVICES: Service[] = [
         label: "Vehicles",
         value: "Stretch limousine, luxury SUV or Executive Sprinter.",
       },
-      {
-        label: "Photo stops",
-        value: "The Welcome to Las Vegas sign, Downtown or the desert.",
-      },
+      { label: "Photo stops", value: m.weddingStops },
       {
         label: "Guests",
         value: "Shuttles between the hotel, the ceremony and the reception.",
       },
       { label: "Typical booking", value: "3 to 5 hours." },
     ],
-    note: "Marrying in Las Vegas? We can stop at the Marriage License Bureau downtown first.",
+    note: m.weddingNote,
     img: "/img10.jpg",
     alt: "Bride holding flowers in the back of a car",
   },
@@ -143,13 +136,9 @@ const SERVICES: Service[] = [
     slug: "nightlife-events",
     title: "Nightlife & events",
     phrase: "Door drop-off and pickup",
-    desc: "Allegiant Stadium, T-Mobile Arena, Sphere and the clubs, dropped at the door and picked up after.",
+    desc: m.eventsDesc,
     rows: [
-      {
-        label: "Venues",
-        value:
-          "Allegiant Stadium, T-Mobile Arena, Sphere and the Strip's clubs.",
-      },
+      { label: "Venues", value: m.venues },
       {
         label: "Pickup",
         value:
@@ -158,7 +147,7 @@ const SERVICES: Service[] = [
       { label: "Pricing", value: "No surge after the event." },
       { label: "Groups", value: "Sprinters for up to 14." },
     ],
-    note: "Big fight or concert weekend? Book as soon as you have tickets.",
+    note: m.eventsNote,
     img: "/img11.jpg",
     alt: "Rider laughing out of a car window on a night out",
   },
@@ -187,6 +176,8 @@ const SERVICES: Service[] = [
 ];
 
 export default function ServicesSection() {
+  const market = useMarket();
+  const SERVICES = servicesFor(market);
   const { trackRef, stickyRef, active, setActive } = useScrollSteps(
     SERVICES.length,
     { disableBelow: 568 },
@@ -199,9 +190,7 @@ export default function ServicesSection() {
         <div className={styles.top}>
           <div className={styles.topLeft}>
             <PulseEyeBrow text='Services' />
-            <h2 className={styles.heading}>
-              One call for every ride in Las Vegas
-            </h2>
+            <h2 className={styles.heading}>{market.copy.servicesHeading}</h2>
           </div>
           <p className={styles.intro}>
             Six ways to ride, all booked in one place. Pick a service to see

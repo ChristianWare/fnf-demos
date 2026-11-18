@@ -1,16 +1,18 @@
-// /airports: the four airports we drive every day, as cards. Each has a
-// logo (or a code tile until a logo is added in nevadaAirports.ts), its
-// name, two facts, a line of copy and a booking button.
+// /airports and the home page: the market's airports, as cards. Each has
+// a logo (or a code tile until a logo is added in src/markets/), its name,
+// two facts, a line of copy and a booking button.
 
 import Image from "next/image";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import MountainIcon from "@/components/shared/icons/MountainIcon/MountainIcon";
-import { AIRPORTS_SERVED } from "@/lib/nevadaAirports";
+import { getMarket } from "@/lib/market";
+import { airportBookHref } from "@/markets";
 import styles from "./AirportsServed.module.css";
 
-export default function AirportsServed() {
+export default async function AirportsServed() {
+  const market = await getMarket();
   return (
     <section className={styles.section}>
       <LayoutWrapper>
@@ -30,7 +32,7 @@ export default function AirportsServed() {
         </div>
 
         <ul className={styles.grid}>
-          {AIRPORTS_SERVED.map((a) => (
+          {market.airports.map((a) => (
             <li key={a.code} className={styles.card}>
               <div className={styles.cardTop}>
                 <span className={styles.logo}>
@@ -66,7 +68,7 @@ export default function AirportsServed() {
               <p className={styles.copy}>{a.copy}</p>
 
               <ArrowButton
-                href={a.href}
+                href={airportBookHref(a)}
                 text='Book a pickup'
                 variant='midnight'
                 className={styles.btn}

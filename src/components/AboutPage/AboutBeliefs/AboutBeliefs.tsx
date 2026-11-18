@@ -6,20 +6,22 @@ import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { SITE } from "@/config/site";
+import { getMarket } from "@/lib/market";
+import type { Market } from "@/markets";
 import styles from "./AboutBeliefs.module.css";
 
-const PROMISES = [
+const promisesFor = (market: Market) => [
   {
     when: "On the day",
     title: "On time is the minimum.",
-    copy: "Being on time isn't the goal; it's the starting point. We plan around Strip traffic, convention crowds and road closures so you never have to.",
+    copy: `Being on time isn't the goal; it's the starting point. We plan around ${market.copy.planAround} so you never have to.`,
     practice:
       "Chauffeurs arrive 15 minutes early for every pickup, and we track every flight from takeoff.",
   },
   {
     when: "Before you book",
     title: "The price is the price.",
-    copy: "You see what your ride costs before you book. No surge after the fight, the concert or the game, and nothing added on the day that you didn't agree to.",
+    copy: `You see what your ride costs before you book. No surge after ${market.copy.noSurgeAfter}, and nothing added on the day that you didn't agree to.`,
     practice:
       "The booking tool shows your total before you pay; gratuity is your choice.",
   },
@@ -37,7 +39,8 @@ const FACTS = [
   { label: "Kept since", value: SITE.founded },
 ];
 
-export default function AboutBeliefs() {
+export default async function AboutBeliefs() {
+  const market = await getMarket();
   return (
     <section className={styles.section}>
       <LayoutWrapper>
@@ -70,8 +73,8 @@ export default function AboutBeliefs() {
 
             <div className={styles.photo}>
               <Image
-                src='/images/other/vegas.jpg'
-                alt='The Las Vegas Strip by day'
+                src={market.images.city.src}
+                alt={market.images.city.alt}
                 fill
                 sizes='(max-width: 1068px) 100vw, 40vw'
                 className={styles.img}
@@ -81,7 +84,7 @@ export default function AboutBeliefs() {
 
           {/* A ruler with a tick over each card, like a schedule. */}
           <ol className={styles.promises}>
-            {PROMISES.map((p, i) => (
+            {promisesFor(market).map((p, i) => (
               <li key={p.title} className={styles.promise}>
                 <span className={styles.tick}>
                   {String(i + 1).padStart(2, "0")}

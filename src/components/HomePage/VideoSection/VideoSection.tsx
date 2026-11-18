@@ -3,23 +3,19 @@
 // Home page: a "window" onto a video that stays still while the page
 // scrolls past it. The video is fixed to the screen and clipped to this
 // section, so it only shows through here. It sets up the service areas
-// below: the desert just past the city, by the hour.
+// below: the country just past the city, by the hour. The places come
+// from the market.
 
 import { useEffect, useRef } from "react";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { HOURLY_MIN_HOURS } from "@/lib/booking/rules";
+import { useMarket } from "@/components/Providers/MarketProvider";
 import styles from "./VideoSection.module.css";
 
-// Rough drive times from the Strip.
-const NEARBY = [
-  { name: "Red Rock Canyon", time: "30 min" },
-  { name: "Hoover Dam", time: "45 min" },
-  { name: "Valley of Fire", time: "1 hr" },
-];
-
 export default function VideoSection() {
+  const { getaway } = useMarket().copy;
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -89,17 +85,16 @@ export default function VideoSection() {
 
         <LayoutWrapper>
           <div className={styles.content}>
-            <PulseEyeBrow text='Beyond the Strip' color='white' />
+            <PulseEyeBrow text={getaway.eyebrow} color='white' />
             <h2 id='video-heading' className={styles.heading}>
-              The desert starts where the city ends
+              {getaway.heading}
             </h2>
             <p className={styles.copy}>
-              Red rock, open road and a sky that goes on forever, all within an
-              hour of your hotel. Book a chauffeur by the hour (from{" "}
+              {getaway.lead} Book a chauffeur by the hour (from{" "}
               {HOURLY_MIN_HOURS} hours) and stop wherever the view tells you to.
             </p>
             <ul className={styles.nearby}>
-              {NEARBY.map((n) => (
+              {getaway.trips.map((n) => (
                 <li key={n.name} className={styles.place}>
                   <span className={styles.placeName}>{n.name}</span>
                   <span className={styles.placeTime}>{n.time}</span>

@@ -10,6 +10,8 @@ import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { fleetData } from "@/lib/data";
 import RevealMedia from "./RevealMedia";
+import { getMarket } from "@/lib/market";
+import type { Market } from "@/markets";
 import styles from "./FleetSection.module.css";
 
 type Vehicle = {
@@ -24,8 +26,8 @@ type Vehicle = {
   fit: "cover" | "contain";
 };
 
-// Shown in this order.
-const VEHICLES: Vehicle[] = [
+// Shown in this order. A line or two is local, from the market.
+const vehiclesFor = ({ copy: { fleet } }: Market): Vehicle[] => [
   {
     slug: "executive-sedan",
     tag: "sedan",
@@ -40,7 +42,7 @@ const VEHICLES: Vehicle[] = [
   {
     slug: "luxury-suv",
     tag: "SUV",
-    copy: "Room for six and their luggage, with a higher seat and a calmer ride on long desert drives.",
+    copy: `Room for six and their luggage, with a higher seat and a calmer ride on ${fleet.suvRide}.`,
     extra: { label: "Rows", value: "3" },
     image: {
       src: "/vehicles/escalade.png",
@@ -51,7 +53,7 @@ const VEHICLES: Vehicle[] = [
   {
     slug: "stretch-limousine",
     tag: "limo",
-    copy: "The classic Las Vegas arrival. Wraparound seating for up to 10, mood lighting and a partition for privacy.",
+    copy: `${fleet.limo} Wraparound seating for up to 10, mood lighting and a partition for privacy.`,
     extra: { label: "Privacy", value: "Partition" },
     image: {
       src: "/vehicles/limoii.png",
@@ -83,15 +85,17 @@ const VEHICLES: Vehicle[] = [
   },
 ];
 
-const ROWS = VEHICLES.flatMap((v) => {
-  const entry = fleetData.find((e) => e.slug === v.slug);
-  return entry ? [{ ...v, ...entry }] : [];
-});
+const rowsFor = (market: Market) =>
+  vehiclesFor(market).flatMap((v) => {
+    const entry = fleetData.find((e) => e.slug === v.slug);
+    return entry ? [{ ...v, ...entry }] : [];
+  });
 
-// Stops on the capacity track, smallest to largest.
-const STOPS = [...ROWS].sort((a, b) => a.passengers - b.passengers);
-
-export default function FleetSection() {
+export default async function FleetSection() {
+  const market = await getMarket();
+  const ROWS = rowsFor(market);
+  // Stops on the capacity track, smallest to largest.
+  const STOPS = [...ROWS].sort((a, b) => a.passengers - b.passengers);
   return (
     <section className={styles.section}>
       <LayoutWrapper>
@@ -103,7 +107,8 @@ export default function FleetSection() {
           <div className={styles.topRight}>
             <p className={styles.intro}>
               From a quiet sedan for one to a motor coach for 56, every vehicle
-              is late-model, clean and climate-controlled for the desert.
+              is late-model, clean and climate-controlled for{" "}
+              {market.copy.fleet.climate}.
             </p>
             <Link href='/fleet' className={styles.textLink}>
               Explore the fleet

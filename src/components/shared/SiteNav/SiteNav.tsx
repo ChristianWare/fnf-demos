@@ -32,6 +32,7 @@ import {
   isAdminNavActive,
   type AdminNavGroup,
 } from "@/components/admin/AdminSideNav/adminNav";
+import { useMarket } from "@/components/Providers/MarketProvider";
 import MountainIcon from "@/components/shared/icons/MountainIcon/MountainIcon";
 import Arrow from "@/components/shared/icons/Arrow/Arrow";
 import styles from "./SiteNav.module.css";
@@ -481,6 +482,7 @@ export default function SiteNav({
 }
 
 function Logo({ dark, onClick }: { dark?: boolean; onClick?: () => void }) {
+  const market = useMarket();
   return (
     <Link
       href='/'
@@ -491,7 +493,7 @@ function Logo({ dark, onClick }: { dark?: boolean; onClick?: () => void }) {
       <MountainIcon className={styles.logoIcon} />
       <span className={styles.logoText}>
         <span className={styles.logoName}>SS Black Car</span>
-        <span className={styles.logoSub}>Las Vegas, NV</span>
+        <span className={styles.logoSub}>{market.label}</span>
       </span>
     </Link>
   );

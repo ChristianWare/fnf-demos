@@ -10,9 +10,11 @@ import {
   AIRPORT_FREE_WAIT_MINUTES,
   MEET_AND_GREET_FREE,
 } from "@/lib/booking/rules";
+import { getMarket } from "@/lib/market";
+import { airportBookHref, type Market } from "@/markets";
 import styles from "./AirportsSection.module.css";
 
-const INCLUDED = [
+const included = (market: Market) => [
   {
     label: "Flight tracking",
     meta: "Every airport booking",
@@ -28,19 +30,16 @@ const INCLUDED = [
     meta: "Inside baggage claim",
     value: MEET_AND_GREET_FREE ? "Free" : "Add-on",
   },
-  {
-    label: "Terminal 1 and Terminal 3",
-    meta: "Both terminals",
-    value: "T1 · T3",
-  },
+  market.copy.terminals,
   {
     label: "Private aviation (FBOs)",
-    meta: "LAS and Henderson",
+    meta: market.copy.privateAviation,
     value: "Yes",
   },
 ];
 
-export default function AirportsSection() {
+export default async function AirportsSection() {
+  const market = await getMarket();
   return (
     <section className={styles.section}>
       <LayoutWrapper>
@@ -48,9 +47,7 @@ export default function AirportsSection() {
           <div className={styles.content}>
             <div className={styles.head}>
               <PulseEyeBrow text='Airport pickups' />
-              <h2 className={styles.heading}>
-                Landing at Harry Reid? Your chauffeur&apos;s already there.
-              </h2>
+              <h2 className={styles.heading}>{market.copy.airportHeading}</h2>
             </div>
 
             <p className={styles.intro}>
@@ -63,7 +60,7 @@ export default function AirportsSection() {
             <div className={styles.card}>
               <p className={styles.cardLabel}>Every airport pickup</p>
               <dl className={styles.list}>
-                {INCLUDED.map((r) => (
+                {included(market).map((r) => (
                   <div key={r.label} className={styles.item}>
                     <dt className={styles.itemLabel}>{r.label}</dt>
                     <dd className={styles.itemMeta}>{r.meta}</dd>
@@ -74,7 +71,7 @@ export default function AirportsSection() {
             </div>
 
             <ArrowButton
-              href='/book?trip=from-airport&airport=LAS'
+              href={airportBookHref(market.airports[0])}
               text='Book an airport pickup'
               variant='midnight'
             />
@@ -90,7 +87,7 @@ export default function AirportsSection() {
             />
             <span className={styles.caption}>
               <span className={styles.captionDot} aria-hidden='true' />
-              Harry Reid International · LAS
+              {market.copy.airportCaption}
             </span>
           </div>
         </div>

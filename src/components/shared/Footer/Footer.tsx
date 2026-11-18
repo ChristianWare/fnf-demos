@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SITE } from "@/config/site";
 import MountainIcon from "@/components/shared/icons/MountainIcon/MountainIcon";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
+import { getMarket } from "@/lib/market";
 import styles from "./Footer.module.css";
 
 const RIDE = [
@@ -30,7 +31,7 @@ const LEGAL = [
  * operator fills them in).
  */
 export default async function Footer() {
-  const s = await getCompanySettings();
+  const [s, market] = await Promise.all([getCompanySettings(), getMarket()]);
   const year = new Date().getFullYear();
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
@@ -52,7 +53,7 @@ export default async function Footer() {
                 <MountainIcon className={styles.logoIcon} />
                 <span className={styles.logoText}>
                   <span className={styles.logoName}>SS Black Car</span>
-                  <span className={styles.logoSub}>Las Vegas, NV</span>
+                  <span className={styles.logoSub}>{market.label}</span>
                 </span>
               </Link>
               <p className={styles.address}>

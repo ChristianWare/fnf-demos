@@ -4,10 +4,15 @@ import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { SITE } from "@/config/site";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
+import { getMarket, getPhotos } from "@/lib/market";
 import styles from "./AboutHero.module.css";
 
 export default async function AboutHero() {
-  const s = await getCompanySettings();
+  const [s, market, photos] = await Promise.all([
+    getCompanySettings(),
+    getMarket(),
+    getPhotos(),
+  ]);
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
     ? `+1${s.dispatchPhoneRaw}`
@@ -30,9 +35,9 @@ export default async function AboutHero() {
             <PulseEyeBrow text='About us' />
             <p className={styles.copy}>
               Silver State Black Car is a locally owned chauffeured car service
-              in Las Vegas. We drive the Strip, the airports and the desert
-              beyond them for travelers, businesses and locals who want the ride
-              to be the easy part of the trip.
+              in {market.city}. We drive {market.copy.aboutDrive} for travelers,
+              businesses and locals who want the ride to be the easy part of the
+              trip.
             </p>
             <div className={styles.actions}>
               <ArrowButton
@@ -50,8 +55,8 @@ export default async function AboutHero() {
         <figure className={styles.figure}>
           <div className={styles.media}>
             <Image
-              src='/images/other/aboutHeroiii.png'
-              alt='Silver State chauffeur stepping out of a black SUV'
+              src={photos.aboutHero.src}
+              alt={photos.aboutHero.alt}
               fill
               priority
               sizes='(max-width: 1344px) 100vw, 1344px'
@@ -75,7 +80,7 @@ export default async function AboutHero() {
                 <span className={styles.dot} />
               </span>
               <span className={`${styles.stop} ${styles.stopMid}`}>
-                <span className={styles.tag}>Las Vegas</span>
+                <span className={styles.tag}>{market.city}</span>
                 <span className={styles.tick} />
               </span>
               <span className={`${styles.stop} ${styles.stopEnd}`}>
@@ -87,11 +92,11 @@ export default async function AboutHero() {
 
           <figcaption className={styles.caption}>
             <span className={styles.captionTitle}>
-              Locally owned in Las Vegas
+              Locally owned in {market.city}
             </span>
             <span className={styles.captionText}>
-              Licensed by the Nevada Transportation Authority · Chauffeurs who
-              live in the valley · Upfront pricing on every ride
+              {market.copy.licensed} · Chauffeurs who live in {market.region} ·
+              Upfront pricing on every ride
             </span>
           </figcaption>
         </figure>

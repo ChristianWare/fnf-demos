@@ -5,14 +5,16 @@ import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import styles from "./AboutSection.module.css";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
+import { getMarket } from "@/lib/market";
+import { airportBookHref } from "@/markets";
 
-const FACTS = [
-  "Flight tracking on every pickup",
-  "Sedans to 14-seat Sprinters",
-  "Serving the Las Vegas Valley",
-];
-
-export default function AboutSection() {
+export default async function AboutSection() {
+  const market = await getMarket();
+  const facts = [
+    "Flight tracking on every pickup",
+    "Sedans to 14-seat Sprinters",
+    market.copy.serving,
+  ];
   return (
     <section className={styles.section}>
       <LayoutWrapper>
@@ -24,7 +26,7 @@ export default function AboutSection() {
           <div className={styles.topImg}>
             <Image
               src='/images/other/subNoBG.png'
-              alt='Chauffeur holding the door of a black car in Las Vegas'
+              alt={`Chauffeur holding the door of a black car in ${market.city}`}
               fill
               sizes='(max-width: 1068px) 100vw, 240px'
               className={styles.img}
@@ -33,7 +35,7 @@ export default function AboutSection() {
         </div>
 
         <ul className={styles.facts}>
-          {FACTS.map((f) => (
+          {facts.map((f) => (
             <li key={f} className={styles.fact}>
               {f}
             </li>
@@ -44,8 +46,8 @@ export default function AboutSection() {
           <article className={`${styles.card} ${styles.cardGold}`}>
             <div className={styles.cardImg}>
               <Image
-                src='/images/other/vegasAirport.jpg'
-                alt='Chauffeur meeting a traveler at Harry Reid International Airport'
+                src={market.images.airport.src}
+                alt={market.images.airport.alt}
                 fill
                 sizes='(max-width: 1068px) 100vw, 320px'
                 className={styles.img}
@@ -60,7 +62,7 @@ export default function AboutSection() {
                 rideshare line is still forming.
               </p>
               <ArrowButton
-                href='/book?trip=from-airport&airport=LAS'
+                href={airportBookHref(market.airports[0])}
                 text='Book an airport pickup'
                 variant='midnight'
                 className={styles.cardBtn}

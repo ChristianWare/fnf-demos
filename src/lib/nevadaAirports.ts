@@ -1,63 +1,14 @@
 // Nevada airports for /airports. Hub page only: none of these get their own
 // page.
 //
-// AIRPORTS_SERVED: the airports we drive to every day, shown as cards. Add
-// a logo by dropping a file in /public/airports/ and setting `logo`.
+// The airports we drive every day (the cards) are the market's: see
+// src/markets/.
 //
 // NEVADA_AIRPORTS: every public-use airport in the FAA's national airport
 // system (NPIAS) in Nevada, shown as tables. Source: FAA NPIAS roles and
 // calendar-year 2024 enplanements (passenger boardings), via the Wikipedia
 // "List of airports in Nevada". Drive times are rough, from the middle of
 // the Strip without traffic: for orientation, not quotes.
-
-export type AirportServed = {
-  code: string;
-  name: string;
-  /** How riders say it. */
-  shortName: string;
-  /** Optional logo, e.g. "/airports/las.svg". Until then a code tile shows. */
-  logo?: string;
-  /** Two short facts under the name. */
-  meta: [string, string];
-  copy: string;
-  /** Where "Book a pickup" goes. */
-  href: string;
-};
-
-export const AIRPORTS_SERVED: AirportServed[] = [
-  {
-    code: "LAS",
-    name: "Harry Reid International Airport",
-    shortName: "Harry Reid",
-    meta: ["Terminals 1 and 3", "10–20 min to the Strip"],
-    copy: "Nevada's main airport and our most-driven route. Flight tracking, a name sign in baggage claim and free wait after you land.",
-    href: "/book?trip=from-airport&airport=LAS",
-  },
-  {
-    code: "HND",
-    name: "Henderson Executive Airport",
-    shortName: "Henderson Executive",
-    meta: ["Private aviation", "About 20 min to the Strip"],
-    copy: "The quiet way into Las Vegas for private and charter flights. We meet the aircraft at the FBO, not a curb.",
-    href: "/book?trip=from-airport&airport=HND",
-  },
-  {
-    code: "VGT",
-    name: "North Las Vegas Airport",
-    shortName: "North Las Vegas",
-    meta: ["Private aviation", "About 20 min to the Strip"],
-    copy: "Private, charter and scenic flights on the north side of the valley, close to Summerlin and Downtown.",
-    href: "/book?trip=from-airport&airport=VGT",
-  },
-  {
-    code: "BLD",
-    name: "Boulder City Municipal Airport",
-    shortName: "Boulder City",
-    meta: ["Grand Canyon air tours", "About 35 min to the Strip"],
-    copy: "Home of the Grand Canyon and Hoover Dam air tours. We drop you for the early departure and pick you up when you land.",
-    href: "/book",
-  },
-];
 
 export type DirectoryGroup = "commercial" | "reliever" | "regional";
 
