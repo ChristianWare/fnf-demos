@@ -4,6 +4,7 @@ import { SITE } from "@/config/site";
 import { BUSINESS_REF } from "@/lib/schema";
 import { fleetData } from "@/lib/data";
 import { fleetVehicleBySlug } from "@/lib/fleetDetails";
+import { getMarket } from "@/lib/market";
 import { getFleetRates } from "@/lib/booking/publicRates";
 import SiteNav from "@/components/shared/SiteNav/SiteNav";
 import FleetDetail from "@/components/FleetPage/FleetDetail/FleetDetail";
@@ -26,7 +27,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const v = fleetVehicleBySlug(slug);
+  const v = fleetVehicleBySlug(slug, await getMarket());
   if (!v) return { title: "Not found" };
   return {
     title: { absolute: v.meta.title },
@@ -37,7 +38,7 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
-  const v = fleetVehicleBySlug(slug);
+  const v = fleetVehicleBySlug(slug, await getMarket());
   if (!v) notFound();
   const rates = await getFleetRates(v.slug);
   const hourly =

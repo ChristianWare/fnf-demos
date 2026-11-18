@@ -1,9 +1,10 @@
 // About page: licensed, insured and safe. The same layout as the home
 // page's "How it works": a photo beside a menu-style card.
 //
-// The operator's real details go in CREDENTIALS. Anything left empty is
-// left out of the copy rather than shown as a blank, so nothing invented
-// goes live. Phone comes from Admin → Company Settings.
+// The state's licensing comes from the market (src/markets/). The
+// operator's real details go in CREDENTIALS. Anything left empty is left
+// out of the copy rather than shown as a blank, so nothing invented goes
+// live. Phone comes from Admin → Company Settings.
 
 import Image from "next/image";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
@@ -11,12 +12,13 @@ import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { SITE } from "@/config/site";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
+import { getMarket } from "@/lib/market";
 import styles from "./AboutLicensed.module.css";
 
 // Fill in with the operator's real details.
 const CREDENTIALS = {
-  /** NTA certificate number, e.g. "1234". Empty: the number is left out. */
-  ntaCertificate: "",
+  /** State license or permit number, e.g. "1234". Empty: left out. */
+  licenseNumber: "",
   /** e.g. "$1.5 million". Empty: the line is kept without the figure. */
   insuranceLimit: "",
   /** e.g. "Progressive Commercial". Empty: the carrier is left out. */
@@ -24,18 +26,17 @@ const CREDENTIALS = {
 };
 
 export default async function AboutLicensed() {
-  const s = await getCompanySettings();
+  const [s, market] = await Promise.all([getCompanySettings(), getMarket()]);
+  const { license } = market.copy;
   const phone = s.dispatchPhone || SITE.phone.display;
 
   const rows = [
     {
       title: "State license",
-      tag: "NTA",
-      copy: `Licensed by the Nevada Transportation Authority${
-        CREDENTIALS.ntaCertificate
-          ? `, certificate ${CREDENTIALS.ntaCertificate}`
-          : ""
-      }. Look us up on the NTA's website.`,
+      tag: license.tag,
+      copy: CREDENTIALS.licenseNumber
+        ? `${license.line} License ${CREDENTIALS.licenseNumber}.`
+        : license.line,
     },
     {
       title: "Insurance",
@@ -51,7 +52,7 @@ export default async function AboutLicensed() {
     {
       title: "Chauffeurs",
       tag: "Checked",
-      copy: "Licensed to drive for hire in Nevada, background-checked and drug-tested before their first ride.",
+      copy: license.chauffeurs,
     },
     {
       title: "Vehicles",
@@ -75,18 +76,14 @@ export default async function AboutLicensed() {
               Licensed by the state → Insured for every ride
             </h2>
           </div>
-          <p className={styles.intro}>
-            In Nevada, any company that drives you for hire needs a certificate
-            from the state. Plenty of drivers on social media don&apos;t have
-            one. We do, and here&apos;s what that means for you.
-          </p>
+          <p className={styles.intro}>{license.intro}</p>
         </div>
 
         <div className={styles.grid}>
           <div className={styles.photo}>
             <Image
               src='/img6.jpg'
-              alt='Silver State chauffeur standing beside a black car'
+              alt='Chauffeur standing beside a black car'
               fill
               sizes='(max-width: 1068px) 100vw, 55vw'
               className={styles.img}
@@ -115,8 +112,8 @@ export default async function AboutLicensed() {
             <p className={styles.why}>
               <strong>Why it matters.</strong> An unlicensed car is cheaper
               until something goes wrong. If you&apos;re booking for a wedding
-              party, a client or your own family, ask any company for its NTA
-              certificate number. Ours is right here.
+              party, a client or your own family, ask any company for{" "}
+              {license.ask}. We&apos;ll show you ours.
             </p>
 
             <dl className={styles.after}>

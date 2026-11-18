@@ -1,60 +1,63 @@
 import type { Metadata } from "next";
-import {
-  AIRPORT_FAQS,
-  NEVADA_AIRPORTS,
-  NPIAS_AIRPORT_COUNT,
-} from "@/lib/nevadaAirports";
+import { AIRPORT_FREE_WAIT_MINUTES } from "@/lib/booking/rules";
+import { getMarket } from "@/lib/market";
+import { airportFaqs, andList } from "@/markets";
 import SiteNav from "@/components/shared/SiteNav/SiteNav";
 import AirportsHero from "@/components/AirportsPage/AirportsHero/AirportsHero";
 import AirportsServed from "@/components/AirportsPage/AirportsServed/AirportsServed";
 import AirportsAviation from "@/components/AirportsPage/AirportsAviation/AirportsAviation";
-import AirportsDirectory from "@/components/AirportsPage/AirportsDirectory/AirportsDirectory";
 import FleetFaq from "@/components/FleetPage/FleetFaq/FleetFaq";
 import ClosingCta from "@/components/HomePage/ClosingCta/ClosingCta";
 
-export const metadata: Metadata = {
-  title: {
-    absolute:
-      "Nevada Airports: Every Airport in Nevada, with Codes & Drive Times",
-  },
-  description: `All ${NPIAS_AIRPORT_COUNT} public airports in Nevada in one place, with codes and drive times from the Las Vegas Strip, plus car service to Harry Reid, Henderson Executive, North Las Vegas and Boulder City.`,
-  alternates: { canonical: "/airports" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const market = await getMarket();
+  const codes = market.airports.map((a) => a.code);
+  return {
+    title: {
+      absolute: `${market.city} Airport Car Service: ${codes.join(", ")}`,
+    },
+    description: `Black car service to and from ${andList(market.airports.map((a) => `${a.shortName} (${a.code})`))}, with flight tracking, meet & greet and ${AIRPORT_FREE_WAIT_MINUTES} minutes of free wait after landing.`,
+    alternates: { canonical: "/airports" },
+  };
+}
 
-const schema = [
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Airports in Nevada",
-    numberOfItems: NEVADA_AIRPORTS.length,
-    itemListElement: NEVADA_AIRPORTS.map((a, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      item: {
-        "@type": "Airport",
-        name: a.name,
-        ...(a.iata && { iataCode: a.iata }),
-        ...(a.icao && { icaoCode: a.icao }),
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: a.city,
-          addressRegion: "NV",
+export default async function Page() {
+  const market = await getMarket();
+  const faqs = airportFaqs(market, {
+    freeWaitMinutes: AIRPORT_FREE_WAIT_MINUTES,
+  });
+
+  const schema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: `Airports we drive in ${market.city}`,
+      numberOfItems: market.airports.length,
+      itemListElement: market.airports.map((a, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "Airport",
+          name: a.name,
+          iataCode: a.code,
+          address: {
+            "@type": "PostalAddress",
+            addressRegion: market.stateCode,
+          },
         },
-      },
-    })),
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: AIRPORT_FAQS.map((f) => ({
-      "@type": "Question",
-      name: f.question,
-      acceptedAnswer: { "@type": "Answer", text: f.answer },
-    })),
-  },
-];
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((f) => ({
+        "@type": "Question",
+        name: f.question,
+        acceptedAnswer: { "@type": "Answer", text: f.answer },
+      })),
+    },
+  ];
 
-export default function Page() {
   return (
     <>
       <script
@@ -67,10 +70,9 @@ export default function Page() {
         <AirportsHero />
         <AirportsServed />
         <AirportsAviation />
-        <AirportsDirectory />
         <FleetFaq
-          heading='Questions about Nevada airports'
-          items={AIRPORT_FAQS}
+          heading={`Questions about ${market.city} airports`}
+          items={faqs}
         />
         <ClosingCta />
       </main>

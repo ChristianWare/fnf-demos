@@ -14,7 +14,7 @@ import styles from "./AirportsServed.module.css";
 export default async function AirportsServed() {
   const market = await getMarket();
   return (
-    <section className={styles.section}>
+    <section className={styles.section} id='airports'>
       <LayoutWrapper>
         <div className={styles.top}>
           <div className={styles.topLeft}>

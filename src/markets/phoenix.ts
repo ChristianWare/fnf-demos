@@ -157,11 +157,28 @@ export const PHOENIX: Market = {
     bookEarlyFor: "the Phoenix Open, spring training and holidays",
     aboutDrive: "the Valley, its airports and the desert beyond them",
     licensed: "Licensed and insured in Arizona",
+    license: {
+      tag: "Arizona",
+      line: "Licensed to carry passengers for hire in Arizona, with the registration and insurance the state requires.",
+      chauffeurs:
+        "Background-checked and drug-tested before their first ride, and checked again on a set schedule.",
+      intro:
+        "In Arizona, a company that drives you for hire has to meet the state's rules for licensing, insurance and vehicles. Plenty of drivers on social media don't. We do, and here's what that means for you.",
+      ask: "proof of its license and insurance",
+    },
     reviewTrip: "Night in Old Town Scottsdale",
     fleet: {
       suvRide: "long desert drives",
       limo: "The classic Scottsdale arrival.",
       climate: "the Arizona heat",
+      heat: "the July heat",
+      dayTripKind: "desert day trips",
+      dayTrips: "Sedona and Saguaro Lake",
+      dayTripsLong: "Sedona, Saguaro Lake and Cave Creek",
+      nightOut: "A night in Old Town Scottsdale",
+      nightDrive: "the slow drive through Old Town Scottsdale after dark",
+      limoDrive: "a drive through Old Town Scottsdale",
+      teamTrips: "out to the desert",
     },
     roadAlt: "Black SUV on a desert highway outside Phoenix",
     closingHeading: "Your go to ride in Phoenix",

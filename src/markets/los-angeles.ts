@@ -156,11 +156,28 @@ export const LOS_ANGELES: Market = {
     bookEarlyFor: "award season, big game weekends and holidays",
     aboutDrive: "the city, its airports and the coast beyond them",
     licensed: "Licensed by the California Public Utilities Commission",
+    license: {
+      tag: "CPUC",
+      line: "Permitted by the California Public Utilities Commission as a charter-party carrier (TCP). Look us up on the CPUC's website.",
+      chauffeurs:
+        "Background-checked and drug-tested before their first ride, as the CPUC requires.",
+      intro:
+        "In California, any company that drives you for hire needs a charter-party permit from the Public Utilities Commission. Plenty of drivers on social media don't have one. We do, and here's what that means for you.",
+      ask: "its TCP number",
+    },
     reviewTrip: "Night in Hollywood",
     fleet: {
       suvRide: "long drives up the coast",
       limo: "The classic Hollywood arrival.",
       climate: "the Southern California sun",
+      heat: "the summer heat",
+      dayTripKind: "day trips up the coast",
+      dayTrips: "Malibu and Palm Springs",
+      dayTripsLong: "Malibu, Palm Springs and Joshua Tree",
+      nightOut: "A night in Hollywood",
+      nightDrive: "the slow drive down Sunset Boulevard after dark",
+      limoDrive: "a drive down Sunset Boulevard",
+      teamTrips: "up the coast",
     },
     roadAlt: "Black SUV on an open highway outside Los Angeles",
     closingHeading: "Your go to ride in Los Angeles",

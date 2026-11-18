@@ -5,7 +5,6 @@ import Image from "next/image";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
-import { SITE } from "@/config/site";
 import { getMarket } from "@/lib/market";
 import type { Market } from "@/markets";
 import styles from "./AboutBeliefs.module.css";
@@ -36,7 +35,7 @@ const promisesFor = (market: Market) => [
 
 const FACTS = [
   { label: "Promises", value: "Three, on every ride" },
-  { label: "Kept since", value: SITE.founded },
+  { label: "Price", value: "Shown before you book" },
 ];
 
 export default async function AboutBeliefs() {

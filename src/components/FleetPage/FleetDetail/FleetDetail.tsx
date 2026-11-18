@@ -16,7 +16,8 @@ import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { SITE } from "@/config/site";
-import { FLEET, type FleetVehicle } from "@/lib/fleetDetails";
+import { fleetFor, type FleetVehicle } from "@/lib/fleetDetails";
+import { getMarket } from "@/lib/market";
 import type { FleetRates } from "@/lib/booking/publicRates";
 import {
   AIRPORT_FREE_WAIT_MINUTES,
@@ -30,8 +31,6 @@ import {
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import styles from "./FleetDetail.module.css";
 
-const STOPS = [...FLEET].sort((a, b) => a.passengers - b.passengers);
-
 export default async function FleetDetail({
   vehicle: v,
   rates,
@@ -40,7 +39,9 @@ export default async function FleetDetail({
   /** Null until a vehicle category is linked to this page in the admin. */
   rates: FleetRates | null;
 }) {
-  const s = await getCompanySettings();
+  const [s, market] = await Promise.all([getCompanySettings(), getMarket()]);
+  const FLEET = fleetFor(market);
+  const STOPS = [...FLEET].sort((a, b) => a.passengers - b.passengers);
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
     ? `+1${s.dispatchPhoneRaw}`

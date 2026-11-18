@@ -7,8 +7,12 @@
  * Vehicle names are classes, not models, so each operator's real cars fit
  * without rewriting. Prices are never written here: they come from Admin →
  * Vehicle Categories (src/lib/booking/publicRates.ts).
+ *
+ * The local phrases (the city, the day trips, the night out) come from the
+ * market (src/markets/), so every list here is built for one: fleetFor().
  */
 import { fleetData, type FleetEntry } from "@/lib/data";
+import type { Market } from "@/markets";
 
 export type FleetFaq = { q: string; a: string };
 
@@ -37,7 +41,7 @@ export type FleetDetail = {
   meta: { title: string; description: string };
 };
 
-const DETAILS: FleetDetail[] = [
+const detailsFor = ({ city, copy: { fleet: f } }: Market): FleetDetail[] => [
   {
     slug: "executive-sedan",
     short: "sedan",
@@ -85,19 +89,16 @@ const DETAILS: FleetDetail[] = [
     ],
     cta: "Book the sedan",
     meta: {
-      title: "Executive Sedan Car Service in Las Vegas | Up to 3 Passengers",
-      description:
-        "A quiet, late-model executive sedan for one to three passengers in Las Vegas. Leather seats, rear climate control and room for three suitcases.",
+      title: `Executive Sedan Car Service in ${city} | Up to 3 Passengers`,
+      description: `A quiet, late-model executive sedan for one to three passengers in ${city}. Leather seats, rear climate control and room for three suitcases.`,
     },
   },
   {
     slug: "luxury-suv",
     short: "SUV",
     vehicleClass: "Luxury SUV",
-    intro:
-      "Room for six and their luggage, with a higher seat and a calmer ride on long desert drives.",
-    about:
-      "The luxury SUV is the most-booked vehicle in Las Vegas for a reason. It fits a family and their bags, a foursome and their golf clubs, or a team heading to the Convention Center. Three rows of leather, tri-zone climate for the July heat, and enough room behind the third row that nobody rides with a suitcase on their lap.",
+    intro: `Room for six and their luggage, with a higher seat and a calmer ride on ${f.suvRide}.`,
+    about: `The luxury SUV is the most-booked vehicle in ${city} for a reason. It fits a family and their bags, a foursome and their golf clubs, or a team heading to the Convention Center. Three rows of leather, tri-zone climate for ${f.heat}, and enough room behind the third row that nobody rides with a suitcase on their lap.`,
     features: [
       "Three rows of leather seating",
       "Space for golf bags and strollers",
@@ -105,7 +106,7 @@ const DETAILS: FleetDetail[] = [
       "Phone chargers",
       "Bottled water",
     ],
-    bestFor: ["Families", "Golf trips", "Day trips to Hoover Dam and Red Rock"],
+    bestFor: ["Families", "Golf trips", `Day trips to ${f.dayTrips}`],
     specs: [
       { label: "Class", value: "Full-size luxury SUV" },
       { label: "Ride", value: "High seat, calm on the highway" },
@@ -135,14 +136,13 @@ const DETAILS: FleetDetail[] = [
       },
       {
         q: "Is the SUV good for day trips?",
-        a: "It's the one we recommend for Hoover Dam, Red Rock and Valley of Fire: comfortable for hours, cool in the heat.",
+        a: `It's the one we recommend for ${f.dayTripsLong}: comfortable for hours, cool in the heat.`,
       },
     ],
     cta: "Book the SUV",
     meta: {
-      title: "Luxury SUV Car Service in Las Vegas | Up to 6 Passengers",
-      description:
-        "A late-model luxury SUV for up to six passengers and their luggage in Las Vegas. Three rows of leather, tri-zone climate and room for golf bags.",
+      title: `Luxury SUV Car Service in ${city} | Up to 6 Passengers`,
+      description: `A late-model luxury SUV for up to six passengers and their luggage in ${city}. Three rows of leather, tri-zone climate and room for golf bags.`,
     },
   },
   {
@@ -203,19 +203,16 @@ const DETAILS: FleetDetail[] = [
     ],
     cta: "Book the Sprinter",
     meta: {
-      title: "Executive Sprinter Van in Las Vegas | Up to 14 Passengers",
-      description:
-        "An Executive Sprinter for up to 14 passengers in Las Vegas, with stand-up headroom, captain's chairs and room for everyone's luggage.",
+      title: `Executive Sprinter Van in ${city} | Up to 14 Passengers`,
+      description: `An Executive Sprinter for up to 14 passengers in ${city}, with stand-up headroom, captain's chairs and room for everyone's luggage.`,
     },
   },
   {
     slug: "stretch-limousine",
     short: "limo",
     vehicleClass: "Stretch limousine",
-    intro:
-      "The classic Las Vegas arrival. Wraparound seating for up to 10, mood lighting and a partition for privacy.",
-    about:
-      "Some nights call for the stretch. Wraparound seating so everyone faces each other, lighting you can set to the mood, a sound system and glassware, and a partition when you want the back to yourselves. It's the car for the wedding photos, the milestone birthday and the slow drive down the Strip after dark.",
+    intro: `${f.limo} Wraparound seating for up to 10, mood lighting and a partition for privacy.`,
+    about: `Some nights call for the stretch. Wraparound seating so everyone faces each other, lighting you can set to the mood, a sound system and glassware, and a partition when you want the back to yourselves. It's the car for the wedding photos, the milestone birthday and ${f.nightDrive}.`,
     features: [
       "Up to 10 seats",
       "Privacy partition",
@@ -223,12 +220,7 @@ const DETAILS: FleetDetail[] = [
       "Sound system",
       "Glassware",
     ],
-    bestFor: [
-      "Weddings",
-      "Milestone birthdays",
-      "Prom",
-      "A night on the Strip",
-    ],
+    bestFor: ["Weddings", "Milestone birthdays", "Prom", f.nightOut],
     specs: [
       { label: "Class", value: "Stretch limousine" },
       { label: "Ride", value: "Long, low and smooth" },
@@ -255,14 +247,13 @@ const DETAILS: FleetDetail[] = [
       },
       {
         q: "How long should we book it for?",
-        a: "Most limo bookings are 3 to 5 hours: enough for photos, dinner and a drive down the Strip.",
+        a: `Most limo bookings are 3 to 5 hours: enough for photos, dinner and ${f.limoDrive}.`,
       },
     ],
     cta: "Book the limousine",
     meta: {
-      title: "Stretch Limousine in Las Vegas | Up to 10 Passengers",
-      description:
-        "A stretch limousine for up to 10 passengers in Las Vegas, with wraparound seating, mood lighting and a privacy partition. Weddings, birthdays and the Strip.",
+      title: `Stretch Limousine in ${city} | Up to 10 Passengers`,
+      description: `A stretch limousine for up to 10 passengers in ${city}, with wraparound seating, mood lighting and a privacy partition. Weddings, birthdays and nights out.`,
     },
   },
   {
@@ -271,14 +262,13 @@ const DETAILS: FleetDetail[] = [
     vehicleClass: "Motor coach",
     intro:
       "Move the whole group at once. Reclining seats, an onboard restroom and a full luggage bay underneath.",
-    about:
-      "When the group is too big for one Sprinter, the motor coach takes everyone together. Reclining seats for the long drives, a restroom on board, and a luggage bay underneath that holds a suitcase for every seat. It's the vehicle for convention shuttles, wedding guest blocks and team trips out to the desert.",
+    about: `When the group is too big for one Sprinter, the motor coach takes everyone together. Reclining seats for the long drives, a restroom on board, and a luggage bay underneath that holds a suitcase for every seat. It's the vehicle for convention shuttles, wedding guest blocks and team trips ${f.teamTrips}.`,
     features: [
       "Up to 56 seats",
       "Reclining seats",
       "Onboard restroom",
       "Luggage bay underneath",
-      "Climate control for the desert",
+      `Climate control for ${f.climate}`,
     ],
     bestFor: [
       "Conventions",
@@ -320,9 +310,8 @@ const DETAILS: FleetDetail[] = [
     ],
     cta: "Book the coach",
     meta: {
-      title: "Motor Coach Charter in Las Vegas | Up to 56 Passengers",
-      description:
-        "A full-size motor coach for up to 56 passengers in Las Vegas, with reclining seats, an onboard restroom and a luggage bay. Conventions and big groups.",
+      title: `Motor Coach Charter in ${city} | Up to 56 Passengers`,
+      description: `A full-size motor coach for up to 56 passengers in ${city}, with reclining seats, an onboard restroom and a luggage bay. Conventions and big groups.`,
     },
   },
 ];
@@ -330,14 +319,18 @@ const DETAILS: FleetDetail[] = [
 /** fleetData's entry with its details; "best for" is the details' list. */
 export type FleetVehicle = Omit<FleetEntry, "bestFor"> & FleetDetail;
 
-/** Every vehicle in fleetData that has details, in fleetData's order. */
-export const FLEET: FleetVehicle[] = fleetData.flatMap((e) => {
-  const d = DETAILS.find((x) => x.slug === e.slug);
-  return d ? [{ ...e, ...d }] : [];
-});
+/** Every vehicle in fleetData that has details, in fleetData's order,
+ *  worded for the market. */
+export function fleetFor(market: Market): FleetVehicle[] {
+  const details = detailsFor(market);
+  return fleetData.flatMap((e) => {
+    const d = details.find((x) => x.slug === e.slug);
+    return d ? [{ ...e, ...d }] : [];
+  });
+}
 
-export const fleetVehicleBySlug = (slug: string) =>
-  FLEET.find((v) => v.slug === slug);
+export const fleetVehicleBySlug = (slug: string, market: Market) =>
+  fleetFor(market).find((v) => v.slug === slug);
 
 /** Questions for the /fleet page. */
 export const FLEET_QUESTIONS: {

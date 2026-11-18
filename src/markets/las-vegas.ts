@@ -154,11 +154,28 @@ export const LAS_VEGAS: Market = {
     bookEarlyFor: "conventions, fight weekends and holidays",
     aboutDrive: "the Strip, the airports and the desert beyond them",
     licensed: "Licensed by the Nevada Transportation Authority",
+    license: {
+      tag: "NTA",
+      line: "Licensed by the Nevada Transportation Authority. Look us up on the NTA's website.",
+      chauffeurs:
+        "Licensed to drive for hire in Nevada, background-checked and drug-tested before their first ride.",
+      intro:
+        "In Nevada, any company that drives you for hire needs a certificate from the state. Plenty of drivers on social media don't have one. We do, and here's what that means for you.",
+      ask: "its NTA certificate number",
+    },
     reviewTrip: "Night on the Strip",
     fleet: {
       suvRide: "long desert drives",
       limo: "The classic Las Vegas arrival.",
       climate: "the desert",
+      heat: "the July heat",
+      dayTripKind: "desert day trips",
+      dayTrips: "Hoover Dam and Red Rock",
+      dayTripsLong: "Hoover Dam, Red Rock and Valley of Fire",
+      nightOut: "A night on the Strip",
+      nightDrive: "the slow drive down the Strip after dark",
+      limoDrive: "a drive down the Strip",
+      teamTrips: "out to the desert",
     },
     roadAlt: "Black SUV on a desert highway outside Las Vegas",
     closingHeading: "Your go to ride in Las Vegas",

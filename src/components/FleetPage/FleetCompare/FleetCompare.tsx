@@ -8,7 +8,8 @@ import Link from "next/link";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
-import { FLEET } from "@/lib/fleetDetails";
+import { fleetFor } from "@/lib/fleetDetails";
+import { getMarket } from "@/lib/market";
 import { usdShort } from "@/lib/booking/rules";
 import type { FleetRates } from "@/lib/booking/publicRates";
 import styles from "./FleetCompare.module.css";
@@ -29,11 +30,12 @@ function priceFor(r: FleetRates | undefined) {
   return null;
 }
 
-export default function FleetCompare({
+export default async function FleetCompare({
   rates,
 }: {
   rates: Map<string, FleetRates>;
 }) {
+  const FLEET = fleetFor(await getMarket());
   return (
     <section className={styles.section} id='compare'>
       <LayoutWrapper>

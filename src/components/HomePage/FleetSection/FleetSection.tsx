@@ -85,11 +85,23 @@ const vehiclesFor = ({ copy: { fleet } }: Market): Vehicle[] => [
   },
 ];
 
-const rowsFor = (market: Market) =>
-  vehiclesFor(market).flatMap((v) => {
+// "Best for" lines with a local touch; the rest come from fleetData.
+const localBestFor = ({ copy: { fleet } }: Market): Record<string, string> => ({
+  "luxury-suv": `Families, golf trips, ${fleet.dayTripKind}`,
+  "stretch-limousine": `Weddings, milestone birthdays, prom, ${lower(fleet.nightOut)}`,
+});
+
+const lower = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
+
+const rowsFor = (market: Market) => {
+  const local = localBestFor(market);
+  return vehiclesFor(market).flatMap((v) => {
     const entry = fleetData.find((e) => e.slug === v.slug);
-    return entry ? [{ ...v, ...entry }] : [];
+    return entry
+      ? [{ ...v, ...entry, bestFor: local[v.slug] ?? entry.bestFor }]
+      : [];
   });
+};
 
 export default async function FleetSection() {
   const market = await getMarket();

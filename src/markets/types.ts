@@ -98,6 +98,20 @@ export type Market = {
     aboutDrive: string;
     /** Who licenses the operator, for the About hero caption. */
     licensed: string;
+    /** The About page's "Licensed by the state" card. Only what's true of
+     *  every licensed operator in the state: no numbers, no names. */
+    license: {
+      /** Short tag on the license row: "NTA". */
+      tag: string;
+      /** The license row's copy. */
+      line: string;
+      /** The chauffeurs row's copy. */
+      chauffeurs: string;
+      /** The section intro. */
+      intro: string;
+      /** "…ask any company for {ask}." */
+      ask: string;
+    };
     /** A review card's trip. */
     reviewTrip: string;
     fleet: {
@@ -106,6 +120,22 @@ export type Market = {
       limo: string;
       /** "…clean and climate-controlled for {climate}." */
       climate: string;
+      /** The heat the AC is for: "tri-zone climate for {heat}". */
+      heat: string;
+      /** SUV "best for": "Families, golf trips, {dayTripKind}". */
+      dayTripKind: string;
+      /** "Day trips to {dayTrips}". */
+      dayTrips: string;
+      /** "It's the one we recommend for {dayTripsLong}". */
+      dayTripsLong: string;
+      /** Limo "best for": "{nightOut}". */
+      nightOut: string;
+      /** "…the milestone birthday and {nightDrive}." */
+      nightDrive: string;
+      /** "…enough for photos, dinner and {limoDrive}." */
+      limoDrive: string;
+      /** Motor coach: "…and team trips {teamTrips}." */
+      teamTrips: string;
     };
     /** Alt text of the open-road photo in "How it works". */
     roadAlt: string;

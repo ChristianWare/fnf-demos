@@ -1,55 +1,64 @@
 // /airports: the hero. Heading on the left; eyebrow, intro and buttons on
-// the right; a wide photo underneath with the airport counts along the
-// bottom.
+// the right; a wide photo underneath with the airport pickup facts along
+// the bottom. The city and its airports come from the market.
 
 import Image from "next/image";
 import Link from "next/link";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
-import { AIRPORT_COUNTS, NPIAS_AIRPORT_COUNT } from "@/lib/nevadaAirports";
+import {
+  AIRPORT_FREE_WAIT_MINUTES,
+  MEET_AND_GREET_FREE,
+} from "@/lib/booking/rules";
+import { getMarket } from "@/lib/market";
+import { airportBookHref } from "@/markets";
 import styles from "./AirportsHero.module.css";
 
-const FACTS = [
-  { value: String(NPIAS_AIRPORT_COUNT), label: "Public airports in Nevada" },
-  {
-    value: String(AIRPORT_COUNTS.commercial),
-    label: "With commercial service",
-  },
-  {
-    value: String(AIRPORT_COUNTS.reliever),
-    label: "Private aviation relievers",
-  },
-  { value: "4", label: "We drive every day" },
-];
+export default async function AirportsHero() {
+  const market = await getMarket();
+  const facts = [
+    {
+      value: String(market.airports.length),
+      label: "Airports we drive every day",
+    },
+    {
+      value: `${AIRPORT_FREE_WAIT_MINUTES} min`,
+      label: "Free wait after landing",
+    },
+    { value: "Yes", label: "Flight tracking on every pickup" },
+    {
+      value: MEET_AND_GREET_FREE ? "Free" : "Yes",
+      label: "Meet & greet with a name sign",
+    },
+  ];
 
-export default function AirportsHero() {
   return (
     <section className={styles.section}>
       <LayoutWrapper>
         <div className={styles.top}>
           {/* Two lines, set by the break; they never wrap. */}
           <h1 className={styles.heading}>
-            Nevada
+            {market.city}
             <br />
             airports
           </h1>
 
           <div className={styles.side}>
-            <PulseEyeBrow text='Airports in Nevada' />
+            <PulseEyeBrow text='Airport car service' />
             <p className={styles.copy}>
-              Every public airport in Nevada in one place, with codes and drive
-              times from the Strip, starting with the four we drive to every
-              day.
+              The {market.airports.length} airports we drive every day, from{" "}
+              {market.airports[0].shortName} to the private jet terminals, with
+              flight tracking and a chauffeur waiting when you land.
             </p>
             <div className={styles.actions}>
               <ArrowButton
-                href='/book?trip=from-airport&airport=LAS'
+                href={airportBookHref(market.airports[0])}
                 text='Book an airport pickup'
                 variant='midnight'
               />
-              <Link href='#all-airports' className={styles.textLink}>
-                See every airport
+              <Link href='#airports' className={styles.textLink}>
+                See the airports
               </Link>
             </div>
           </div>
@@ -57,8 +66,8 @@ export default function AirportsHero() {
 
         <div className={styles.media}>
           <Image
-            src='/images/other/vegasAirport.jpg'
-            alt='Freeway to Harry Reid International Airport at night'
+            src={market.images.airport.src}
+            alt={market.images.airport.alt}
             fill
             priority
             sizes='(max-width: 1344px) 100vw, 1344px'
@@ -66,7 +75,7 @@ export default function AirportsHero() {
           />
           <div className={styles.shade} aria-hidden='true' />
           <dl className={styles.facts}>
-            {FACTS.map((f) => (
+            {facts.map((f) => (
               <div key={f.label} className={styles.fact}>
                 <dt className={styles.factLabel}>{f.label}</dt>
                 <dd className={styles.factValue}>{f.value}</dd>

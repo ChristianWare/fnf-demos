@@ -25,7 +25,7 @@ export const fleetData: readonly FleetEntry[] = [
     name: "Luxury SUV",
     passengers: 6,
     luggage: 6,
-    bestFor: "Families, golf trips, desert day trips",
+    bestFor: "Families, golf trips, day trips",
   },
   {
     slug: "executive-sprinter",
@@ -39,7 +39,7 @@ export const fleetData: readonly FleetEntry[] = [
     name: "Stretch Limousine",
     passengers: 10,
     luggage: 4,
-    bestFor: "Weddings, milestone birthdays, prom, a night on the Strip",
+    bestFor: "Weddings, milestone birthdays, prom, a night out",
   },
   {
     slug: "motor-coach-bus",

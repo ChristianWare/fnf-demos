@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { SITE } from "@/config/site";
 import { BUSINESS_REF } from "@/lib/schema";
-import { FLEET, FLEET_QUESTIONS } from "@/lib/fleetDetails";
+import { fleetFor, FLEET_QUESTIONS } from "@/lib/fleetDetails";
+import { getMarket } from "@/lib/market";
 import { getFleetRatesBySlug } from "@/lib/booking/publicRates";
 import SiteNav from "@/components/shared/SiteNav/SiteNav";
 import FleetHero from "@/components/FleetPage/FleetHero/FleetHero";
@@ -13,14 +14,21 @@ import ClosingCta from "@/components/HomePage/ClosingCta/ClosingCta";
 // Prices come from Admin → Vehicle Categories (refreshed on save).
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "Our Fleet: Sedans, SUVs, Sprinters, Limos & Coaches",
-  description: `The ${SITE.name} fleet in Las Vegas: executive sedans, luxury SUVs, Executive Sprinters, a stretch limousine and motor coaches. Pick by group size and luggage.`,
-  alternates: { canonical: "/fleet" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const market = await getMarket();
+  return {
+    title: "Our Fleet: Sedans, SUVs, Sprinters, Limos & Coaches",
+    description: `The ${SITE.name} fleet in ${market.city}: executive sedans, luxury SUVs, Executive Sprinters, a stretch limousine and motor coaches. Pick by group size and luggage.`,
+    alternates: { canonical: "/fleet" },
+  };
+}
 
 export default async function Page() {
-  const rates = await getFleetRatesBySlug();
+  const [rates, market] = await Promise.all([
+    getFleetRatesBySlug(),
+    getMarket(),
+  ]);
+  const FLEET = fleetFor(market);
 
   const schema = [
     {

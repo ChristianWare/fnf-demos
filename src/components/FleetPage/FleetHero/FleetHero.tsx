@@ -7,27 +7,29 @@ import Link from "next/link";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
-import { FLEET } from "@/lib/fleetDetails";
+import { fleetFor } from "@/lib/fleetDetails";
+import { getMarket } from "@/lib/market";
 import styles from "./FleetHero.module.css";
 
-const STOPS = [...FLEET].sort((a, b) => a.passengers - b.passengers);
-
-export default function FleetHero() {
+export default async function FleetHero() {
+  const market = await getMarket();
+  const FLEET = fleetFor(market);
+  const STOPS = [...FLEET].sort((a, b) => a.passengers - b.passengers);
   return (
     <section className={styles.section}>
       <LayoutWrapper>
         <div className={styles.top}>
           {/* Two lines, set by the break; they never wrap. */}
           <h1 className={styles.heading}>
-            Our Las Vegas <br /> fleet →
+            Our {market.city} <br /> fleet →
           </h1>
 
           <div className={styles.side}>
             <PulseEyeBrow text='The fleet' />
             <p className={styles.copy}>
               {FLEET.length} classes of vehicle, each late-model, spotless and
-              cooled for the desert. Pick by group size and luggage, and the
-              booking tool shows the price for each.
+              cooled for {market.copy.fleet.climate}. Pick by group size and
+              luggage, and the booking tool shows the price for each.
             </p>
             <div className={styles.actions}>
               <ArrowButton

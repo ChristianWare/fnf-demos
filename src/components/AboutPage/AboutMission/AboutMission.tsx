@@ -6,14 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
-import { SITE } from "@/config/site";
+import { getMarket } from "@/lib/market";
 import styles from "./AboutMission.module.css";
 
-/** 150 characters or fewer: reused for the footer, bios and Google. */
-export const SHORT_VERSION =
-  "Locally owned chauffeured car service in Las Vegas. Airport pickups, hourly cars, groups and day trips, priced upfront.";
-
-export default function AboutMission() {
+export default async function AboutMission() {
+  const market = await getMarket();
+  /** 150 characters or fewer: reused for the footer, bios and Google. */
+  const shortVersion = `Locally owned chauffeured car service in ${market.city}. Airport pickups, hourly cars, groups and day trips, priced upfront.`;
   return (
     <section className={styles.section}>
       <LayoutWrapper>
@@ -26,7 +25,7 @@ export default function AboutMission() {
           <div className={styles.photo}>
             <Image
               src='/img5.jpg'
-              alt='Silver State chauffeur on the phone beside a black car'
+              alt='Chauffeur on the phone beside a black car'
               fill
               sizes='(max-width: 1068px) 100vw, 30vw'
               className={styles.img}
@@ -35,11 +34,11 @@ export default function AboutMission() {
 
           <div className={styles.content}>
             <h3 className={styles.title}>Our mission</h3>
-            <p className={styles.sub}>On every ride, since {SITE.founded}</p>
+            <p className={styles.sub}>On every ride</p>
 
             <p className={styles.copy}>
-              To make every ride in Las Vegas the easiest part of the trip: on
-              time, upfront on price and driven by people who know the city.
+              To make every ride in {market.city} the easiest part of the trip:
+              on time, upfront on price and driven by people who know the city.
               Whether it&apos;s a 6 a.m. flight, a client dinner or a wedding
               day, our job is the same. Get you there calmly, with nothing to
               think about but where you&apos;re going.
@@ -49,8 +48,9 @@ export default function AboutMission() {
               <figcaption className={styles.label}>Our vision</figcaption>
               <blockquote className={styles.quote}>
                 <p>
-                  &ldquo;To be the car service Las Vegas locals recommend first:
-                  to their guests, their clients and their own families.&rdquo;
+                  &ldquo;To be the car service {market.city} locals recommend
+                  first: to their guests, their clients and their own
+                  families.&rdquo;
                 </p>
               </blockquote>
             </figure>
@@ -64,11 +64,7 @@ export default function AboutMission() {
             <div className={styles.foot}>
               <div className={styles.footItem}>
                 <span className={styles.label}>The short version</span>
-                <span className={styles.footText}>{SHORT_VERSION}</span>
-              </div>
-              <div className={`${styles.footItem} ${styles.footRight}`}>
-                <span className={styles.label}>Since</span>
-                <span className={styles.footValue}>{SITE.founded}</span>
+                <span className={styles.footText}>{shortVersion}</span>
               </div>
             </div>
 
