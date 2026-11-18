@@ -36,7 +36,7 @@ export default async function ContactHero() {
             <h1 className={styles.heading}>
               Talk to
               <br />
-              dispatch.
+              dispatch →
             </h1>
             <p className={styles.intro}>
               A person answers, day or night. Call dispatch for anything about a

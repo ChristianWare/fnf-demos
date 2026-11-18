@@ -32,7 +32,7 @@ export default function AirportsHero() {
           <h1 className={styles.heading}>
             Nevada
             <br />
-            airports.
+            airports
           </h1>
 
           <div className={styles.side}>

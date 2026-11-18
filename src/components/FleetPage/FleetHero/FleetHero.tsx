@@ -19,9 +19,7 @@ export default function FleetHero() {
         <div className={styles.top}>
           {/* Two lines, set by the break; they never wrap. */}
           <h1 className={styles.heading}>
-            Our Las Vegas
-            <br />
-            fleet.
+            Our Las Vegas <br /> fleet →
           </h1>
 
           <div className={styles.side}>

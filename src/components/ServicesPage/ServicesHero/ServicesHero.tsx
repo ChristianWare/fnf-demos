@@ -28,9 +28,9 @@ export default async function ServicesHero() {
               <PulseEyeBrow text='Services in Las Vegas' />
               {/* Two lines, set by the break; they never wrap. */}
               <h1 className={styles.heading}>
-                Every trip,
+                Every trip →
                 <br />
-                chauffeured.
+                chauffeured
               </h1>
             </div>
             <p className={styles.intro}>
