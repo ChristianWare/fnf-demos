@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useMarket } from "@/components/Providers/MarketProvider";
 import { SITE } from "@/config/site";
 import type { LinkPrefill } from "@/lib/booking/linkPrefill";
 import styles from "./BookingWizard.module.css";
@@ -287,6 +288,7 @@ export default function BookingWizard({
   companyTimezoneLabel: string;
 }) {
   const router = useRouter();
+  const { areaCode } = useMarket();
   const { data: session } = useSession();
   const isAuthed = Boolean(session?.user);
 
@@ -3056,7 +3058,7 @@ export default function BookingWizard({
                               clearErrors("guestPhone");
                             }}
                             className='input subheading'
-                            placeholder='(602) 555-1234'
+                            placeholder={`(${areaCode}) 555-1234`}
                             inputMode='tel'
                           />
                         </div>
@@ -3088,7 +3090,7 @@ export default function BookingWizard({
                             clearErrors("contactPhone");
                           }}
                           className='input subheading'
-                          placeholder='(602) 555-1234'
+                          placeholder={`(${areaCode}) 555-1234`}
                           inputMode='tel'
                         />
                         <p className='miniNote'>

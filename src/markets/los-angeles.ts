@@ -8,6 +8,7 @@ export const LOS_ANGELES: Market = {
   state: "California",
   stateCode: "CA",
   label: "Los Angeles, CA",
+  areaCode: "213",
   timeZone: "America/Los_Angeles",
   geo: { lat: 34.0522, lng: -118.2437 },
   region: "greater Los Angeles",

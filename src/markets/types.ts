@@ -42,6 +42,8 @@ export type Market = {
   stateCode: string;
   /** "Las Vegas, NV", under the logo. */
   label: string;
+  /** The local area code, for phone placeholders: "702". */
+  areaCode: string;
   /** IANA time zone the business runs on. */
   timeZone: string;
   /** Where the booking map opens and address search leans toward. */

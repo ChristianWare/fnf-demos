@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
+import { useMarket } from "@/components/Providers/MarketProvider";
 import styles from "./DashboardProfile.module.css";
 import { useState, useMemo, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -35,6 +36,7 @@ export default function DashboardProfile({
     hasPassword: boolean;
   };
 }) {
+  const { areaCode } = useMarket();
   const router = useRouter();
 
   /* ══════════════════════════════════════════════
@@ -584,7 +586,7 @@ export default function DashboardProfile({
                 className={styles.input}
                 value={phone}
                 onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
-                placeholder='(602) 555-1234'
+                placeholder={`(${areaCode}) 555-1234`}
                 maxLength={20}
                 disabled={phoneDisabled}
               />

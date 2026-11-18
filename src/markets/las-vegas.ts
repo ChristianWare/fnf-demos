@@ -8,6 +8,7 @@ export const LAS_VEGAS: Market = {
   state: "Nevada",
   stateCode: "NV",
   label: "Las Vegas, NV",
+  areaCode: "702",
   timeZone: "America/Los_Angeles",
   geo: { lat: 36.1147, lng: -115.1728 },
   region: "the Las Vegas Valley",

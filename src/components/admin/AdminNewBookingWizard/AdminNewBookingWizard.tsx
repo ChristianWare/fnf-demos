@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useMarket } from "@/components/Providers/MarketProvider";
 import type { CustomerMatch } from "../../../../actions/admin/customers/adminSearchCustomers";
 import lookupStyles from "@/components/admin/CustomerLookup/CustomerLookup.module.css";
 import CustomerLookupInput, {
@@ -371,6 +372,7 @@ export default function AdminNewBookingWizard({
   corporateAccounts?: CorporateAccountDTO[];
   companyTimezone: string;
 }) {
+  const { areaCode } = useMarket();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -2353,7 +2355,7 @@ export default function AdminNewBookingWizard({
                                 setCustomerPhone(formatPhoneInput(v));
                               }}
                               onPick={pickCustomer}
-                              placeholder='(602) 555-1234'
+                              placeholder={`(${areaCode}) 555-1234`}
                               inputMode='tel'
                               aria-label='Customer phone'
                             />

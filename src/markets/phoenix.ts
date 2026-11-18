@@ -8,6 +8,7 @@ export const PHOENIX: Market = {
   state: "Arizona",
   stateCode: "AZ",
   label: "Phoenix, AZ",
+  areaCode: "602",
   timeZone: "America/Phoenix",
   geo: { lat: 33.4484, lng: -112.074 },
   region: "the Valley of the Sun",

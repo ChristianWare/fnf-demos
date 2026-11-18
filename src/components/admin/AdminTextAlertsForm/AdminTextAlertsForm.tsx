@@ -1,5 +1,6 @@
 "use client";
 
+import { useMarket } from "@/components/Providers/MarketProvider";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import styles from "./AdminTextAlertsForm.module.css";
@@ -21,6 +22,7 @@ type Props = {
 const DEFAULT_PICK = ["BOOKING_REQUESTED"];
 
 export default function AdminTextAlertsForm({ initial }: Props) {
+  const { areaCode } = useMarket();
   const [enabled, setEnabled] = useState(initial.smsEnabled);
   const [phone, setPhone] = useState(formatPhone(initial.smsTo));
   const [carrier, setCarrier] = useState(initial.smsCarrier ?? "");
@@ -102,7 +104,7 @@ export default function AdminTextAlertsForm({ initial }: Props) {
                 type='tel'
                 inputMode='numeric'
                 autoComplete='tel'
-                placeholder='(480) 555-1234'
+                placeholder={`(${areaCode}) 555-1234`}
                 className={styles.input}
                 value={phone}
                 onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
