@@ -7,9 +7,7 @@ import type { FlightStatusResponse } from "../../../../actions/flight/getFlightS
 import styles from "./FlightTracker.module.css";
 import Link from "next/link";
 import { SITE } from "@/config/site";
-
-// The Las Vegas airports we serve.
-const LOCAL_AIRPORTS = ["LAS", "HND", "VGT"];
+import { useMarket } from "@/components/Providers/MarketProvider";
 
 function formatTime(iso: string | null | undefined): string {
   if (!iso) return "—";
@@ -63,8 +61,12 @@ function getStatusLabel(status: string): { label: string; className: string } {
   return { label: status, className: styles.statusOnTime };
 }
 
-function isLocalAirport(iata: string | null | undefined): boolean {
-  return LOCAL_AIRPORTS.includes((iata ?? "").toUpperCase());
+/** One of the demo market's airports (src/markets/). */
+function isLocalAirport(
+  iata: string | null | undefined,
+  localCodes: string[],
+): boolean {
+  return localCodes.includes((iata ?? "").toUpperCase());
 }
 
 type FlightResult =
@@ -103,6 +105,8 @@ function FlightCard({
   hideCta?: boolean;
   airportLeg?: "PICKUP" | "DROPOFF";
 }) {
+  const market = useMarket();
+  const localCodes = market.airports.map((a) => a.code);
   const isEmpty = !flight && !loading && !error;
   const isLoading = loading;
 
@@ -129,8 +133,11 @@ function FlightCard({
   const arrGate = flight?.arrival.gate;
   const depDate = flight?.departure.scheduledTime;
 
-  const isArrLocal = isLocalAirport(flight?.arrival.airport.iata);
-  const isDepLocal = isLocalAirport(flight?.departure.airport.iata);
+  const isArrLocal = isLocalAirport(flight?.arrival.airport.iata, localCodes);
+  const isDepLocal = isLocalAirport(
+    flight?.departure.airport.iata,
+    localCodes,
+  );
 
   const delayMins = flight?.arrival.actualTime
     ? flight?.arrivalDelayMinutes
@@ -141,20 +148,19 @@ function FlightCard({
     ? getStatusLabel(flight.status)
     : { label: "—", className: styles.statusOnTime };
 
-  let ctaHeadline = "Traveling through Phoenix?";
-  let ctaBody =
-    `${SITE.name} provides premium black car service throughout the Phoenix metro — for any leg of your journey.`;
+  let ctaHeadline = `Traveling through ${market.city}?`;
+  let ctaBody = `${SITE.name} provides premium black car service throughout ${market.region} — for any leg of your journey.`;
   const ctaHref = "/book";
   let ctaLabel = "Book a Ride →";
 
   if (flight) {
     if (isArrLocal) {
-      ctaHeadline = "Arriving in Phoenix?";
+      ctaHeadline = `Arriving in ${market.city}?`;
       ctaBody =
         "Skip the rideshare lines. Your personal driver will be waiting at baggage claim — tracking your flight in real time.";
       ctaLabel = "Book Airport Pickup →";
     } else if (isDepLocal) {
-      ctaHeadline = "Flying out of Phoenix?";
+      ctaHeadline = `Flying out of ${market.city}?`;
       ctaBody =
         "We'll get you to the airport on time, every time — no surge pricing, no surprises.";
       ctaLabel = "Book Airport Dropoff →";

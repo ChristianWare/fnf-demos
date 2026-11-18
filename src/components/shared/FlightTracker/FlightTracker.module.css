@@ -80,7 +80,7 @@
 .trackBtn {
   padding: 1.2rem 2.4rem;
   background: var(--accent);
-  color: var(--white);
+  color: var(--midnight);
   border: none;
   border-radius: 8px;
   font-size: 1.5rem;
@@ -111,8 +111,8 @@
 .spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 2px solid rgba(11, 15, 26, 0.25);
+  border-top-color: var(--midnight);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -142,11 +142,12 @@
   }
 }
 
+/* Navy with ivory text, for contrast (ivory on navy is about 14:1). */
 .card {
-  background: var(--accent);
+  background: var(--navy);
   border-radius: 10px 10px 0 0;
   padding: 2.4rem 2.8rem 2rem;
-  color: var(--white);
+  color: var(--ivory);
   position: relative;
   overflow: hidden;
 }
@@ -177,7 +178,7 @@
 }
 
 .airlineCode {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(247, 245, 240, 0.14);
   padding: 0.2rem 0.7rem;
   border-radius: 4px;
   font-size: 1.3rem;
@@ -220,8 +221,8 @@
 }
 
 .statusCancelled {
-  background: rgba(0, 0, 0, 0.3);
-  color: var(--white);
+  background: var(--oxblood);
+  color: var(--ivory);
 }
 
 .statusLanded {
@@ -230,9 +231,9 @@
 }
 
 .statusInFlight {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(247, 245, 240, 0.14);
+  color: var(--ivory);
+  border: 1px solid rgba(247, 245, 240, 0.4);
 }
 
 .statusBoarding {
@@ -267,7 +268,7 @@
   font-weight: 900;
   letter-spacing: -2px;
   line-height: 1;
-  color: var(--white);
+  color: var(--ivory);
 }
 
 .airportName {
@@ -297,8 +298,8 @@
   height: 2px;
   background: repeating-linear-gradient(
     to right,
-    rgba(255, 255, 255, 0.5) 0px,
-    rgba(255, 255, 255, 0.5) 6px,
+    rgba(247, 245, 240, 0.45) 0px,
+    rgba(247, 245, 240, 0.45) 6px,
     transparent 6px,
     transparent 12px
   );
@@ -308,8 +309,8 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
-  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: var(--navy);
+  border: 2px solid var(--gold);
   flex-shrink: 0;
 }
 
@@ -335,7 +336,7 @@
   display: flex;
   align-items: center;
   gap: 2rem;
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(11, 15, 26, 0.45);
   border-radius: 10px;
   padding: 1.4rem 1.8rem;
 }
@@ -353,7 +354,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  opacity: 0.65;
+  opacity: 0.75;
   margin-bottom: 0.3rem;
 }
 
@@ -374,7 +375,7 @@
 .timeDivider {
   width: 1px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(247, 245, 240, 0.18);
   flex-shrink: 0;
 }
 
@@ -384,7 +385,7 @@
   margin-top: 1.6rem;
   font-size: 1.3rem;
   font-weight: 600;
-  opacity: 0.6;
+  opacity: 0.75;
   letter-spacing: 0.3px;
   text-transform: uppercase;
 }
@@ -433,7 +434,7 @@
   display: inline-block;
   padding: 1rem 1.8rem;
   background: var(--accent);
-  color: var(--white);
+  color: var(--midnight);
   border-radius: 5px;
   font-size: 1.4rem;
   font-weight: 700;
@@ -466,7 +467,7 @@
   width: 28px;
   height: 28px;
   background: var(--accent);
-  color: white;
+  color: var(--midnight);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -494,7 +495,7 @@
 }
 
 .skeletonCard {
-  background: var(--accent);
+  background: var(--navy);
   border-radius: 16px;
   padding: 2.4rem 2.8rem;
   display: flex;
@@ -589,10 +590,10 @@
 .appliedNote {
   margin-top: 1.2rem;
   padding: 0.8rem 1.2rem;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(247, 245, 240, 0.12);
   border-radius: 6px;
   font-size: 1.3rem;
   font-weight: 600;
-  color: var(--white);
+  color: var(--ivory);
   text-align: center;
 }
