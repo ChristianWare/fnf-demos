@@ -2,10 +2,27 @@
 // subhead bottom left, the mini booking tool bottom right.
 
 import Image from "next/image";
-import HeroBooking from "../HeroBooking/HeroBooking";
+import { db } from "@/lib/db";
+import HeroBooking, { type HeroService } from "../HeroBooking/HeroBooking";
 import styles from "./Hero.module.css";
 
-export default function Hero() {
+/** The services the booking tool offers, in its order. */
+async function bookableServices(): Promise<HeroService[]> {
+  try {
+    return await db.serviceType.findMany({
+      where: { active: true },
+      orderBy: { sortOrder: "asc" },
+      select: { id: true, name: true },
+    });
+  } catch {
+    // No services: the form shows just the date and passengers.
+    return [];
+  }
+}
+
+export default async function Hero() {
+  const services = await bookableServices();
+
   return (
     <section id='hero' className={styles.hero}>
       <div className={styles.frame}>
@@ -34,7 +51,7 @@ export default function Hero() {
             book, and your chauffeur tracks your flight.
           </p>
         </div>
-        <HeroBooking />
+        <HeroBooking services={services} />
       </div>
     </section>
   );

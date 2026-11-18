@@ -1,4 +1,7 @@
+/* The form is the anchor for the calendar on phones; the date field is on
+   wider screens. */
 .form {
+  position: relative;
   display: flex;
   align-items: center;
   background-color: var(--white);
@@ -40,14 +43,46 @@
   white-space: nowrap;
 }
 
+.valueText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .chevron {
   color: var(--steel);
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
-/* The real inputs sit invisibly on top of each field, so a tap anywhere on
-   the field opens the browser's own date picker or passenger list. */
-.dateInput,
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* The date: a button that opens the calendar above the form. */
+.dateField {
+  position: relative;
+  display: flex;
+  align-self: stretch;
+}
+
+.fieldButton {
+  align-items: stretch;
+  border: none;
+  background: none;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+
+.fieldButton:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* The real lists sit invisibly on top of their fields, so a tap anywhere
+   on the field opens the browser's own list. */
 .select {
   position: absolute;
   inset: 0;
@@ -58,14 +93,6 @@
   font-size: 16px;
   border: none;
   appearance: none;
-}
-
-.dateInput::-webkit-calendar-picker-indicator {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
 }
 
 .field:focus-within {
@@ -128,13 +155,19 @@
     width: 100%;
   }
 
-  .field {
+  .field,
+  .dateField {
     flex: 1;
     min-width: 0;
   }
+
+  .dateField .field {
+    width: 100%;
+  }
 }
 
-/* Phone: the two fields side by side, the button full width below. */
+/* Phone: the service across the top, the date and passengers side by side
+   under it, the button full width below. The calendar spans the form. */
 @media screen and (max-width: 568px) {
   .form {
     display: grid;
@@ -146,6 +179,20 @@
 
   .field {
     padding: 0 1rem;
+  }
+
+  .dateField {
+    position: static;
+  }
+
+  .fieldService {
+    grid-column: 1 / -1;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--stroke);
+  }
+
+  .dividerService {
+    display: none;
   }
 
   .btn {

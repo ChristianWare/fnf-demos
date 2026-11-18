@@ -32,14 +32,18 @@
   bottom: 10px;
   z-index: 1;
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 3rem;
+  gap: 2.4rem 3rem;
   padding: 0 3rem 3rem;
 }
 
 .copy {
   min-width: 0;
+  /* The heading keeps its width; when the booking tool doesn't fit beside
+     it, the tool drops underneath. */
+  flex: 0 1 auto;
 }
 
 .heading {
