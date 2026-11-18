@@ -15,6 +15,9 @@ import { buildBusinessSchema } from "@/lib/schema";
 import { getCompanySettings } from "../../actions/admin/companySettings";
 import { getMarket } from "@/lib/market";
 import { getBrand } from "@/lib/brand";
+import { getDemoContext } from "@/lib/platform/context";
+import DemoEnded from "@/components/Platform/DemoEnded/DemoEnded";
+import DemoBadge from "@/components/Platform/DemoBadge/DemoBadge";
 import BrandProvider from "@/components/Providers/BrandProvider";
 
 const SofiaSansExtraCondensedBold = localFont({
@@ -47,6 +50,10 @@ const SofiaSansBold = localFont({
   display: "swap",
 });
 
+// Every page depends on the address it's opened at (each demo is its own
+// business), so nothing is cached between requests.
+export const dynamic = "force-dynamic";
+
 // The name is the operator's (Admin → Company Settings) and the tagline
 // and description are the market's, so a demo's tab and link previews show
 // the prospect's business in their city.
@@ -60,6 +67,8 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${brand.name}`,
     },
     description,
+    // Demos are private previews: never in search results.
+    robots: { index: false, follow: false },
     openGraph: {
       title: `${brand.name} | ${tagline}`,
       description,
@@ -93,7 +102,17 @@ export default async function RootLayout({
   // If the database can't be reached, the schema falls back to site config.
   const settings = await getCompanySettings().catch(() => ({}));
   const businessSchema = buildBusinessSchema(settings);
-  const [market, brand] = await Promise.all([getMarket(), getBrand()]);
+  const [market, brand, demoCtx] = await Promise.all([
+    getMarket(),
+    getBrand(),
+    getDemoContext(),
+  ]);
+  // A demo address whose preview has ended (or never existed) shows only
+  // the "preview ended" page.
+  const ended =
+    demoCtx.kind === "missing" ||
+    (demoCtx.kind === "demo" && demoCtx.demo.status !== "live");
+  const liveDemo = demoCtx.kind === "demo" && !ended ? demoCtx.demo : null;
 
   return (
     <html lang='en'>
@@ -124,26 +143,33 @@ export default async function RootLayout({
             __html: JSON.stringify(businessSchema),
           }}
         />
-        <PlausibleProvider
-          domain={SITE.domain}
-          trackLocalhost={false}
-          enabled={true}
-        >
-          <SessionProviderWrap>
-            <MarketProvider market={market}>
-              <BrandProvider brand={brand}>
-                <ToastsProvider />
-                <SmoothScroll>
-                  <ScrollToTop />
-                  {children}
-                  <Footer />
-                  {/* How far down the page you are, bottom right (public pages). */}
-                  <ScrollProgress />
-                </SmoothScroll>
-              </BrandProvider>
-            </MarketProvider>
-          </SessionProviderWrap>
-        </PlausibleProvider>
+        {ended ? (
+          <DemoEnded
+            business={demoCtx.kind === "demo" ? demoCtx.demo.business : null}
+          />
+        ) : (
+          <PlausibleProvider
+            domain={SITE.domain}
+            trackLocalhost={false}
+            enabled={!liveDemo}
+          >
+            <SessionProviderWrap>
+              <MarketProvider market={market}>
+                <BrandProvider brand={brand}>
+                  <ToastsProvider />
+                  <SmoothScroll>
+                    <ScrollToTop />
+                    {children}
+                    <Footer />
+                    {/* How far down the page you are, bottom right (public pages). */}
+                    <ScrollProgress />
+                  </SmoothScroll>
+                  {liveDemo && <DemoBadge business={liveDemo.business} />}
+                </BrandProvider>
+              </MarketProvider>
+            </SessionProviderWrap>
+          </PlausibleProvider>
+        )}
       </body>
     </html>
   );

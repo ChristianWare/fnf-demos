@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import { getStripe, getStripeWebhookSecret } from "@/lib/stripe";
+import {
+  DEMO_METADATA_KEY,
+  getStripe,
+  getStripeWebhookSecret,
+} from "@/lib/stripe";
+import { runInDemo } from "@/lib/platform/context";
+import { demoById } from "@/lib/platform/registry";
 import { db } from "@/lib/db";
 import { syncDriverPaySafely } from "@/lib/drivers/driverPay";
 import { BookingStatus } from "@prisma/client";
@@ -564,6 +570,33 @@ export async function POST(req: Request) {
     );
   }
 
+  // Demos share this one webhook. A demo's payments carry its id in their
+  // metadata; handle those inside that demo's own data.
+  const object = event?.data?.object as any;
+  let demoId: unknown = object?.metadata?.[DEMO_METADATA_KEY];
+  // Charges and refunds: the demo id is on their payment intent.
+  if (!demoId && typeof object?.payment_intent === "string") {
+    try {
+      const pi = await stripe.paymentIntents.retrieve(object.payment_intent);
+      demoId = pi.metadata?.[DEMO_METADATA_KEY];
+    } catch {
+      // Not found in this account: treat it as the main site's.
+    }
+  }
+  if (typeof demoId === "string" && demoId) {
+    const demo = await demoById(demoId);
+    if (!demo || demo.status !== "live") {
+      // The demo has ended: nothing left to update.
+      return NextResponse.json({ received: true, demo: "ended" });
+    }
+    return runInDemo({ schemaName: demo.schemaName, demo }, () =>
+      handleEvent(event),
+    );
+  }
+  return handleEvent(event);
+}
+
+async function handleEvent(event: any) {
   try {
     console.log(`✅ Stripe webhook: ${event.type}`);
 

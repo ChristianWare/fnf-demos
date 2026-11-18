@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
 
+  // Making a demo reads the SQL for its tables (npm run db:demo-schema).
+  outputFileTracingIncludes: {
+    "/api/platform/demos": ["./src/generated/demo-schema.sql"],
+  },
+
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },

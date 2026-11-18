@@ -1,0 +1,75 @@
+.badge {
+  position: fixed;
+  left: 1.6rem;
+  bottom: 1.6rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  max-width: calc(100vw - 3.2rem);
+  padding: 0.8rem 0.6rem 0.8rem 1.2rem;
+  border-radius: 999px;
+  background-color: var(--midnight);
+  box-shadow: 0 6px 24px rgba(11, 15, 26, 0.25);
+  font-family: var(--SofiaSansRegular);
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--ivory);
+}
+
+.compact {
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--gold);
+}
+
+.text {
+  min-width: 0;
+}
+
+.text strong {
+  font-family: var(--SofiaSansBold);
+  font-weight: normal;
+}
+
+.link {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--steel);
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--ivory);
+}
+
+@media screen and (max-width: 568px) {
+  .badge {
+    left: 0.8rem;
+    bottom: 0.8rem;
+    font-size: 12px;
+  }
+}

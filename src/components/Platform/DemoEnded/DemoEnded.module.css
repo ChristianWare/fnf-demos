@@ -1,0 +1,55 @@
+.page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 2.4rem 1.6rem;
+  background-color: var(--midnight);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.6rem;
+  max-width: 52rem;
+}
+
+.icon {
+  width: 4.4rem;
+  height: 4.4rem;
+  color: var(--gold);
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--SofiaSansRegular);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--SofiaSansExtraCondensedExtraBold);
+  font-size: clamp(4rem, 8vw, 6.4rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--ivory);
+}
+
+.copy {
+  margin: 0;
+  font-family: var(--SofiaSansRegular);
+  font-size: 1.8rem;
+  line-height: 1.5;
+  color: var(--steel);
+}
+
+.link {
+  font-family: var(--SofiaSansBold);
+  font-size: 1.7rem;
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
