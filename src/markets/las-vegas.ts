@@ -80,6 +80,27 @@ export const LAS_VEGAS: Market = {
     },
   ],
 
+  places: [
+    {
+      name: "Bellagio",
+      address: "3600 S Las Vegas Blvd, Las Vegas, NV 89109",
+      lat: 36.1126,
+      lng: -115.1767,
+    },
+    {
+      name: "The Venetian Resort",
+      address: "3355 S Las Vegas Blvd, Las Vegas, NV 89109",
+      lat: 36.1212,
+      lng: -115.1697,
+    },
+    {
+      name: "Las Vegas Convention Center",
+      address: "3150 Paradise Rd, Las Vegas, NV 89109",
+      lat: 36.1311,
+      lng: -115.1522,
+    },
+  ],
+
   areas: [
     {
       name: "The Strip",

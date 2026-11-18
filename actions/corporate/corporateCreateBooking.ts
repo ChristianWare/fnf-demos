@@ -3,6 +3,7 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { noteDemoBooking } from "@/lib/platform/activity";
 import { auth } from "../../auth";
 import { calcQuoteCents, EXTRA_STOP_FEE_CENTS } from "@/lib/pricing/calcQuote";
 import { BookingStatus, ServicePricingStrategy } from "@prisma/client";
@@ -371,6 +372,9 @@ export async function corporateCreateBooking(
   } catch (e) {
     console.error("Failed to send admin notifications:", e);
   }
+
+  // On a demo: goes on the prospect's "What they did" list.
+  await noteDemoBooking([booking.id], "from the corporate portal");
 
   return {
     success: true as const,

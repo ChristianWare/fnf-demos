@@ -1,9 +1,15 @@
-// Daily: ends every demo past its date. Its data and photos are deleted
-// and its address shows the "preview ended" page.
+// Daily: ends every demo past its date (its data and photos are deleted
+// and its address shows the "preview ended" page), then does each live
+// demo's daily upkeep, which the main site's own crons only do for the
+// main site: emptying the trash, and clearing the notification queue
+// (demos send no emails or texts, so this only marks them handled).
 
 import { NextResponse } from "next/server";
-import { demosPastExpiry } from "@/lib/platform/registry";
+import { demosPastExpiry, listDemos } from "@/lib/platform/registry";
 import { endDemo } from "@/lib/platform/provision";
+import { runInDemo } from "@/lib/platform/context";
+import { purgeTrash } from "@/lib/trash/purgeTrash";
+import { processPendingNotificationJobs } from "@/lib/notifications/process";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -30,7 +36,24 @@ async function handle(req: Request) {
       console.error(`[platform] couldn't end ${demo.slug}`, e);
     }
   }
-  return NextResponse.json({ ended });
+
+  const upkeep: Record<string, string> = {};
+  const live = (await listDemos()).filter((d) => d.status === "live");
+  for (const demo of live) {
+    try {
+      await runInDemo({ schemaName: demo.schemaName, demo }, async () => {
+        const trash = await purgeTrash();
+        const jobs = await processPendingNotificationJobs({ limit: 100 });
+        upkeep[demo.slug] =
+          `${trash.purged} purged, ${jobs.processed ?? 0} notifications`;
+      });
+    } catch (e) {
+      upkeep[demo.slug] = "failed";
+      console.error(`[platform] upkeep failed for ${demo.slug}`, e);
+    }
+  }
+
+  return NextResponse.json({ ended, upkeep });
 }
 
 export const GET = handle;

@@ -9,6 +9,7 @@ import { getUserByEmail } from "@/lib/user";
 import { RegisterSchema, RegisterSchemaType } from "@/schemas/RegisterSchema";
 import bcrypt from "bcryptjs";
 import { emailDeliveryOff } from "@/lib/email/delivery";
+import { noteDemoActivity } from "@/lib/platform/activity";
 
 export const signUp = async (values: RegisterSchemaType) => {
   const validateFields = RegisterSchema.safeParse(values);
@@ -31,6 +32,8 @@ export const signUp = async (values: RegisterSchemaType) => {
       ...(emailDeliveryOff() ? { emailVerified: new Date() } : {}),
     },
   });
+
+  await noteDemoActivity("signup", "a rider account");
 
   const emailVerificationToken = await generateEmailVerificationToken(email);
   const result = await sendEmailVerificationToken(

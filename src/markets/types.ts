@@ -25,6 +25,14 @@ export type MarketAirport = {
   lng: number;
 };
 
+/** A well-known hotel or venue, for the sample bookings a demo starts with. */
+export type MarketPlace = {
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+};
+
 export type MarketArea = {
   name: string;
   copy: string;
@@ -68,6 +76,9 @@ export type Market = {
   /** Main airport first: "Book an airport pickup" goes there. */
   airports: MarketAirport[];
   areas: MarketArea[];
+  /** Three places for the sample bookings: two hotels, then a convention
+   *  center. */
+  places: [MarketPlace, MarketPlace, MarketPlace];
 
   copy: {
     hero: { heading: [string, string]; subhead: string };

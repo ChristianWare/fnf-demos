@@ -1,12 +1,19 @@
 // The F&F admin's demo API: list every demo, or make a new one.
 //
+// GET ?since=<ISO time> also gives each demo its events since then (the
+// F&F admin's daily summary).
+//
 // POST is multipart form data: ref (the prospect's id), slug, business,
 // marketId, contactName, email, phone, days, and optional "hero" and
 // "about" image files.
 
 import { NextResponse } from "next/server";
 import { demoJson, platformAuthorized, unauthorized } from "@/lib/platform/api";
-import { listDemos } from "@/lib/platform/registry";
+import {
+  eventsSince,
+  listDemos,
+  type DemoEvent,
+} from "@/lib/platform/registry";
 import { createDemo, DemoInputError } from "@/lib/platform/provision";
 
 export const runtime = "nodejs";
@@ -17,7 +24,18 @@ export const maxDuration = 60;
 export async function GET(req: Request) {
   if (!platformAuthorized(req)) return unauthorized();
   const demos = await listDemos();
-  return NextResponse.json({ demos: demos.map((d) => demoJson(d)) });
+  const sinceParam = new URL(req.url).searchParams.get("since");
+  const since = sinceParam ? new Date(sinceParam) : null;
+  if (!since || Number.isNaN(since.getTime())) {
+    return NextResponse.json({ demos: demos.map((d) => demoJson(d)) });
+  }
+  const byDemo = new Map<string, DemoEvent[]>();
+  for (const e of await eventsSince(since)) {
+    byDemo.set(e.demoId, [...(byDemo.get(e.demoId) ?? []), e]);
+  }
+  return NextResponse.json({
+    demos: demos.map((d) => demoJson(d, byDemo.get(d.id) ?? [])),
+  });
 }
 
 const text = (form: FormData, key: string) => {

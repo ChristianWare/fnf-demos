@@ -6,6 +6,7 @@
 
 import { evaluateCodeForRides } from "@/lib/discounts/discountCodes";
 import { db } from "@/lib/db";
+import { noteDemoBooking } from "@/lib/platform/activity";
 import { auth } from "../../auth";
 import { calcQuoteCents, EXTRA_STOP_FEE_CENTS } from "@/lib/pricing/calcQuote";
 import { BookingStatus, ServicePricingStrategy } from "@prisma/client";
@@ -489,6 +490,12 @@ export async function createTripGroupBooking(input: CreateTripGroupInput) {
       console.error("Failed to send booking confirmation email:", e);
     }
   }
+
+  // On a demo: goes on the prospect's "What they did" list.
+  await noteDemoBooking(
+    result.bookingIds,
+    userId ? "from a rider account" : "as a guest",
+  );
 
   return {
     success: true as const,

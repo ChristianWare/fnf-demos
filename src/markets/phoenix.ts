@@ -82,6 +82,27 @@ export const PHOENIX: Market = {
     },
   ],
 
+  places: [
+    {
+      name: "The Phoenician",
+      address: "6000 E Camelback Rd, Scottsdale, AZ 85251",
+      lat: 33.5035,
+      lng: -111.953,
+    },
+    {
+      name: "Fairmont Scottsdale Princess",
+      address: "7575 E Princess Dr, Scottsdale, AZ 85255",
+      lat: 33.6553,
+      lng: -111.9119,
+    },
+    {
+      name: "Phoenix Convention Center",
+      address: "100 N 3rd St, Phoenix, AZ 85004",
+      lat: 33.4489,
+      lng: -112.0697,
+    },
+  ],
+
   areas: [
     {
       name: "Downtown Phoenix",

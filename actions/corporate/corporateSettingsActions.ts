@@ -1,6 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { siteOrigin } from "@/lib/platform/origin";
+import { getDemoContext } from "@/lib/platform/context";
 import { auth } from "../../auth";
 import { revalidatePath } from "next/cache";
 import type Stripe from "stripe";
@@ -206,8 +208,10 @@ export async function createCardSetupSession() {
       });
     }
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL || SITE.url;
+    // On a demo, the demo's own address.
+    const baseUrl = (await getDemoContext()).kind === "demo"
+      ? await siteOrigin()
+      : process.env.NEXT_PUBLIC_APP_URL || SITE.url;
 
     const session = await stripe.checkout.sessions.create({
       mode: "setup",

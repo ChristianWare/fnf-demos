@@ -2,6 +2,7 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { siteOrigin } from "@/lib/platform/origin";
 import { auth } from "../../../auth";
 import { revalidatePath } from "next/cache";
 import { sendInvoiceLinkEmail } from "@/lib/email/sendInvoiceLinkEmail";
@@ -26,9 +27,8 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function appUrl() {
-  return (process.env.APP_URL || "http://localhost:3000").replace(/\/$/, "");
-}
+/** APP_URL, or on a demo the demo's own address. */
+const appUrl = siteOrigin;
 
 /* ── Send the pay link to the customer ── */
 export async function adminSendInvoice(input: {
@@ -76,7 +76,7 @@ export async function adminSendInvoice(input: {
 
   const name = invoice.user?.name ?? invoice.guestName ?? null;
   const totalDueCents = invoice.totalCents - invoice.amountPaidCents;
-  const payUrl = `${appUrl()}/pay/invoice/${invoice.id}`;
+  const payUrl = `${await appUrl()}/pay/invoice/${invoice.id}`;
 
   try {
     await sendInvoiceLinkEmail({

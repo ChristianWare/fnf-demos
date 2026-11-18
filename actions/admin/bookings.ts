@@ -3,6 +3,7 @@
 
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { siteOrigin } from "@/lib/platform/origin";
 import { syncDriverPaySafely } from "@/lib/drivers/driverPay";
 import { auth } from "../../auth";
 import { getStripe } from "@/lib/stripe";
@@ -786,11 +787,8 @@ export async function createPaymentLinkAndEmail(formData: FormData) {
   if (amountToCharge <= 0)
     return { error: "No balance due. The booking is fully paid." };
 
-  const APP_URL = (process.env.APP_URL || "http://localhost:3000").replace(
-    /\/$/,
-    "",
-  );
-  const customCheckoutUrl = `${APP_URL}/pay/${b.id}`;
+  // On a demo, the demo's own address (see lib/platform/origin).
+  const customCheckoutUrl = `${await siteOrigin()}/pay/${b.id}`;
 
   let depositGroupLegs: Array<{
     legNumber: number;

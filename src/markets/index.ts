@@ -6,7 +6,13 @@ import { LAS_VEGAS } from "./las-vegas";
 import { PHOENIX } from "./phoenix";
 import { LOS_ANGELES } from "./los-angeles";
 
-export type { Market, MarketAirport, MarketArea, Photo } from "./types";
+export type {
+  Market,
+  MarketAirport,
+  MarketArea,
+  MarketPlace,
+  Photo,
+} from "./types";
 
 export const MARKETS: Record<string, Market> = {
   [LAS_VEGAS.id]: LAS_VEGAS,

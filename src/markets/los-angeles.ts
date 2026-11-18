@@ -82,6 +82,27 @@ export const LOS_ANGELES: Market = {
     },
   ],
 
+  places: [
+    {
+      name: "The Beverly Hills Hotel",
+      address: "9641 Sunset Blvd, Beverly Hills, CA 90210",
+      lat: 34.0817,
+      lng: -118.4134,
+    },
+    {
+      name: "Fairmont Miramar Hotel",
+      address: "101 Wilshire Blvd, Santa Monica, CA 90401",
+      lat: 34.0177,
+      lng: -118.4997,
+    },
+    {
+      name: "Los Angeles Convention Center",
+      address: "1201 S Figueroa St, Los Angeles, CA 90015",
+      lat: 34.0403,
+      lng: -118.2696,
+    },
+  ],
+
   areas: [
     {
       name: "Beverly Hills",

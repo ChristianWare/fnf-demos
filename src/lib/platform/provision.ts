@@ -4,7 +4,8 @@
 // every table (src/generated/demo-schema.sql, from `npm run
 // db:demo-schema`), the prospect's photos on Cloudinary, and its starting
 // data: their business details, the services, the vehicles with sample
-// rates, the market's airports, and admin, driver and rider logins.
+// rates, the market's airports, admin, driver and rider logins, and four
+// sample bookings (src/lib/platform/sampleBookings.ts).
 //
 // Removing one drops its schema (everything in it, at once) and its photos.
 
@@ -19,6 +20,7 @@ import { formatPhone, phoneDigits } from "@/lib/phone";
 import { marketById, type Market } from "@/markets";
 import { forgetSchema, isDemoSchema, prismaBase } from "./prismaBase";
 import { runInDemo } from "./context";
+import { seedSampleBookings } from "./sampleBookings";
 import {
   deleteDemoRow,
   demoById,
@@ -266,11 +268,17 @@ async function seed(demo: DemoRecord, market: Market) {
     { email: demo.driverEmail, name: "Sample Driver", roles: [Role.DRIVER] },
     { email: demo.riderEmail, name: "Sample Rider", roles: [Role.USER] },
   ];
+  const ids: string[] = [];
   for (const p of people) {
-    await db.user.create({
+    const user = await db.user.create({
       data: { ...p, password, emailVerified: new Date() },
+      select: { id: true },
     });
+    ids.push(user.id);
   }
+
+  const [adminId, driverId, riderId] = ids;
+  await seedSampleBookings(market, { adminId, driverId, riderId });
 }
 
 // ── Make, extend, remove ──

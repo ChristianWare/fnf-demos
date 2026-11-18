@@ -41,7 +41,7 @@ export type DemoEvent = {
   id: number;
   demoId: string;
   at: Date;
-  kind: "view" | "login" | "booking";
+  kind: "view" | "login" | "booking" | "signup";
   detail: string;
 };
 
@@ -240,15 +240,32 @@ export async function deleteDemoRow(demo: DemoRecord) {
 // ── What they did ──
 
 /** A page view: counts it and keeps first-opened and last-seen. */
-export async function recordView(demo: DemoRecord, path: string) {
-  await prismaBase.$executeRaw`
-    UPDATE platform.demos
-    SET views = views + 1,
-        first_opened_at = COALESCE(first_opened_at, now()),
+/** Counts a page view. Returns when the demo was first opened and last
+ *  seen before this view (both null on the very first). */
+export async function recordView(
+  demo: DemoRecord,
+  path: string,
+): Promise<{ firstOpenedAt: Date | null; lastSeenAt: Date | null }> {
+  const rows = await prismaBase.$queryRaw<Row[]>`
+    WITH before AS (
+      SELECT first_opened_at, last_seen_at FROM platform.demos
+      WHERE id = ${demo.id}
+      FOR UPDATE
+    )
+    UPDATE platform.demos d
+    SET views = d.views + 1,
+        first_opened_at = COALESCE(d.first_opened_at, now()),
         last_seen_at = now()
-    WHERE id = ${demo.id}`;
+    FROM before
+    WHERE d.id = ${demo.id}
+    RETURNING before.first_opened_at AS was_first, before.last_seen_at AS was_last`;
   await recordEvent(demo, "view", path);
   forgetSlug(demo.slug);
+  const r = rows[0] ?? {};
+  return {
+    firstOpenedAt: r.was_first ? new Date(r.was_first as string) : null,
+    lastSeenAt: r.was_last ? new Date(r.was_last as string) : null,
+  };
 }
 
 export async function recordEvent(
@@ -261,6 +278,29 @@ export async function recordEvent(
     VALUES (${demo.id}, ${kind}, ${detail.slice(0, 300)})`;
 }
 
+/** When this demo last had an event of this kind, if ever. */
+export async function lastEventAt(
+  demoId: string,
+  kind: DemoEvent["kind"],
+): Promise<Date | null> {
+  const rows = await prismaBase.$queryRaw<Row[]>`
+    SELECT max(at) AS at FROM platform.demo_events
+    WHERE demo_id = ${demoId} AND kind = ${kind}`;
+  const at = rows[0]?.at;
+  return at ? new Date(at as string) : null;
+}
+
+/** Every demo's events since a time, oldest first: the daily summary. */
+export async function eventsSince(since: Date): Promise<DemoEvent[]> {
+  await ensurePlatform();
+  const rows = await prismaBase.$queryRaw<Row[]>`
+    SELECT * FROM platform.demo_events
+    WHERE at >= ${since}
+    ORDER BY at ASC
+    LIMIT 5000`;
+  return rows.map(toEvent);
+}
+
 export async function demoEvents(
   demoId: string,
   limit = 50,
@@ -271,11 +311,13 @@ export async function demoEvents(
     WHERE demo_id = ${demoId}
     ORDER BY at DESC
     LIMIT ${limit}`;
-  return rows.map((r) => ({
-    id: Number(r.id),
-    demoId: String(r.demo_id),
-    at: new Date(r.at as string),
-    kind: String(r.kind) as DemoEvent["kind"],
-    detail: String(r.detail ?? ""),
-  }));
+  return rows.map(toEvent);
 }
+
+const toEvent = (r: Row): DemoEvent => ({
+  id: Number(r.id),
+  demoId: String(r.demo_id),
+  at: new Date(r.at as string),
+  kind: String(r.kind) as DemoEvent["kind"],
+  detail: String(r.detail ?? ""),
+});

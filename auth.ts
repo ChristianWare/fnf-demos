@@ -12,6 +12,7 @@ import { db } from "@/lib/db";
 import { getUserByEmail } from "@/lib/user";
 import { LoginSchema } from "@/schemas/LoginSchema";
 import bcryptjs from "bcryptjs";
+import { noteDemoLogin } from "@/lib/platform/activity";
 
 export type AppRole = "USER" | "ADMIN" | "DRIVER" | "CORPORATE";
 declare module "next-auth" {
@@ -64,6 +65,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 
   events: {
+    // On a demo, a sign-in goes on the prospect's "What they did" list.
+    async signIn({ user }) {
+      await noteDemoLogin((user as any)?.roles);
+    },
     async linkAccount({ user }) {
       await db.user.update({
         where: { id: user.id },
