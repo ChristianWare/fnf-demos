@@ -6,20 +6,39 @@ import { NextResponse } from "next/server";
 import { demoUrl } from "./hosts";
 import type { DemoEvent, DemoRecord } from "./registry";
 
+/** The shared secret, ignoring spaces or quotes pasted around it. */
+export function platformSecret() {
+  return (process.env.DEMO_PLATFORM_SECRET ?? "")
+    .trim()
+    .replace(/^["']|["']$/g, "")
+    .trim();
+}
+
+const SECRET_MIN = 16;
+
 export function platformAuthorized(req: Request) {
-  const secret = process.env.DEMO_PLATFORM_SECRET ?? "";
-  if (secret.length < 16) return false;
-  const got = (req.headers.get("authorization") ?? "").replace(
-    /^Bearer\s+/i,
-    "",
-  );
+  const secret = platformSecret();
+  if (secret.length < SECRET_MIN) return false;
+  const got = (req.headers.get("authorization") ?? "")
+    .replace(/^Bearer\s+/i, "")
+    .trim();
   const a = Buffer.from(got);
   const b = Buffer.from(secret);
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+/** 401 for a wrong secret; 503 when this site has none set, so the F&F
+ *  admin can tell the two apart. */
 export const unauthorized = () =>
-  NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  platformSecret().length < SECRET_MIN
+    ? NextResponse.json(
+        {
+          error:
+            "The demo platform has no DEMO_PLATFORM_SECRET yet (or it's under 16 characters). Add it in fnf-demos' settings on Vercel and redeploy fnf-demos.",
+        },
+        { status: 503 },
+      )
+    : NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 /** A demo as the F&F admin sees it. */
 export function demoJson(d: DemoRecord, events?: DemoEvent[]) {

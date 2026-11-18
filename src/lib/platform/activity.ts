@@ -12,6 +12,7 @@ import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import { getLiveDemo } from "./context";
 import { demoUrl } from "./hosts";
+import { platformSecret } from "./api";
 import {
   lastEventAt,
   recordEvent,
@@ -43,7 +44,7 @@ export function sendDemoAlert(
   },
 ) {
   const url = (process.env.DEMO_ALERT_URL ?? "").trim();
-  const secret = (process.env.DEMO_PLATFORM_SECRET ?? "").trim();
+  const secret = platformSecret();
   if (!url || secret.length < 16) return;
   const send = async () => {
     try {
