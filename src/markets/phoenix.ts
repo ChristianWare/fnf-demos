@@ -9,6 +9,7 @@ export const PHOENIX: Market = {
   stateCode: "AZ",
   label: "Phoenix, AZ",
   timeZone: "America/Phoenix",
+  geo: { lat: 33.4484, lng: -112.074 },
   region: "the Valley of the Sun",
   center: "Downtown",
 
@@ -41,6 +42,9 @@ export const PHOENIX: Market = {
       kind: "commercial",
       meta: ["Terminals 3 and 4", "10–15 min to Downtown"],
       copy: "Arizona's main airport and our most-driven route. Flight tracking, a name sign in baggage claim and free wait after you land.",
+      address: "3400 E Sky Harbor Blvd, Phoenix, AZ 85034",
+      lat: 33.4343,
+      lng: -112.0116,
     },
     {
       code: "AZA",
@@ -49,6 +53,9 @@ export const PHOENIX: Market = {
       kind: "commercial",
       meta: ["East Valley flights", "About 35 min to Downtown"],
       copy: "The East Valley's airport, close to Mesa, Gilbert and Queen Creek. The same flight tracking, without the Sky Harbor crowds.",
+      address: "6033 S Sossaman Rd, Mesa, AZ 85212",
+      lat: 33.3078,
+      lng: -111.6556,
     },
     {
       code: "SDL",
@@ -57,6 +64,9 @@ export const PHOENIX: Market = {
       kind: "private",
       meta: ["Private aviation", "About 25 min to Downtown"],
       copy: "The quiet way into Scottsdale for private and charter flights. We meet the aircraft at the FBO, not a curb.",
+      address: "15000 N Airport Dr, Scottsdale, AZ 85260",
+      lat: 33.6229,
+      lng: -111.9105,
     },
     {
       code: "DVT",
@@ -65,6 +75,9 @@ export const PHOENIX: Market = {
       kind: "private",
       meta: ["Private aviation", "About 25 min to Downtown"],
       copy: "Private and charter flights on the north side of the Valley, close to North Phoenix and Anthem.",
+      address: "702 W Deer Valley Rd, Phoenix, AZ 85027",
+      lat: 33.6883,
+      lng: -112.0826,
     },
   ],
 

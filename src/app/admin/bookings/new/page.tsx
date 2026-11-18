@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "@/lib/db";
+import { getMarket } from "@/lib/market";
+import { withMarketAirports } from "@/lib/marketAirports";
 import AdminNewBookingWizard from "@/components/admin/AdminNewBookingWizard/AdminNewBookingWizard";
 import { getCompanySettings } from "../../../../../actions/admin/companySettings";
 import { formatIsoDate } from "@/lib/timezone";
@@ -159,16 +161,20 @@ export default async function AdminNewBookingPage() {
     }),
   ]);
 
-  // ✅ Convert Decimal -> number BEFORE passing into Client Component
-  const serviceTypes = serviceTypesRaw.map((s) => ({
-    ...s,
-    airports: (s.airports ?? []).map((a) => ({
-      ...a,
-      lat: decToNumber(a.lat),
-      lng: decToNumber(a.lng),
+  // ✅ Convert Decimal -> number BEFORE passing into Client Component.
+  // Airport services list the market's airports (src/lib/marketAirports.ts).
+  const serviceTypes = withMarketAirports(
+    serviceTypesRaw.map((s) => ({
+      ...s,
+      airports: (s.airports ?? []).map((a) => ({
+        ...a,
+        lat: decToNumber(a.lat),
+        lng: decToNumber(a.lng),
+      })),
+      fees: s.fees ?? [],
     })),
-    fees: s.fees ?? [],
-  }));
+    await getMarket(),
+  );
 
   // ✅ Serialize corporate accounts (Decimal -> number for discountPercent)
   const corporateAccounts = corporateAccountsRaw.map((a) => ({

@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { marketCenter } from "@/lib/marketGeo";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { PlacesAutocomplete } from "@/lib/placesAutocomplete";
 
@@ -271,7 +272,7 @@ export default function RoutePickerAdmin({
         // Initialize map
         if (!mapInstance.current && mapRef.current) {
           const center = internalPickup.location ||
-            internalDropoff.location || { lat: 33.4484, lng: -112.074 }; // Phoenix default
+            internalDropoff.location || marketCenter(); // The demo's market
 
           mapInstance.current = new google.maps.Map(mapRef.current, {
             center,

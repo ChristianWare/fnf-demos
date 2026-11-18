@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PUBLIC_VEHICLE_WHERE } from "@/lib/booking/partnerVehicles";
 import { db } from "@/lib/db";
+import { getMarket } from "@/lib/market";
+import { marketAirports, withMarketAirports } from "@/lib/marketAirports";
 import { auth } from "../../../../../auth";
 import { redirect } from "next/navigation";
 import CorporateNewBookingWizard from "@/components/corporate/CorporateNewBookingWizard/CorporateNewBookingWizard";
@@ -147,7 +149,17 @@ export default async function CorporateNewBookingPage({
       },
     });
     if (past) {
-      const airports = serviceTypes.flatMap((st) => st.airports);
+      const airports = marketAirports(
+        serviceTypes.flatMap((st) =>
+          st.airports.map((a) => ({
+            ...a,
+            placeId: a.placeId ?? null,
+            lat: decToNumber(a.lat),
+            lng: decToNumber(a.lng),
+          })),
+        ),
+        await getMarket(),
+      );
       const airportIdByAddress = new Map(
         airports.map((a) => [a.address, a.id]),
       );
@@ -167,35 +179,39 @@ export default async function CorporateNewBookingPage({
   const blackoutsByYmd: Record<string, boolean> = {};
   for (const b of blackouts) blackoutsByYmd[b.ymd] = true;
 
-  const serializedServiceTypes = serviceTypes.map((s) => ({
-    id: s.id,
-    name: s.name,
-    slug: s.slug,
-    pricingStrategy: s.pricingStrategy as string,
-    minFareCents: s.minFareCents,
-    baseFeeCents: s.baseFeeCents,
-    perMileCents: s.perMileCents,
-    perMinuteCents: s.perMinuteCents,
-    perHourCents: s.perHourCents,
-    minHours: s.minHours ?? 0,
-    active: s.active,
-    sortOrder: s.sortOrder,
-    airportLeg: s.airportLeg as string,
-    airports: s.airports.map((a) => ({
-      id: a.id,
-      name: a.name,
-      iata: a.iata,
-      address: a.address,
-      placeId: a.placeId ?? null,
-      lat: decToNumber(a.lat),
-      lng: decToNumber(a.lng),
+  // Airport services list the market's airports (src/lib/marketAirports.ts).
+  const serializedServiceTypes = withMarketAirports(
+    serviceTypes.map((s) => ({
+      id: s.id,
+      name: s.name,
+      slug: s.slug,
+      pricingStrategy: s.pricingStrategy as string,
+      minFareCents: s.minFareCents,
+      baseFeeCents: s.baseFeeCents,
+      perMileCents: s.perMileCents,
+      perMinuteCents: s.perMinuteCents,
+      perHourCents: s.perHourCents,
+      minHours: s.minHours ?? 0,
+      active: s.active,
+      sortOrder: s.sortOrder,
+      airportLeg: s.airportLeg as string,
+      airports: s.airports.map((a) => ({
+        id: a.id,
+        name: a.name,
+        iata: a.iata,
+        address: a.address,
+        placeId: a.placeId ?? null,
+        lat: decToNumber(a.lat),
+        lng: decToNumber(a.lng),
+      })),
+      fees: (s.fees ?? []).map((f) => ({
+        id: f.id,
+        label: f.label,
+        amountCents: f.amountCents,
+      })),
     })),
-    fees: (s.fees ?? []).map((f) => ({
-      id: f.id,
-      label: f.label,
-      amountCents: f.amountCents,
-    })),
-  }));
+    await getMarket(),
+  );
 
   const serializedVehicles = vehicles.map((v) => ({
     id: v.id,

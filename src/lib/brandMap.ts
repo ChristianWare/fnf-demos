@@ -11,8 +11,10 @@
  * missing.
  */
 
-/** Where the map opens before any address is picked: the Strip. */
-export const MAP_DEFAULT_CENTER = { lat: 36.1147, lng: -115.1728 };
+import { marketCenter } from "@/lib/marketGeo";
+
+/** How close the map opens, on the market's center, before any address is
+ *  picked. */
 export const MAP_DEFAULT_ZOOM = 11;
 
 export type BrandMapColors = {
@@ -162,13 +164,13 @@ export function brandMapStyles(c: BrandMapColors): any[] {
 
 /**
  * Map options for the booking map: Google's standard map and controls (no
- * custom style), opening on the Strip. brandMapStyles is kept above in case the styled
+ * custom style), opening on the market's center. brandMapStyles is kept above in case the styled
  * look comes back: add `styles: brandMapStyles(c)` here to use it.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function brandMapOptions(c: BrandMapColors): any {
   return {
-    center: MAP_DEFAULT_CENTER,
+    center: marketCenter(),
     zoom: MAP_DEFAULT_ZOOM,
     // One finger scrolls the page on phones; two fingers move the map.
     gestureHandling: "cooperative",

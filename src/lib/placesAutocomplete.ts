@@ -23,6 +23,8 @@
  * The Google Cloud key needs "Places API (New)" enabled.
  */
 
+import { marketCenter } from "@/lib/marketGeo";
+
 type LegacyPlace = {
   place_id: string;
   formatted_address: string;
@@ -43,11 +45,9 @@ type Suggestion = {
   prediction: any;
 };
 
-// Results lean toward Las Vegas without excluding anywhere else.
-const BIAS = {
-  center: { lat: 36.1147, lng: -115.1728 },
-  radius: 50000,
-};
+// Results lean toward the demo's market (src/lib/marketGeo.ts) without
+// excluding anywhere else.
+const BIAS_RADIUS_METERS = 50000;
 
 const STYLE_ID = "places-autocomplete-style";
 
@@ -245,7 +245,10 @@ export class PlacesAutocomplete {
         await places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
           input: text,
           sessionToken: this.token,
-          locationBias: BIAS,
+          locationBias: {
+            center: marketCenter(),
+            radius: BIAS_RADIUS_METERS,
+          },
           ...(this.regions ? { includedRegionCodes: this.regions } : {}),
         });
       // A newer request has gone out since; ignore this one.

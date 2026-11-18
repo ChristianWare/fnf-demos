@@ -5,6 +5,7 @@
 
 import { createContext, useContext } from "react";
 import { marketById, type Market } from "@/markets";
+import { setMarketCenter } from "@/lib/marketGeo";
 
 const MarketContext = createContext<Market | null>(null);
 
@@ -15,6 +16,9 @@ export default function MarketProvider({
   market: Market;
   children: React.ReactNode;
 }) {
+  // Set during render, before any map or address field below mounts. The
+  // same value every render, so it's safe to repeat.
+  setMarketCenter(market.geo);
   return (
     <MarketContext.Provider value={market}>{children}</MarketContext.Provider>
   );

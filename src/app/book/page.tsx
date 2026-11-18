@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { bookingLinkPrefill } from "@/lib/booking/linkPrefill";
+import { getMarket } from "@/lib/market";
+import { withMarketAirports } from "@/lib/marketAirports";
 import { PUBLIC_VEHICLE_WHERE } from "@/lib/booking/partnerVehicles";
 import { db } from "@/lib/db";
 import { auth } from "../../../auth";
@@ -110,17 +112,22 @@ export default async function BookPage({
     },
   });
 
-  // ✅ Convert Decimal -> number so props are safe for Client Components
-  const serviceTypes = serviceTypesRaw.map((s) => ({
-    ...s,
-    airports: (s.airports ?? []).map((a) => ({
-      ...a,
-      lat: a.lat == null ? null : Number(a.lat),
-      lng: a.lng == null ? null : Number(a.lng),
+  // ✅ Convert Decimal -> number so props are safe for Client Components.
+  // Airport services list the market's airports (src/lib/marketAirports.ts).
+  const market = await getMarket();
+  const serviceTypes = withMarketAirports(
+    serviceTypesRaw.map((s) => ({
+      ...s,
+      airports: (s.airports ?? []).map((a) => ({
+        ...a,
+        lat: a.lat == null ? null : Number(a.lat),
+        lng: a.lng == null ? null : Number(a.lng),
+      })),
+      // ✅ NEW: Include fees (already plain objects, no conversion needed)
+      fees: s.fees ?? [],
     })),
-    // ✅ NEW: Include fees (already plain objects, no conversion needed)
-    fees: s.fees ?? [],
-  }));
+    market,
+  );
 
   // A link like /book?trip=from-airport&airport=LAS opens the tool filled in.
   const initialPrefill = bookingLinkPrefill(sp, serviceTypes);

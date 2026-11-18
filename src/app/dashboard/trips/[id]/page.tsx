@@ -10,6 +10,8 @@ import type { ReactNode } from "react";
 import styles from "./UserTripDetailPage.module.css";
 import { auth } from "../../../../../auth";
 import { db } from "@/lib/db";
+import { getMarket } from "@/lib/market";
+import { AIRPORT_ROW, marketAirportRows } from "@/lib/marketAirports";
 import { getCompanySettings } from "../../../../../actions/admin/companySettings";
 import DefaultProfileImg from "../../../../../public/images/placeholder.jpg";
 import RouteMapDisplay from "@/components/admin/RouteMapDisplay/RouteMapDisplay";
@@ -359,13 +361,18 @@ export default async function UserTripDetailPage({
   const airports = isOver
     ? await db.airport.findMany({
         where: { active: true },
-        select: { id: true, address: true },
+        select: AIRPORT_ROW,
       })
     : [];
   const againPrefill = isOver
     ? rideAgainPrefill(
         booking,
-        new Map(airports.map((a) => [a.address, a.id])),
+        new Map(
+          marketAirportRows(airports, await getMarket()).map((a) => [
+            a.address,
+            a.id,
+          ]),
+        ),
       )
     : null;
 

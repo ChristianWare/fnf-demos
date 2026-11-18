@@ -9,6 +9,7 @@ export const LOS_ANGELES: Market = {
   stateCode: "CA",
   label: "Los Angeles, CA",
   timeZone: "America/Los_Angeles",
+  geo: { lat: 34.0522, lng: -118.2437 },
   region: "greater Los Angeles",
   center: "Downtown",
 
@@ -41,6 +42,9 @@ export const LOS_ANGELES: Market = {
       kind: "commercial",
       meta: ["Every terminal, and Tom Bradley", "About 30 min to Downtown"],
       copy: "Southern California's main airport and our most-driven route. Flight tracking, a name sign in baggage claim and free wait after you land.",
+      address: "1 World Way, Los Angeles, CA 90045",
+      lat: 33.9416,
+      lng: -118.4085,
     },
     {
       code: "BUR",
@@ -49,6 +53,9 @@ export const LOS_ANGELES: Market = {
       kind: "commercial",
       meta: ["Short walks, short lines", "About 20 min to Downtown"],
       copy: "The easy way into Hollywood, the Valley and Pasadena. Off the plane and on the road in minutes.",
+      address: "2627 N Hollywood Way, Burbank, CA 91505",
+      lat: 34.1975,
+      lng: -118.3585,
     },
     {
       code: "LGB",
@@ -57,6 +64,9 @@ export const LOS_ANGELES: Market = {
       kind: "commercial",
       meta: ["One terminal", "About 30 min to Downtown"],
       copy: "A smaller airport for the South Bay and the Orange County line, without the LAX traffic.",
+      address: "4100 Donald Douglas Dr, Long Beach, CA 90808",
+      lat: 33.8177,
+      lng: -118.1516,
     },
     {
       code: "VNY",
@@ -65,6 +75,9 @@ export const LOS_ANGELES: Market = {
       kind: "private",
       meta: ["Private aviation", "About 30 min to Downtown"],
       copy: "One of the busiest private jet airports in the country. We meet the aircraft at the FBO, not a curb.",
+      address: "16461 Sherman Way, Van Nuys, CA 91406",
+      lat: 34.2098,
+      lng: -118.49,
     },
   ],
 

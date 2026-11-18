@@ -9,6 +9,7 @@ export const LAS_VEGAS: Market = {
   stateCode: "NV",
   label: "Las Vegas, NV",
   timeZone: "America/Los_Angeles",
+  geo: { lat: 36.1147, lng: -115.1728 },
   region: "the Las Vegas Valley",
   center: "the Strip",
 
@@ -39,6 +40,9 @@ export const LAS_VEGAS: Market = {
       kind: "commercial",
       meta: ["Terminals 1 and 3", "10–20 min to the Strip"],
       copy: "Nevada's main airport and our most-driven route. Flight tracking, a name sign in baggage claim and free wait after you land.",
+      address: "5757 Wayne Newton Blvd, Las Vegas, NV 89119",
+      lat: 36.084,
+      lng: -115.1537,
     },
     {
       code: "HND",
@@ -47,6 +51,9 @@ export const LAS_VEGAS: Market = {
       kind: "private",
       meta: ["Private aviation", "About 20 min to the Strip"],
       copy: "The quiet way into Las Vegas for private and charter flights. We meet the aircraft at the FBO, not a curb.",
+      address: "3500 Executive Terminal Dr, Henderson, NV 89052",
+      lat: 35.9729,
+      lng: -115.1344,
     },
     {
       code: "VGT",
@@ -55,6 +62,9 @@ export const LAS_VEGAS: Market = {
       kind: "private",
       meta: ["Private aviation", "About 20 min to the Strip"],
       copy: "Private, charter and scenic flights on the north side of the valley, close to Summerlin and Downtown.",
+      address: "2730 Airport Dr, North Las Vegas, NV 89032",
+      lat: 36.2106,
+      lng: -115.1944,
     },
     {
       code: "BLD",
@@ -63,6 +73,9 @@ export const LAS_VEGAS: Market = {
       kind: "tours",
       meta: ["Grand Canyon air tours", "About 35 min to the Strip"],
       copy: "Home of the Grand Canyon and Hoover Dam air tours. We drop you for the early departure and pick you up when you land.",
+      address: "1201 Airport Rd, Boulder City, NV 89005",
+      lat: 35.9476,
+      lng: -114.861,
     },
   ],
 

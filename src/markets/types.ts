@@ -19,6 +19,10 @@ export type MarketAirport = {
   /** Two short facts under the name. */
   meta: [string, string];
   copy: string;
+  /** Street address and location, for the booking tool's airport list. */
+  address: string;
+  lat: number;
+  lng: number;
 };
 
 export type MarketArea = {
@@ -40,6 +44,8 @@ export type Market = {
   label: string;
   /** IANA time zone the business runs on. */
   timeZone: string;
+  /** Where the booking map opens and address search leans toward. */
+  geo: { lat: number; lng: number };
   /** How the whole area is named: "the Las Vegas Valley". */
   region: string;
   /** The middle of things, that drive times count from: "the Strip".

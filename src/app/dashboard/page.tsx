@@ -2,6 +2,8 @@ import styles from "./DashboardPage.module.css";
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { getMarket } from "@/lib/market";
+import { AIRPORT_ROW, marketAirportRows } from "@/lib/marketAirports";
 import { BookingStatus } from "@prisma/client";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
 import { SITE } from "@/config/site";
@@ -131,7 +133,7 @@ export default async function DashboardHomePage() {
 
     db.airport.findMany({
       where: { active: true },
-      select: { id: true, address: true },
+      select: AIRPORT_ROW,
     }),
   ]);
 
@@ -167,7 +169,12 @@ export default async function DashboardHomePage() {
     }));
 
   // Ride again: the three most recent different routes.
-  const airportIdByAddress = new Map(airports.map((a) => [a.address, a.id]));
+  const airportIdByAddress = new Map(
+    marketAirportRows(airports, await getMarket()).map((a) => [
+      a.address,
+      a.id,
+    ]),
+  );
   const seenRoutes = new Set<string>();
   const rideAgain: RideAgainItem[] = [];
   for (const b of recentCompleted) {
