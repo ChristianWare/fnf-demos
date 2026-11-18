@@ -153,8 +153,9 @@
 
 /* Past days and days around the month. */
 .dayFaded {
+  border-color: var(--stroke);
   color: var(--steel);
-  opacity: 0.55;
+  opacity: 0.4;
 }
 
 .dayOpen {
