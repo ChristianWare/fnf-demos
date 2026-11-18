@@ -17,12 +17,14 @@ import { SITE } from "@/config/site";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: `Book Your Ride | ${SITE.name}`,
-  description:
-    "Book your black car, SUV or Sprinter online in minutes. Flat rates, flight tracking and a chauffeur who waits, anywhere in Las Vegas.",
-  alternates: { canonical: `${SITE.url}/book` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const market = await getMarket();
+  return {
+    title: "Book Your Ride",
+    description: `Book your black car, SUV or Sprinter online in minutes. Flat rates, flight tracking and a chauffeur who waits, anywhere in ${market.region}.`,
+    alternates: { canonical: `${SITE.url}/book` },
+  };
+}
 
 export default async function BookPage({
   searchParams,

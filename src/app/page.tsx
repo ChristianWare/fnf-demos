@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SITE } from "@/config/site";
 import SiteNav from "@/components/shared/SiteNav/SiteNav";
 import Hero from "@/components/HomePage/Hero/Hero";
 import AboutSection from "@/components/HomePage/AboutSection/AboutSection";
@@ -16,10 +15,9 @@ import ClosingCta from "@/components/HomePage/ClosingCta/ClosingCta";
 import AboutBeliefs from "@/components/AboutPage/AboutBeliefs/AboutBeliefs";
 import AirportsServed from "@/components/AirportsPage/AirportsServed/AirportsServed";
 
-export const metadata: Metadata = {
-  title: "Home",
-  description: `${SITE.description}`,
-};
+// The title and description are the layout's: the operator's name, and
+// the market's city and hero line.
+export const metadata: Metadata = {};
 
 export default function Page() {
   return (

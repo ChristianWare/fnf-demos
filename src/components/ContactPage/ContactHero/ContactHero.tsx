@@ -7,24 +7,32 @@ import Image from "next/image";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import { SITE } from "@/config/site";
-import { DESKS } from "@/lib/contact";
+import { desksFor, emailDomain } from "@/lib/contact";
+import { getMarket } from "@/lib/market";
+import { getBrand, officeCity } from "@/lib/brand";
 import DeskStatus from "../DeskStatus";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import styles from "./ContactHero.module.css";
 
 export default async function ContactHero() {
-  const s = await getCompanySettings();
+  const [s, market, brand] = await Promise.all([
+    getCompanySettings(),
+    getMarket(),
+    getBrand(),
+  ]);
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
     ? `+1${s.dispatchPhoneRaw}`
     : SITE.phone.tel;
   const email = s.supportEmail || SITE.email.support;
   const street = s.officeAddress || SITE.address.street;
-  const city =
-    s.officeCity ||
-    `${SITE.address.city}, ${SITE.address.state} ${SITE.address.zip}`;
+  const city = officeCity(s.officeCity, market);
   const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${street}, ${city}`)}`;
-  const dispatch = DESKS.find((d) => d.id === "dispatch") ?? DESKS[0];
+  const desks = desksFor({
+    areaCode: market.areaCode,
+    emailDomain: emailDomain(s.supportEmail, SITE.domain),
+  });
+  const dispatch = desks.find((d) => d.id === "dispatch") ?? desks[0];
 
   return (
     <section className={styles.section}>
@@ -48,7 +56,7 @@ export default async function ContactHero() {
           <div className={styles.media}>
             <Image
               src='/img5.jpg'
-              alt='Silver State chauffeur on the phone beside a black car'
+              alt={`${brand.name} chauffeur on the phone beside a black car`}
               fill
               priority
               sizes='(max-width: 1068px) 100vw, 50vw'
@@ -56,7 +64,7 @@ export default async function ContactHero() {
             />
             <span className={styles.tag}>
               <span className={styles.tagDot} aria-hidden='true' />
-              Dispatch, Las Vegas
+              Dispatch, {market.city}
             </span>
           </div>
         </div>

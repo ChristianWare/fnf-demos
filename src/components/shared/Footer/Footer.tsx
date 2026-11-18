@@ -3,6 +3,7 @@ import { SITE } from "@/config/site";
 import MountainIcon from "@/components/shared/icons/MountainIcon/MountainIcon";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import { getMarket } from "@/lib/market";
+import { getBrand, officeCity } from "@/lib/brand";
 import styles from "./Footer.module.css";
 
 const RIDE = [
@@ -31,7 +32,18 @@ const LEGAL = [
  * operator fills them in).
  */
 export default async function Footer() {
-  const [s, market] = await Promise.all([getCompanySettings(), getMarket()]);
+  const [s, market, brand] = await Promise.all([
+    getCompanySettings(),
+    getMarket(),
+    getBrand(),
+  ]);
+  // "SS Black Car" fills the panel at 0.224 of its width. Other names scale
+  // by their length (a space is narrower than a letter), with a little room
+  // to spare for longer ones.
+  const width = (t: string) =>
+    [...t].reduce((w, c) => w + (c === " " ? 0.35 : 1), 0);
+  const ratio = width("SS Black Car") / width(brand.name);
+  const wordmarkScale = Math.min(0.3, 0.224 * ratio * (ratio < 1 ? 0.95 : 1));
   const year = new Date().getFullYear();
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
@@ -48,19 +60,32 @@ export default async function Footer() {
               <Link
                 href='/'
                 className={styles.logo}
-                aria-label='SS Black Car home'
+                aria-label={`${brand.name} home`}
               >
-                <MountainIcon className={styles.logoIcon} />
-                <span className={styles.logoText}>
-                  <span className={styles.logoName}>SS Black Car</span>
-                  <span className={styles.logoSub}>{market.label}</span>
-                </span>
+                {brand.logoUrl ? (
+                  <span className={styles.logoTile}>
+                    {/* Uploaded logos can live on any host. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={brand.logoUrl}
+                      alt=''
+                      className={styles.logoImg}
+                    />
+                  </span>
+                ) : (
+                  <>
+                    <MountainIcon className={styles.logoIcon} />
+                    <span className={styles.logoText}>
+                      <span className={styles.logoName}>{brand.name}</span>
+                      <span className={styles.logoSub}>{market.label}</span>
+                    </span>
+                  </>
+                )}
               </Link>
               <p className={styles.address}>
                 {s.officeAddress || SITE.address.street}
                 <br />
-                {s.officeCity ||
-                  `${SITE.address.city}, ${SITE.address.state} ${SITE.address.zip}`}
+                {officeCity(s.officeCity, market)}
               </p>
               <div className={styles.contact}>
                 <a href={`tel:${phoneTel}`}>{phone}</a>
@@ -104,7 +129,7 @@ export default async function Footer() {
 
           <div className={styles.bottom}>
             <p className={styles.copyright}>
-              © {year} {SITE.legalName}
+              © {year} {brand.name}
             </p>
             <ul className={styles.legal}>
               {LEGAL.map((l) => (
@@ -119,8 +144,13 @@ export default async function Footer() {
           </div>
         </div>
 
-        <p className={styles.wordmark} aria-hidden='true'>
-          SS Black Car
+        {/* Sized to the name's length so it always spans the panel. */}
+        <p
+          className={styles.wordmark}
+          aria-hidden='true'
+          style={{ "--wordmark-scale": wordmarkScale } as React.CSSProperties}
+        >
+          {brand.name}
         </p>
       </div>
     </footer>

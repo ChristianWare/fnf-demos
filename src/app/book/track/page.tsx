@@ -24,7 +24,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Track your ride | ${SITE.name}`,
+  title: "Track your ride",
   robots: { index: false, follow: false },
 };
 

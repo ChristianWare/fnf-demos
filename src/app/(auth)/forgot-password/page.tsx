@@ -5,7 +5,7 @@ import Nav from "@/components/shared/Nav/Nav";
 import { SITE } from "@/config/site";
 
 export const metadata = {
-  title: `Forgot Password | ${SITE.name}`,
+  title: "Forgot Password",
   description: `Reset your ${SITE.name} account password.`,
 };
 

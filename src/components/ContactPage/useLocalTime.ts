@@ -1,13 +1,15 @@
 "use client";
 
-// The time in Las Vegas, refreshed every 30 seconds, plus whether a desk is
-// open now. Read in the browser only: the server renders without it, so the
-// first paint matches on both sides and the status fills in after.
+// The time where the business is (the market's time zone), refreshed every
+// 30 seconds, plus whether a desk is open now. Read in the browser only:
+// the server renders without it, so the first paint matches on both sides
+// and the status fills in after.
 
 import { useSyncExternalStore } from "react";
-import { CONTACT_TIMEZONE, type Hours } from "@/lib/contact";
+import type { Hours } from "@/lib/contact";
+import { useMarket } from "@/components/Providers/MarketProvider";
 
-type VegasNow = { day: number; minutes: number; label: string };
+type LocalNow = { day: number; minutes: number; label: string };
 
 const subscribe = (cb: () => void) => {
   const id = window.setInterval(cb, 30_000);
@@ -15,15 +17,16 @@ const subscribe = (cb: () => void) => {
 };
 
 // Rounded to the minute, so the snapshot only changes when the clock does.
-let cache: { key: number; value: VegasNow } | null = null;
+const cache = new Map<string, { key: number; value: LocalNow }>();
 
-function read(): VegasNow {
+function read(timeZone: string): LocalNow {
   const now = new Date();
   const key = Math.floor(now.getTime() / 60_000);
-  if (cache && cache.key === key) return cache.value;
+  const hit = cache.get(timeZone);
+  if (hit && hit.key === key) return hit.value;
 
   const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: CONTACT_TIMEZONE,
+    timeZone,
     weekday: "long",
     hour: "2-digit",
     minute: "2-digit",
@@ -48,12 +51,17 @@ function read(): VegasNow {
     minutes: hour * 60 + minute,
     label: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")} on ${weekday}`,
   };
-  cache = { key, value };
+  cache.set(timeZone, { key, value });
   return value;
 }
 
-export function useVegasTime(): VegasNow | null {
-  return useSyncExternalStore(subscribe, read, () => null);
+export function useLocalTime(): LocalNow | null {
+  const { timeZone } = useMarket();
+  return useSyncExternalStore(
+    subscribe,
+    () => read(timeZone),
+    () => null,
+  );
 }
 
 const toMinutes = (hhmm: string) => {
@@ -64,7 +72,7 @@ const toMinutes = (hhmm: string) => {
 /** "Open now", or "Closed, opens at 08:00" (today, or the next open day). */
 export function deskStatus(
   hours: Hours,
-  now: VegasNow,
+  now: LocalNow,
 ): { open: boolean; text: string } {
   if ("always" in hours) return { open: true, text: "Open now, any hour" };
   const open = toMinutes(hours.open);

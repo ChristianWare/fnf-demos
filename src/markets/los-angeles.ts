@@ -179,6 +179,81 @@ export const LOS_ANGELES: Market = {
         "In California, any company that drives you for hire needs a charter-party permit from the Public Utilities Commission. Plenty of drivers on social media don't have one. We do, and here's what that means for you.",
       ask: "its TCP number",
     },
+    pages: {
+      terminalsTag: "Every LAX terminal",
+      freeways: "the 405 and the 105",
+      airportPickups:
+        "Pickups at every LAX terminal, Burbank, Long Beach and Van Nuys",
+      hourlyStops: "three stops on Sunset",
+      showAndDinner: "dinner and a show in Hollywood",
+      corporateIntro:
+        "Los Angeles fills up for conventions, premieres and award season, and those weeks are when cars run out first.",
+      conventionCenter: "the LA Convention Center",
+      bigWeek: "award season",
+      weddingIntro:
+        "From getting ready to the ceremony, the ceremony to the reception, and the photos on the way. Your car runs on your schedule, not the meter.",
+      weddingSpots:
+        "the venues and the photo spots, from Griffith Observatory to the Malibu coast",
+      weddingPhotoStops:
+        "Griffith Observatory, the Malibu coast or Downtown's old theaters",
+      weddingWho:
+        "Couples marrying in Los Angeles, wedding planners and venues arranging transport for their couples.",
+      weddingCardSub: "Ceremony to reception",
+      eventVenues: [
+        "SoFi Stadium",
+        "Crypto.com Arena",
+        "the Hollywood Bowl",
+        "Dodger Stadium",
+      ],
+      eventsIntro:
+        "SoFi Stadium, Crypto.com Arena, the Hollywood Bowl and the clubs on Sunset.",
+      bigNight: "a game night at SoFi",
+      eventsWho: "award season and premiere nights",
+      eventsBestFor: "Concerts, games, premieres, the clubs",
+      p2pExample: "Santa Monica to Downtown",
+      p2pCardMore:
+        "Hotel to restaurant, home to the airport, or across town to Beverly Hills or Pasadena.",
+      dayTripsIntro:
+        "Santa Barbara, Palm Springs, Joshua Tree, San Diego or wine tasting in Temecula.",
+      dayTripsBest:
+        "The coast, the desert and wine country are an hour or two from the city",
+      dayTripsTimes:
+        "Malibu is about 45 minutes away, Temecula about an hour and a half, Santa Barbara, Palm Springs and San Diego about two and Joshua Tree about two and a half each way.",
+      dayTripsPick: "Santa Barbara, Palm Springs, Joshua Tree",
+      dayTripsTitle: "Santa Barbara, Palm Springs & More",
+      dayTripsCardSub: "Malibu to Joshua Tree",
+      dayTripStat: { place: "Santa Barbara", time: "2 hrs" },
+      scenery: "the coast",
+      hotelsWhere: "in Beverly Hills or Santa Monica",
+      photos: {
+        airport: {
+          src: "/img6.jpg",
+          alt: "Chauffeur standing beside a black car",
+        },
+        events: {
+          src: "/markets/los-angeles/hero.jpg",
+          alt: "Downtown Los Angeles from above",
+        },
+        eventsGallery: {
+          src: "/vehicles/partyBus.jpg",
+          alt: "Party bus cabin lit up for a night out",
+        },
+        p2p: {
+          src: "/vehicles/heroiii.jpg",
+          alt: "Black SUV on an open road",
+        },
+        weddings: [
+          {
+            src: "/images/other/aboutHero.jpg",
+            alt: "Chauffeur stepping out of a black SUV",
+          },
+          {
+            src: "/vehicles/limo.jpg",
+            alt: "Black SUV parked under palm trees",
+          },
+        ],
+      },
+    },
     reviewTrip: "Night in Hollywood",
     fleet: {
       suvRide: "long drives up the coast",

@@ -10,10 +10,16 @@ import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import MountainIcon from "@/components/shared/icons/MountainIcon/MountainIcon";
 import { SITE } from "@/config/site";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
+import { getMarket } from "@/lib/market";
+import { getBrand } from "@/lib/brand";
 import styles from "./ServicesHero.module.css";
 
 export default async function ServicesHero() {
-  const s = await getCompanySettings();
+  const [s, market, brand] = await Promise.all([
+    getCompanySettings(),
+    getMarket(),
+    getBrand(),
+  ]);
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
     ? `+1${s.dispatchPhoneRaw}`
@@ -25,7 +31,7 @@ export default async function ServicesHero() {
         <div className={styles.grid}>
           <div className={styles.content}>
             <div className={styles.head}>
-              <PulseEyeBrow text='Services in Las Vegas' />
+              <PulseEyeBrow text={`Services in ${market.city}`} />
               {/* Two lines, set by the break; they never wrap. */}
               <h1 className={styles.heading}>
                 Every trip →
@@ -68,8 +74,8 @@ export default async function ServicesHero() {
               <span className={styles.tagBrand}>
                 <MountainIcon className={styles.tagIcon} />
                 <span className={styles.tagText}>
-                  <span className={styles.tagName}>SS Black Car</span>
-                  <span className={styles.tagSub}>Las Vegas, NV</span>
+                  <span className={styles.tagName}>{brand.name}</span>
+                  <span className={styles.tagSub}>{market.label}</span>
                 </span>
               </span>
               <span className={styles.tagWord}>Reserved</span>

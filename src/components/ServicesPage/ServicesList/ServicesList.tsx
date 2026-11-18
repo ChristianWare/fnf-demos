@@ -4,10 +4,12 @@
 
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import ServiceCard from "./ServiceCard";
-import { SERVICE_CARDS } from "./serviceCards";
+import { serviceCardsFor } from "./serviceCards";
+import { getMarket } from "@/lib/market";
 import styles from "./ServicesList.module.css";
 
-export default function ServicesList() {
+export default async function ServicesList() {
+  const SERVICE_CARDS = serviceCardsFor(await getMarket());
   return (
     <section className={styles.section}>
       <LayoutWrapper>

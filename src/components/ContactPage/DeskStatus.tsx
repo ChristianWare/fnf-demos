@@ -1,10 +1,11 @@
 "use client";
 
-// A small "Open now / Closed, opens at …" line with a dot, live in Las
-// Vegas time. Empty on the server and for the first paint.
+// A small "Open now / Closed, opens at …" line with a dot, live in the
+// market's time. Empty on the server and for the first paint.
 
 import type { Hours } from "@/lib/contact";
-import { deskStatus, useVegasTime } from "./useVegasTime";
+import { useMarket } from "@/components/Providers/MarketProvider";
+import { deskStatus, useLocalTime } from "./useLocalTime";
 import styles from "./DeskStatus.module.css";
 
 export default function DeskStatus({
@@ -14,7 +15,7 @@ export default function DeskStatus({
   hours: Hours;
   className?: string;
 }) {
-  const now = useVegasTime();
+  const now = useLocalTime();
   if (!now) return <span className={`${styles.status} ${className}`} />;
   const s = deskStatus(hours, now);
   return (
@@ -29,13 +30,14 @@ export default function DeskStatus({
 }
 
 /** "In Las Vegas it is 18:18 on Monday". */
-export function VegasClock({ className = "" }: { className?: string }) {
-  const now = useVegasTime();
+export function LocalClock({ className = "" }: { className?: string }) {
+  const { city } = useMarket();
+  const now = useLocalTime();
   return (
     <span className={className}>
       {now ? (
         <>
-          In Las Vegas it is <strong>{now.label}</strong>
+          In {city} it is <strong>{now.label}</strong>
         </>
       ) : (
         " "

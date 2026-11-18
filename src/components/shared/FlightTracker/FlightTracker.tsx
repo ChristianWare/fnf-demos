@@ -6,8 +6,8 @@ import { getFlightStatus } from "../../../../actions/flight/getFlightStatus";
 import type { FlightStatusResponse } from "../../../../actions/flight/getFlightStatus";
 import styles from "./FlightTracker.module.css";
 import Link from "next/link";
-import { SITE } from "@/config/site";
 import { useMarket } from "@/components/Providers/MarketProvider";
+import { useBrand } from "@/components/Providers/BrandProvider";
 
 function formatTime(iso: string | null | undefined): string {
   if (!iso) return "—";
@@ -106,6 +106,7 @@ function FlightCard({
   airportLeg?: "PICKUP" | "DROPOFF";
 }) {
   const market = useMarket();
+  const brand = useBrand();
   const localCodes = market.airports.map((a) => a.code);
   const isEmpty = !flight && !loading && !error;
   const isLoading = loading;
@@ -149,7 +150,7 @@ function FlightCard({
     : { label: "—", className: styles.statusOnTime };
 
   let ctaHeadline = `Traveling through ${market.city}?`;
-  let ctaBody = `${SITE.name} provides premium black car service throughout ${market.region} — for any leg of your journey.`;
+  let ctaBody = `${brand.name} provides premium black car service throughout ${market.region} — for any leg of your journey.`;
   const ctaHref = "/book";
   let ctaLabel = "Book a Ride →";
 

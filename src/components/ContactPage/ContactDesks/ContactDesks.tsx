@@ -1,23 +1,31 @@
-// /contact: who to call. An ivory panel with the live Las Vegas time, then
+// /contact: who to call. An ivory panel with the live local time, then
 // one row per desk: name with a dotted leader to its number, what it's for,
 // its email, its hours and whether it's open now. Desks are in
 // src/lib/contact.ts.
 
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
-import { DESKS } from "@/lib/contact";
-import DeskStatus, { VegasClock } from "../DeskStatus";
+import { SITE } from "@/config/site";
+import { desksFor, emailDomain } from "@/lib/contact";
+import { getMarket } from "@/lib/market";
+import { getCompanySettings } from "../../../../actions/admin/companySettings";
+import DeskStatus, { LocalClock } from "../DeskStatus";
 import styles from "./ContactDesks.module.css";
 
 const tel = (display: string) => `+1${display.replace(/\D/g, "")}`;
 
-export default function ContactDesks() {
+export default async function ContactDesks() {
+  const [s, market] = await Promise.all([getCompanySettings(), getMarket()]);
+  const DESKS = desksFor({
+    areaCode: market.areaCode,
+    emailDomain: emailDomain(s.supportEmail, SITE.domain),
+  });
   return (
     <section className={styles.section}>
       <LayoutWrapper>
         <div className={styles.panel}>
           <div className={styles.head}>
             <h2 className={styles.heading}>Who to call</h2>
-            <VegasClock className={styles.clock} />
+            <LocalClock className={styles.clock} />
           </div>
 
           <ul className={styles.desks}>

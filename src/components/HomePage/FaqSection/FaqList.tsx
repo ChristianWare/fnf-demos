@@ -5,11 +5,13 @@
 // folded so search engines and find-in-page still see them.
 
 import { useState } from "react";
+import { useBrand } from "@/components/Providers/BrandProvider";
 import styles from "./FaqSection.module.css";
 
 export type FaqItem = { topic: string; question: string; answer: string };
 
 export default function FaqList({ items }: { items: FaqItem[] }) {
+  const { name } = useBrand();
   const [open, setOpen] = useState<number | null>(1);
 
   // Even cards on the left, odd on the right; `order` puts them back in
@@ -33,7 +35,7 @@ export default function FaqList({ items }: { items: FaqItem[] }) {
                 style={{ order: i }}
               >
                 <div className={styles.itemHead}>
-                  <p className={styles.dear}>Dear Silver State,</p>
+                  <p className={styles.dear}>Dear {name},</p>
                   <h3 className={styles.question}>{f.question}</h3>
                   <div className={styles.itemFoot}>
                     <span className={styles.topic}>{f.topic}</span>

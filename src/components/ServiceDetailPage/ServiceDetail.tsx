@@ -20,17 +20,23 @@ import ServiceCard from "@/components/ServicesPage/ServicesList/ServiceCard";
 import { otherServiceCards } from "@/components/ServicesPage/ServicesList/serviceCards";
 import cardStyles from "@/components/ServicesPage/ServicesList/ServicesList.module.css";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
+import { getMarket } from "@/lib/market";
+import { getBrand } from "@/lib/brand";
 import styles from "./ServiceDetail.module.css";
 
 export default async function ServiceDetail({ data }: { data: Data }) {
-  const s = await getCompanySettings();
+  const [s, market, brand] = await Promise.all([
+    getCompanySettings(),
+    getMarket(),
+    getBrand(),
+  ]);
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
     ? `+1${s.dispatchPhoneRaw}`
     : SITE.phone.tel;
 
   // Three other services, mixed differently on each page.
-  const others = otherServiceCards(data.slug, 3);
+  const others = otherServiceCards(data.slug, market, 3);
 
   const schema = [
     {
@@ -66,7 +72,7 @@ export default async function ServiceDetail({ data }: { data: Data }) {
         <LayoutWrapper>
           <div className={styles.heroTop}>
             <div className={styles.head}>
-              <PulseEyeBrow text={`${data.title} in Las Vegas`} />
+              <PulseEyeBrow text={`${data.title} in ${market.city}`} />
               <h1 className={styles.heading}>{data.title}</h1>
             </div>
             <div className={styles.side}>
@@ -97,7 +103,7 @@ export default async function ServiceDetail({ data }: { data: Data }) {
               />
               <span className={styles.heroTag}>
                 <span className={styles.heroDot} aria-hidden='true' />
-                Silver State · {data.title}
+                {brand.name} · {data.title}
               </span>
             </div>
           </figure>

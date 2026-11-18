@@ -21,7 +21,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Request received | ${SITE.name}`,
+  title: "Request received",
   robots: { index: false, follow: false },
 };
 

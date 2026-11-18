@@ -51,6 +51,24 @@
   color: var(--gold);
 }
 
+/* An uploaded logo, on a light tile so a dark logo shows on the panel. */
+.logoTile {
+  display: inline-flex;
+  align-items: center;
+  height: 4.4rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  background-color: var(--ivory);
+}
+
+.logoImg {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 18rem;
+  object-fit: contain;
+}
+
 .logoText {
   display: flex;
   flex-direction: column;
@@ -216,8 +234,8 @@
 .wordmark {
   font-family: var(--SofiaSansExtraCondensedExtraBold);
   /* Sized so the name spans the panel (viewport minus the 10px frame and
-     the side padding). */
-  font-size: calc((100vw - 20px - 6rem) * 0.224);
+     the side padding); --wordmark-scale is set from the name's length. */
+  font-size: calc((100vw - 20px - 6rem) * var(--wordmark-scale, 0.224));
   line-height: 0.78;
   text-transform: uppercase;
   white-space: nowrap;
@@ -251,7 +269,7 @@
 
   .wordmark {
     margin: 0 2.4rem -0.1em;
-    font-size: calc((100vw - 20px - 4.8rem) * 0.224);
+    font-size: calc((100vw - 20px - 4.8rem) * var(--wordmark-scale, 0.224));
   }
 }
 
@@ -278,6 +296,6 @@
 
   .wordmark {
     margin: 0 1.6rem -0.1em;
-    font-size: calc((100vw - 16px - 3.2rem) * 0.224);
+    font-size: calc((100vw - 16px - 3.2rem) * var(--wordmark-scale, 0.224));
   }
 }

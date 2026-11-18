@@ -1,12 +1,16 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/config/site";
+import { getBrand } from "@/lib/brand";
+import { getMarket } from "@/lib/market";
 
 // Served at /manifest.webmanifest — Next.js injects the <link rel="manifest"> tag.
-export default function manifest(): MetadataRoute.Manifest {
+// The name is the operator's (Admin → Company Settings).
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const [{ name }, market] = await Promise.all([getBrand(), getMarket()]);
   return {
-    name: SITE.name,
-    short_name: SITE.name.length > 12 ? SITE.name.split(" ")[0] : SITE.name,
-    description: `${SITE.name} – ${SITE.tagline}`,
+    name,
+    short_name: name.length > 12 ? name.split(" ")[0] : name,
+    description: `${name} – Black car service in ${market.city}`,
     start_url: "/",
     display: "standalone",
     background_color: SITE.themeColor,

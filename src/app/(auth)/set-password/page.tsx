@@ -3,12 +3,11 @@ import { redirect } from "next/navigation";
 import Nav from "@/components/shared/Nav/Nav";
 import SetPasswordFormClient from "./SetPasswordFormClient";
 import { validatePasswordSetToken } from "@/lib/corporateOnboarding";
-import { SITE } from "@/config/site";
 
 export const runtime = "nodejs";
 
 export const metadata = {
-  title: `Set Your Password | ${SITE.name}`,
+  title: "Set Your Password",
   description: "Set your password to access your corporate account dashboard.",
 };
 

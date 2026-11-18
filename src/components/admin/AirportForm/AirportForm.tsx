@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useMarket } from "@/components/Providers/MarketProvider";
 import styles from "./AirportForm.module.css";
 import {
   useEffect,
@@ -80,6 +81,13 @@ export default function AirportForm({
   submitLabel?: string;
   mode?: "create" | "edit";
 }) {
+  // Placeholders from the demo's main airport (src/markets/).
+  const market = useMarket();
+  const example = market.airports[0];
+  const codes = market.airports
+    .slice(0, 2)
+    .map((a) => a.code)
+    .join(", ");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -304,7 +312,7 @@ export default function AirportForm({
         <input
           className='input'
           disabled={fieldsDisabled}
-          placeholder='Harry Reid International Airport'
+          placeholder={example.name}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -315,12 +323,12 @@ export default function AirportForm({
         <input
           className='input'
           disabled={fieldsDisabled}
-          placeholder='LAS'
+          placeholder={example.code}
           value={iata}
           onChange={(e) => setIata(e.target.value)}
         />
         <div className='miniNote'>
-          Use the 3-letter IATA code (LAS, HND, etc.).
+          Use the 3-letter IATA code ({codes}, etc.).
         </div>
       </div>
 
@@ -330,7 +338,7 @@ export default function AirportForm({
           ref={addressRef}
           className='input'
           disabled={fieldsDisabled}
-          placeholder='5757 Wayne Newton Blvd, Las Vegas, NV...'
+          placeholder={`${example.address}...`}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           autoComplete='off'

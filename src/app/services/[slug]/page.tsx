@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { servicesData } from "@/lib/services";
 import { serviceDetailBySlug } from "@/lib/serviceDetails";
+import { getMarket } from "@/lib/market";
 import SiteNav from "@/components/shared/SiteNav/SiteNav";
 import ServiceDetail from "@/components/ServiceDetailPage/ServiceDetail";
 import ClosingCta from "@/components/HomePage/ClosingCta/ClosingCta";
@@ -18,7 +19,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const data = serviceDetailBySlug(slug);
+  const data = serviceDetailBySlug(slug, await getMarket());
   if (!data) return { title: "Not found" };
   return {
     title: { absolute: data.meta.title },
@@ -29,7 +30,7 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
-  const data = serviceDetailBySlug(slug);
+  const data = serviceDetailBySlug(slug, await getMarket());
   if (!data) notFound();
   return (
     <>

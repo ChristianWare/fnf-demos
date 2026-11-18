@@ -180,6 +180,76 @@ export const PHOENIX: Market = {
         "In Arizona, a company that drives you for hire has to meet the state's rules for licensing, insurance and vehicles. Plenty of drivers on social media don't. We do, and here's what that means for you.",
       ask: "proof of its license and insurance",
     },
+    pages: {
+      terminalsTag: "Terminals 3 and 4",
+      freeways: "I-10 and the 202",
+      airportPickups:
+        "Pickups at Terminals 3 and 4, Mesa Gateway, Scottsdale and Deer Valley airports",
+      hourlyStops: "three stops in Old Town Scottsdale",
+      showAndDinner: "dinner and a show in Scottsdale",
+      corporateIntro:
+        "Phoenix fills up for conferences, spring training and the Phoenix Open, and those weeks are when cars run out first.",
+      conventionCenter: "the Phoenix Convention Center",
+      bigWeek: "Phoenix Open week",
+      weddingIntro:
+        "From getting ready to the ceremony, the ceremony to the reception, and the photos on the way. Your car runs on your schedule, not the meter.",
+      weddingSpots:
+        "the resorts and the photo spots, from the Desert Botanical Garden to Camelback Mountain and the desert at golden hour",
+      weddingPhotoStops:
+        "the Desert Botanical Garden, Camelback Mountain or the desert at golden hour",
+      weddingWho:
+        "Couples marrying in Phoenix and Scottsdale, wedding planners and resorts arranging transport for their couples.",
+      weddingCardSub: "Ceremony to reception",
+      eventVenues: ["State Farm Stadium", "Footprint Center", "Chase Field"],
+      eventsIntro:
+        "State Farm Stadium, Footprint Center, Chase Field and the clubs in Old Town Scottsdale.",
+      bigNight: "a game night",
+      eventsWho: "spring training and Phoenix Open week",
+      eventsBestFor: "Concerts, games, the clubs",
+      p2pExample: "Scottsdale to Downtown",
+      p2pCardMore:
+        "Hotel to restaurant, home to Old Town, or across the Valley to Tempe or Chandler.",
+      dayTripsIntro:
+        "Sedona, the Grand Canyon, Tucson, Prescott or an afternoon at Saguaro Lake.",
+      dayTripsBest:
+        "Red rock country and the high desert are a couple of hours from the Valley",
+      dayTripsTimes:
+        "Saguaro Lake is about 45 minutes away, Prescott and Tucson about an hour and three quarters, Sedona about two and the Grand Canyon's South Rim about three and a half each way.",
+      dayTripsPick: "Sedona, the Grand Canyon, Tucson",
+      dayTripsTitle: "Sedona, the Grand Canyon & More",
+      dayTripsCardSub: "Sedona to the Grand Canyon",
+      dayTripStat: { place: "Sedona", time: "2 hrs" },
+      scenery: "the desert",
+      hotelsWhere: "in Scottsdale or Downtown",
+      photos: {
+        airport: {
+          src: "/img6.jpg",
+          alt: "Chauffeur standing beside a black car",
+        },
+        events: {
+          src: "/markets/phoenix/hero.jpg",
+          alt: "Phoenix at sunset, with the mountains behind",
+        },
+        eventsGallery: {
+          src: "/vehicles/partyBus.jpg",
+          alt: "Party bus cabin lit up for a night out",
+        },
+        p2p: {
+          src: "/vehicles/heroiii.jpg",
+          alt: "Black SUV on an open road",
+        },
+        weddings: [
+          {
+            src: "/images/other/aboutHero.jpg",
+            alt: "Chauffeur stepping out of a black SUV",
+          },
+          {
+            src: "/vehicles/limo.jpg",
+            alt: "Black SUV parked under palm trees",
+          },
+        ],
+      },
+    },
     reviewTrip: "Night in Old Town Scottsdale",
     fleet: {
       suvRide: "long desert drives",

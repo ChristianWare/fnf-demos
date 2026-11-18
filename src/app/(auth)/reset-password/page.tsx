@@ -5,7 +5,7 @@ import { getPasswordResetTokenByToken } from "@/lib/passwordResetToken";
 import { SITE } from "@/config/site";
 
 export const metadata = {
-  title: `Reset Password | ${SITE.name}`,
+  title: "Reset Password",
   description: `Reset your ${SITE.name} account password.`,
 };
 

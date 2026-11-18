@@ -89,6 +89,24 @@
   color: var(--midnight);
 }
 
+/* An uploaded logo, on a light tile so it shows over the hero too. */
+.logoTile {
+  display: inline-flex;
+  align-items: center;
+  height: 4.4rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  background-color: var(--ivory);
+}
+
+.logoImg {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 18rem;
+  object-fit: contain;
+}
+
 /* ── Links ── */
 
 .links {

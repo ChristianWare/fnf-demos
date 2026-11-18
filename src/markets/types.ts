@@ -120,6 +120,66 @@ export type Market = {
       /** "…ask any company for {ask}." */
       ask: string;
     };
+    /** The services pages' local details (src/lib/serviceDetails.ts) and
+     *  the contact page's. */
+    pages: {
+      /** Airport transfers tag: "Terminals 1 and 3". */
+      terminalsTag: string;
+      /** "…traffic on {freeways}…" */
+      freeways: string;
+      /** The last "included" line on airport transfers. */
+      airportPickups: string;
+      /** "Dinner, a show, {hourlyStops}, a late night" */
+      hourlyStops: string;
+      /** "It's the easy way to do {showAndDinner}, a day of meetings…" */
+      showAndDinner: string;
+      /** Corporate intro's first sentence. */
+      corporateIntro: string;
+      conventionCenter: string;
+      /** "Can you handle {bigWeek}?" */
+      bigWeek: string;
+      weddingIntro: string;
+      /** "Your chauffeur knows {weddingSpots}, and waits…" */
+      weddingSpots: string;
+      /** "Stops for photos at {weddingPhotoStops}" */
+      weddingPhotoStops: string;
+      weddingWho: string;
+      /** Services card line under Weddings. */
+      weddingCardSub: string;
+      eventVenues: string[];
+      eventsIntro: string;
+      /** "…how the traffic flows on {bigNight}…" */
+      bigNight: string;
+      /** "…bachelorette parties, {eventsWho}." */
+      eventsWho: string;
+      eventsBestFor: string;
+      /** "A hotel to a meeting, a home to a restaurant, {p2pExample}." */
+      p2pExample: string;
+      p2pCardMore: string;
+      dayTripsIntro: string;
+      /** "{dayTripsBest}, but it's a long day behind the wheel." */
+      dayTripsBest: string;
+      /** The drive times sentence on day trips. */
+      dayTripsTimes: string;
+      /** "{dayTripsPick} or your own route." */
+      dayTripsPick: string;
+      /** Day trips page title: "… | {dayTripsTitle}". */
+      dayTripsTitle: string;
+      dayTripsCardSub: string;
+      /** The day trips number: "45 min" to "Hoover Dam". */
+      dayTripStat: { place: string; time: string };
+      /** "…anyone who'd rather see {scenery} than drive it." */
+      scenery: string;
+      /** Contact: "Most rides start at {main airport} or a hotel {hotelsWhere}." */
+      hotelsWhere: string;
+      photos: {
+        airport: Photo;
+        events: Photo;
+        eventsGallery: Photo;
+        p2p: Photo;
+        weddings: [Photo, Photo];
+      };
+    };
     /** A review card's trip. */
     reviewTrip: string;
     fleet: {

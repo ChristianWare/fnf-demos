@@ -14,6 +14,8 @@ import { SITE } from "@/config/site";
 import { buildBusinessSchema } from "@/lib/schema";
 import { getCompanySettings } from "../../actions/admin/companySettings";
 import { getMarket } from "@/lib/market";
+import { getBrand } from "@/lib/brand";
+import BrandProvider from "@/components/Providers/BrandProvider";
 
 const SofiaSansExtraCondensedBold = localFont({
   src: "../../public/fonts/SofiaSansExtraCondensed-Bold.ttf",
@@ -45,34 +47,42 @@ const SofiaSansBold = localFont({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: `${SITE.name} | ${SITE.tagline}`,
-    template: `%s | ${SITE.name}`,
-  },
-  description: SITE.description,
-  openGraph: {
-    title: `${SITE.name} | ${SITE.tagline}`,
-    description: SITE.description,
-    url: SITE.url,
-    siteName: SITE.name,
-    type: "website",
-    images: [
-      {
-        url: `${SITE.url}${SITE.ogImage}`,
-        width: 1200,
-        height: 630,
-        alt: `${SITE.name} — ${SITE.tagline}`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE.name} | ${SITE.tagline}`,
-    description: SITE.description,
-    images: [`${SITE.url}${SITE.ogImage}`],
-  },
-};
+// The name is the operator's (Admin → Company Settings) and the tagline
+// and description are the market's, so a demo's tab and link previews show
+// the prospect's business in their city.
+export async function generateMetadata(): Promise<Metadata> {
+  const [brand, market] = await Promise.all([getBrand(), getMarket()]);
+  const tagline = `Black Car Service in ${market.city}`;
+  const description = market.copy.hero.subhead;
+  return {
+    title: {
+      default: `${brand.name} | ${tagline}`,
+      template: `%s | ${brand.name}`,
+    },
+    description,
+    openGraph: {
+      title: `${brand.name} | ${tagline}`,
+      description,
+      url: SITE.url,
+      siteName: brand.name,
+      type: "website",
+      images: [
+        {
+          url: `${SITE.url}${SITE.ogImage}`,
+          width: 1200,
+          height: 630,
+          alt: `${brand.name} — ${tagline}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${brand.name} | ${tagline}`,
+      description,
+      images: [`${SITE.url}${SITE.ogImage}`],
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -83,7 +93,7 @@ export default async function RootLayout({
   // If the database can't be reached, the schema falls back to site config.
   const settings = await getCompanySettings().catch(() => ({}));
   const businessSchema = buildBusinessSchema(settings);
-  const market = await getMarket();
+  const [market, brand] = await Promise.all([getMarket(), getBrand()]);
 
   return (
     <html lang='en'>
@@ -102,7 +112,7 @@ export default async function RootLayout({
           name='apple-mobile-web-app-status-bar-style'
           content='black-translucent'
         />
-        <meta name='apple-mobile-web-app-title' content={SITE.name} />
+        <meta name='apple-mobile-web-app-title' content={brand.name} />
         {/* Icons: src/app/favicon.ico, icon.svg and apple-icon.png. */}
       </head>
       <body
@@ -121,14 +131,16 @@ export default async function RootLayout({
         >
           <SessionProviderWrap>
             <MarketProvider market={market}>
-              <ToastsProvider />
-              <SmoothScroll>
-                <ScrollToTop />
-                {children}
-                <Footer />
-                {/* How far down the page you are, bottom right (public pages). */}
-                <ScrollProgress />
-              </SmoothScroll>
+              <BrandProvider brand={brand}>
+                <ToastsProvider />
+                <SmoothScroll>
+                  <ScrollToTop />
+                  {children}
+                  <Footer />
+                  {/* How far down the page you are, bottom right (public pages). */}
+                  <ScrollProgress />
+                </SmoothScroll>
+              </BrandProvider>
             </MarketProvider>
           </SessionProviderWrap>
         </PlausibleProvider>

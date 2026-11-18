@@ -33,6 +33,7 @@ import {
   type AdminNavGroup,
 } from "@/components/admin/AdminSideNav/adminNav";
 import { useMarket } from "@/components/Providers/MarketProvider";
+import { useBrand } from "@/components/Providers/BrandProvider";
 import MountainIcon from "@/components/shared/icons/MountainIcon/MountainIcon";
 import Arrow from "@/components/shared/icons/Arrow/Arrow";
 import styles from "./SiteNav.module.css";
@@ -481,20 +482,33 @@ export default function SiteNav({
   );
 }
 
+/** The operator's uploaded logo on a light tile (so a dark logo still
+ *  shows over the hero), or the mountain mark with their name. */
 function Logo({ dark, onClick }: { dark?: boolean; onClick?: () => void }) {
   const market = useMarket();
+  const brand = useBrand();
   return (
     <Link
       href='/'
       className={`${styles.logo} ${dark ? styles.logoDark : ""}`}
       onClick={onClick}
-      aria-label='SS Black Car home'
+      aria-label={`${brand.name} home`}
     >
-      <MountainIcon className={styles.logoIcon} />
-      <span className={styles.logoText}>
-        <span className={styles.logoName}>SS Black Car</span>
-        <span className={styles.logoSub}>{market.label}</span>
-      </span>
+      {brand.logoUrl ? (
+        <span className={styles.logoTile}>
+          {/* Uploaded logos can live on any host. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={brand.logoUrl} alt='' className={styles.logoImg} />
+        </span>
+      ) : (
+        <>
+          <MountainIcon className={styles.logoIcon} />
+          <span className={styles.logoText}>
+            <span className={styles.logoName}>{brand.name}</span>
+            <span className={styles.logoSub}>{market.label}</span>
+          </span>
+        </>
+      )}
     </Link>
   );
 }

@@ -5,13 +5,15 @@ import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { SITE } from "@/config/site";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import { getMarket, getPhotos } from "@/lib/market";
+import { getBrand } from "@/lib/brand";
 import styles from "./AboutHero.module.css";
 
 export default async function AboutHero() {
-  const [s, market, photos] = await Promise.all([
+  const [s, market, photos, brand] = await Promise.all([
     getCompanySettings(),
     getMarket(),
     getPhotos(),
+    getBrand(),
   ]);
   const phone = s.dispatchPhone || SITE.phone.display;
   const phoneTel = s.dispatchPhoneRaw
@@ -34,8 +36,8 @@ export default async function AboutHero() {
           <div className={styles.side}>
             <PulseEyeBrow text='About us' />
             <p className={styles.copy}>
-              Silver State Black Car is a locally owned chauffeured car service
-              in {market.city}. We drive {market.copy.aboutDrive} for travelers,
+              {brand.name} is a locally owned chauffeured car service in{" "}
+              {market.city}. We drive {market.copy.aboutDrive} for travelers,
               businesses and locals who want the ride to be the easy part of the
               trip.
             </p>

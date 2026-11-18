@@ -2,12 +2,11 @@
  * The contact page's desks, hours and "where we meet you" details. Swap per
  * operator. The main dispatch number and email come from Admin → Company
  * Settings (falling back to src/config/site.ts); the desk numbers below
- * use 555 numbers, which are reserved for fiction, so a demo never dials a
- * real person.
+ * use 555 numbers in the market's area code, which are reserved for
+ * fiction, so a demo never dials a real person. Desk emails use the domain
+ * of the support email in Company Settings. Hours are in the market's time
+ * zone (useLocalTime).
  */
-
-/** Las Vegas time (Pacific). Not SITE.timezone, which is the template's. */
-export const CONTACT_TIMEZONE = "America/Los_Angeles";
 
 /** Days are 0 = Sunday … 6 = Saturday. Times are "HH:MM", 24-hour. */
 export type Hours =
@@ -26,57 +25,79 @@ export type Desk = {
 const WEEKDAYS = [1, 2, 3, 4, 5];
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 
-export const DESKS: Desk[] = [
-  {
-    id: "dispatch",
-    name: "Dispatch",
-    copy: "Rides today, a delayed flight, a change of plan or a chauffeur you can't find.",
-    phone: "(702) 555-0142",
-    email: "dispatch@silverstateblackcar.com",
-    hours: { always: true, label: "24 hours, every day" },
-  },
-  {
-    id: "reservations",
-    name: "Reservations",
-    copy: "Rides you're booking ahead, quotes for long-distance trips and anything the booking tool can't do.",
-    phone: "(702) 555-0143",
-    email: "reservations@silverstateblackcar.com",
-    hours: {
-      days: EVERY_DAY,
-      open: "07:00",
-      close: "22:00",
-      label: "Every day, 07:00 to 22:00",
+export function desksFor({
+  areaCode,
+  emailDomain,
+}: {
+  /** "702". */
+  areaCode: string;
+  /** "example.com". */
+  emailDomain: string;
+}): Desk[] {
+  const phone = (line: string) => `(${areaCode}) 555-${line}`;
+  const email = (box: string) => `${box}@${emailDomain}`;
+  return [
+    {
+      id: "dispatch",
+      name: "Dispatch",
+      copy: "Rides today, a delayed flight, a change of plan or a chauffeur you can't find.",
+      phone: phone("0142"),
+      email: email("dispatch"),
+      hours: { always: true, label: "24 hours, every day" },
     },
-  },
-  {
-    id: "corporate",
-    name: "Corporate accounts",
-    copy: "Opening an account, monthly invoices, convention shuttles and executive travel.",
-    phone: "(702) 555-0144",
-    email: "corporate@silverstateblackcar.com",
-    hours: {
-      days: WEEKDAYS,
-      open: "08:00",
-      close: "17:00",
-      label: "Monday to Friday, 08:00 to 17:00",
+    {
+      id: "reservations",
+      name: "Reservations",
+      copy: "Rides you're booking ahead, quotes for long-distance trips and anything the booking tool can't do.",
+      phone: phone("0143"),
+      email: email("reservations"),
+      hours: {
+        days: EVERY_DAY,
+        open: "07:00",
+        close: "22:00",
+        label: "Every day, 07:00 to 22:00",
+      },
     },
-  },
-  {
-    id: "events",
-    name: "Weddings & groups",
-    copy: "Wedding days, guest shuttles, Sprinters and coaches for groups of 15 or more.",
-    phone: "(702) 555-0145",
-    email: "events@silverstateblackcar.com",
-    hours: {
-      days: [1, 2, 3, 4, 5, 6],
-      open: "09:00",
-      close: "18:00",
-      label: "Monday to Saturday, 09:00 to 18:00",
+    {
+      id: "corporate",
+      name: "Corporate accounts",
+      copy: "Opening an account, monthly invoices, convention shuttles and executive travel.",
+      phone: phone("0144"),
+      email: email("corporate"),
+      hours: {
+        days: WEEKDAYS,
+        open: "08:00",
+        close: "17:00",
+        label: "Monday to Friday, 08:00 to 17:00",
+      },
     },
-  },
-];
+    {
+      id: "events",
+      name: "Weddings & groups",
+      copy: "Wedding days, guest shuttles, Sprinters and coaches for groups of 15 or more.",
+      phone: phone("0145"),
+      email: email("events"),
+      hours: {
+        days: [1, 2, 3, 4, 5, 6],
+        open: "09:00",
+        close: "18:00",
+        label: "Monday to Saturday, 09:00 to 18:00",
+      },
+    },
+  ];
+}
 
-/** "Where we meet you": one tab per place, with its own map highlight. */
+/** "example.com", from an email address; the site's own domain if none. */
+export function emailDomain(
+  email: string | null | undefined,
+  fallback: string,
+) {
+  const domain = email?.split("@")[1]?.trim();
+  return domain || fallback;
+}
+
+/** "Where we meet you" in Las Vegas: one tab per terminal, with its own
+ *  highlight on the drawn map. Other markets list their airports instead. */
 export const MEET_POINTS = [
   {
     id: "t1",

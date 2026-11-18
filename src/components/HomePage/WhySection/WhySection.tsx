@@ -16,6 +16,7 @@ import {
 import styles from "./WhySection.module.css";
 import ArrowButton from "@/components/shared/ArrowButton/ArrowButton";
 import { useMarket } from "@/components/Providers/MarketProvider";
+import { useBrand } from "@/components/Providers/BrandProvider";
 import { airportBookHref, type Market } from "@/markets";
 
 type Reason = {
@@ -82,6 +83,7 @@ const reasonsFor = (market: Market): Reason[] => [
 
 export default function WhySection() {
   const market = useMarket();
+  const brand = useBrand();
   const REASONS = reasonsFor(market);
   const bookAirport = airportBookHref(market.airports[0]);
   const [active, setActive] = useState(0);
@@ -100,8 +102,8 @@ export default function WhySection() {
             </div>
             <p className={styles.intro}>
               Rideshare lines at the airport, surge pricing after a show, a cab
-              that doesn&apos;t know the back entrance. We built Silver State
-              Black Car for the trips where those things matter.
+              that doesn&apos;t know the back entrance. We built {brand.name}{" "}
+              for the trips where those things matter.
             </p>
           </div>
 
@@ -149,7 +151,7 @@ export default function WhySection() {
               <div
                 className={styles.track}
                 role='tablist'
-                aria-label='Why riders book Silver State'
+                aria-label={`Why riders book ${brand.name}`}
               >
                 <span className={styles.line} aria-hidden='true' />
                 {REASONS.map((r, i) => (

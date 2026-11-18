@@ -177,6 +177,72 @@ export const LAS_VEGAS: Market = {
         "In Nevada, any company that drives you for hire needs a certificate from the state. Plenty of drivers on social media don't have one. We do, and here's what that means for you.",
       ask: "its NTA certificate number",
     },
+    pages: {
+      terminalsTag: "Terminals 1 and 3",
+      freeways: "I-15 and the 215",
+      airportPickups:
+        "Pickups at Terminal 1 and Terminal 3, Henderson Executive and North Las Vegas airports",
+      hourlyStops: "three stops on the Strip",
+      showAndDinner: "a show and dinner on the Strip",
+      corporateIntro:
+        "Las Vegas hosts some of the biggest trade shows in the country, and convention weeks are when cars run out first.",
+      conventionCenter: "the Las Vegas Convention Center",
+      bigWeek: "CES week",
+      weddingIntro:
+        "From the Marriage License Bureau to the chapel, the chapel to the reception, and the photos on the way. Your car runs on your schedule, not the meter.",
+      weddingSpots:
+        "the chapels and the photo spots, from the Welcome to Fabulous Las Vegas sign to Downtown and the desert",
+      weddingPhotoStops:
+        "the Welcome to Fabulous Las Vegas sign, Downtown or the desert",
+      weddingWho:
+        "Couples marrying in Las Vegas, wedding planners and chapels arranging transport for their couples.",
+      weddingCardSub: "Chapel to reception",
+      eventVenues: ["Allegiant Stadium", "T-Mobile Arena", "Sphere"],
+      eventsIntro:
+        "Allegiant Stadium, T-Mobile Arena, Sphere, the clubs and the fight.",
+      bigNight: "a fight night",
+      eventsWho: "Formula 1 weekend and NFR week",
+      eventsBestFor: "Concerts, fights, games, the clubs",
+      p2pExample: "the Strip to Downtown",
+      p2pCardMore:
+        "Hotel to restaurant, home to the Strip, or across the valley to Henderson or Summerlin.",
+      dayTripsIntro:
+        "Hoover Dam, the Grand Canyon West Rim, Zion, Death Valley, Valley of Fire or a ride home to St. George.",
+      dayTripsBest: "The best of the desert is an hour or two from the Strip",
+      dayTripsTimes:
+        "Hoover Dam is about 45 minutes away, Valley of Fire about an hour, Death Valley about two and Zion and the Grand Canyon West Rim about two and a half each way.",
+      dayTripsPick: "Hoover Dam, Zion, the Grand Canyon",
+      dayTripsTitle: "Hoover Dam, Zion & More",
+      dayTripsCardSub: "Hoover Dam to Zion",
+      dayTripStat: { place: "Hoover Dam", time: "45 min" },
+      scenery: "the desert",
+      hotelsWhere: "on the Strip",
+      photos: {
+        airport: {
+          src: "/images/other/vegasAirport.jpg",
+          alt: "Freeway to Harry Reid International at night",
+        },
+        events: {
+          src: "/markets/las-vegas/hero.jpg",
+          alt: "The Las Vegas Valley lit up at night",
+        },
+        eventsGallery: {
+          src: "/images/other/vegasAirport.jpg",
+          alt: "Las Vegas freeway at night",
+        },
+        p2p: {
+          src: "/images/other/hero.jpg",
+          alt: "The Las Vegas Strip skyline at dusk",
+        },
+        weddings: [
+          {
+            src: "/images/other/heroii.jpg",
+            alt: "Gondola on the canal outside a Las Vegas resort",
+          },
+          { src: "/images/other/vegas.jpg", alt: "The Las Vegas Strip by day" },
+        ],
+      },
+    },
     reviewTrip: "Night on the Strip",
     fleet: {
       suvRide: "long desert drives",
