@@ -2,13 +2,13 @@
 
 // src/actions/admin/sendEstimateEmail.ts
 
-import { Resend } from "resend";
 import { auth } from "../../auth";
 import { db } from "@/lib/db";
 import { getCompanySettings } from "./companySettings";
 import { getBookingEstimateData } from "../bookings/getBookingEstimateData";
 import { revalidatePath } from "next/cache";
 import { SITE } from "@/config/site";
+import { createResend, emailFrom } from "@/lib/email/delivery";
 
 function requireEnv(name: string) {
   const v = process.env[name];
@@ -380,8 +380,8 @@ export async function sendEstimateEmail(formData: FormData): Promise<{
   ].join("\n");
 
   // ── Send ──────────────────────────────────────────────────────────────────
-  const resend = new Resend(requireEnv("RESEND_API_KEY"));
-  const from = requireEnv("RESEND_FROM");
+  const resend = createResend();
+  const from = emailFrom();
 
   const { error: resendError } = await resend.emails.send({
     from,

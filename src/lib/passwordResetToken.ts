@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "./db";
 import { v4 as uuidv4 } from "uuid";
-import { Resend } from "resend";
 import { getCompanySettings } from "../../actions/admin/companySettings";
 import { SITE } from "@/config/site";
+import { createResend, emailFromFallback } from "@/lib/email/delivery";
 
 export const getPasswordResetTokenByToken = async (token: string) => {
   try {
@@ -37,17 +37,10 @@ export const generatePasswordResetToken = async (email: string) => {
 
 const BRAND = SITE.name;
 const BASE_URL = process.env.BASE_URL || "";
-const RAW_FROM = (
-  process.env.RESEND_FROM ||
-  process.env.CONTACT_FROM ||
-  ""
-).trim();
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
-}
+const RAW_FROM = emailFromFallback(
+  process.env.RESEND_FROM,
+  process.env.CONTACT_FROM,
+);
 
 const EMAIL_ONLY_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const NAME_ADDR_RE = /^([^<>]+)<\s*([^<>@\s]+@[^<>@\s]+\.[^<>@\s]+)\s*>$/i;
@@ -360,12 +353,11 @@ function emailTextReset(email: string, resetLink: string, submittedAt: string) {
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   try {
-    requireEnv("RESEND_API_KEY");
     if (!BASE_URL) throw new Error("Missing required env var: BASE_URL");
 
     const from = normalizeFrom(BRAND, RAW_FROM);
     const { timezone: companyTz } = await getCompanySettings();
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = createResend();
 
     const resetLink = `${BASE_URL.replace(/\/+$/, "")}/reset-password?token=${encodeURIComponent(token)}`;
     const submittedAt = formatDate(new Date(), companyTz);

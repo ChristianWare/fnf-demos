@@ -1,15 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/lib/email/sendInvoiceReceiptEmail.ts
-import { Resend } from "resend";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
 import { renderInvoicePdfBuffer } from "@/lib/invoice/buildInvoicePdfData";
 import { SITE } from "@/config/site";
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
-}
+import { createResend, emailFrom } from "@/lib/email/delivery";
 
 function money(cents: number, currency: string) {
   return new Intl.NumberFormat("en-US", {
@@ -53,8 +47,8 @@ export type InvoiceReceiptArgs = {
 export async function sendInvoiceReceiptEmail(
   args: InvoiceReceiptArgs,
 ): Promise<void> {
-  const resend = new Resend(requireEnv("RESEND_API_KEY"));
-  const from = requireEnv("RESEND_FROM");
+  const resend = createResend();
+  const from = emailFrom();
 
   const settings = await getCompanySettings();
   const companyName = settings.companyName ?? SITE.name;

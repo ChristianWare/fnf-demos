@@ -1,18 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/lib/email/sendBookingRequestedEmail.ts
-import { Resend } from "resend";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { createElement } from "react";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
 import { getBookingEstimateData } from "../../../actions/bookings/getBookingEstimateData";
 import EstimatePDF from "@/lib/invoice/EstimatePDF";
 import { SITE } from "@/config/site";
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
-}
+import { createResend, emailFrom } from "@/lib/email/delivery";
 
 function formatPickupDate(iso: string, timeZone: string) {
   const d = new Date(iso);
@@ -50,8 +44,8 @@ export async function sendBookingRequestedEmail(args: {
   bookingId: string;
   trackingUrl?: string | null;
 }) {
-  const resend = new Resend(requireEnv("RESEND_API_KEY"));
-  const from = requireEnv("RESEND_FROM");
+  const resend = createResend();
+  const from = emailFrom();
 
   const name = (args.name ?? "").trim();
   const firstName = name.split(" ")[0] || "there";

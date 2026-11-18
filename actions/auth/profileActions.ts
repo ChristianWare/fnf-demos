@@ -5,6 +5,7 @@ import { auth } from "../../auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
+import { emailDeliveryOff } from "@/lib/email/delivery";
 
 type ActionResult = { ok?: boolean; error?: string };
 
@@ -128,7 +129,9 @@ export async function updateProfileEmail(
     where: { id: userId },
     data: {
       email: trimmed,
-      emailVerified: null,
+      // Demos send no confirmation email, so the new address counts as
+      // confirmed (see lib/email/delivery).
+      emailVerified: emailDeliveryOff() ? new Date() : null,
     },
   });
 

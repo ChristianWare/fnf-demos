@@ -17,9 +17,7 @@
 // alerts only; riders are always emailed. No SMS vendor is configured.
 
 import "server-only";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { createResend, emailFromFallback } from "@/lib/email/delivery";
 
 /**
  * Conservative per-message ceiling. Verizon truncates near 130; other
@@ -41,7 +39,7 @@ const INTER_PART_DELAY_MS = 700;
  * send from the bare address.
  */
 function bareFromAddress(): string {
-  const raw = (process.env.RESEND_FROM ?? "").trim();
+  const raw = emailFromFallback(process.env.RESEND_FROM);
   const angled = raw.match(/<([^>]+)>/);
   const address = (angled ? angled[1] : raw).trim();
 
@@ -119,7 +117,7 @@ export async function sendSmsViaEmailGateway(args: {
 
     // Subject stays empty — gateways prepend it to the message body, so any
     // subject line eats into the character budget for no benefit.
-    await resend.emails.send({
+    await createResend().emails.send({
       from,
       to,
       subject: "",

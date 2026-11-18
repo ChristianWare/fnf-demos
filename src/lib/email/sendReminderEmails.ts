@@ -5,7 +5,7 @@
 // plain subject/HTML/text so they're easy to test; send() delivers them.
 
 import { SITE } from "@/config/site";
-import { Resend } from "resend";
+import { createResend } from "@/lib/email/delivery";
 
 const FROM =
   // RESEND_FROM first: it's the verified sender every other email uses.
@@ -16,9 +16,7 @@ const FROM =
 export type EmailContent = { subject: string; html: string; text: string };
 
 export async function sendEmail(to: string | string[], content: EmailContent) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) throw new Error("RESEND_API_KEY missing");
-  const resend = new Resend(apiKey);
+  const resend = createResend();
   const res = await resend.emails.send({ from: FROM, to, ...content });
   if ((res as { error?: unknown })?.error)
     throw new Error(

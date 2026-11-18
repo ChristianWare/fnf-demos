@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import { welcomeHtml, welcomeText } from "./templates/welcome";
 import { SITE } from "@/config/site";
+import { emailDeliveryOff } from "@/lib/email/delivery";
 
 const BRAND = SITE.name;
 const CONTACT_FROM = process.env.CONTACT_FROM || process.env.SMTP_USER;
@@ -12,6 +13,9 @@ function requireEnv(name: string) {
 }
 
 export async function sendWelcomeEmail(to: string, name?: string | null) {
+  // Demos send nothing (see lib/email/delivery).
+  if (emailDeliveryOff()) return;
+
   requireEnv("SMTP_HOST");
   requireEnv("SMTP_PORT");
   requireEnv("SMTP_USER");

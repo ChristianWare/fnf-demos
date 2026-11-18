@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import { SITE } from "@/config/site";
 import { formatPhone } from "@/lib/phone";
+import { createResend, emailFromFallback } from "@/lib/email/delivery";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,7 +20,7 @@ type ContactPayload = {
 };
 
 const BRAND = SITE.name;
-const RESEND_FROM = process.env.RESEND_FROM!;
+const RESEND_FROM = emailFromFallback(process.env.RESEND_FROM);
 
 function escapeHtml(s = "") {
   return s
@@ -108,14 +108,11 @@ function emailHtml(payload: ContactPayload, submittedAt: string) {
 // ─── POST Handler ───
 export async function POST(req: NextRequest) {
   try {
-    if (!process.env.RESEND_API_KEY) {
-      throw new Error("Missing RESEND_API_KEY env var");
-    }
     if (!RESEND_FROM) {
       throw new Error("Missing RESEND_FROM env var");
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = createResend();
     const body = (await req.json()) as Partial<ContactPayload>;
 
     // ─── Honeypot check ───

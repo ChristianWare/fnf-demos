@@ -8,16 +8,10 @@
 //   - automatically on the balance due date,
 //   - automatically 48 hours before pickup.
 
-import { Resend } from "resend";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
 import { formatDueDate, dueDateKey } from "@/lib/booking/dueDates";
 import { SITE } from "@/config/site";
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
-}
+import { createResend, emailFrom } from "@/lib/email/delivery";
 
 function formatMoney(cents: number, currency: string) {
   return new Intl.NumberFormat("en-US", {
@@ -88,8 +82,8 @@ export async function sendBalanceDueEmail(args: {
   kind: BalanceEmailKind;
   groupLegs?: GroupLeg[];
 }) {
-  const resend = new Resend(requireEnv("RESEND_API_KEY"));
-  const from = requireEnv("RESEND_FROM");
+  const resend = createResend();
+  const from = emailFrom();
   const companySettings = await getCompanySettings();
   const companyTz = companySettings.timezone ?? SITE.timezone;
   const companyName = companySettings.officeName || SITE.name;

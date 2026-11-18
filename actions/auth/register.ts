@@ -8,6 +8,7 @@ import {
 import { getUserByEmail } from "@/lib/user";
 import { RegisterSchema, RegisterSchemaType } from "@/schemas/RegisterSchema";
 import bcrypt from "bcryptjs";
+import { emailDeliveryOff } from "@/lib/email/delivery";
 
 export const signUp = async (values: RegisterSchemaType) => {
   const validateFields = RegisterSchema.safeParse(values);
@@ -25,6 +26,9 @@ export const signUp = async (values: RegisterSchemaType) => {
       name,
       email,
       password: hashedPassword,
+      // Demos send no emails, so the account is confirmed straight away
+      // (see lib/email/delivery).
+      ...(emailDeliveryOff() ? { emailVerified: new Date() } : {}),
     },
   });
 

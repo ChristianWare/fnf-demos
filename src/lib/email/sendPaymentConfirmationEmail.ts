@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/lib/email/sendPaymentConfirmationEmail.ts
-import { Resend } from "resend";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { createElement } from "react";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
@@ -10,12 +9,7 @@ import { formatInvoiceDate, formatTripDateTime } from "@/lib/invoice/types";
 import { SITE } from "@/config/site";
 import { formatDueDate } from "@/lib/booking/dueDates";
 import { EXTRA_STOP_FEE_CENTS } from "@/lib/pricing/calcQuote";
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
-}
+import { createResend, emailFrom } from "@/lib/email/delivery";
 
 function formatMoney(cents: number, currency: string) {
   const n = (cents || 0) / 100;
@@ -91,8 +85,8 @@ export type PaymentConfirmationArgs = {
 export async function sendPaymentConfirmationEmail(
   args: PaymentConfirmationArgs,
 ): Promise<void> {
-  const resend = new Resend(requireEnv("RESEND_API_KEY"));
-  const from = requireEnv("RESEND_FROM");
+  const resend = createResend();
+  const from = emailFrom();
 
   const companySettings = await getCompanySettings();
   const companyTz = companySettings.timezone ?? "America/Phoenix";

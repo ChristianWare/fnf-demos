@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { createResend } from "@/lib/email/delivery";
 import { SITE } from "@/config/site";
 
 export async function sendAdminNotificationEmail(args: {
@@ -7,7 +7,6 @@ export async function sendAdminNotificationEmail(args: {
   text: string;
   html?: string;
 }) {
-  const apiKey = process.env.RESEND_API_KEY;
   const from =
     // RESEND_FROM first: it's the verified sender every other email uses.
     // EMAIL_FROM is an older fallback.
@@ -15,8 +14,7 @@ export async function sendAdminNotificationEmail(args: {
     process.env.EMAIL_FROM ||
     `${SITE.name} <${SITE.email.noReply}>`;
 
-  if (!apiKey) throw new Error("RESEND_API_KEY missing");
-  const resend = new Resend(apiKey);
+  const resend = createResend();
 
   await resend.emails.send({
     from,

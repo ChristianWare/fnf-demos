@@ -1,13 +1,7 @@
-import { Resend } from "resend";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
 import { sendAdminNotificationsForBookingEvent } from "@/lib/notifications/queue";
 import { SITE } from "@/config/site";
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
-}
+import { createResend, emailFrom } from "@/lib/email/delivery";
 
 function formatMoney(cents: number, currency: string) {
   const n = (cents || 0) / 100;
@@ -60,8 +54,8 @@ export async function sendPaymentLinkEmail(args: {
     totalCents: number;
   }>;
 }) {
-  const resend = new Resend(requireEnv("RESEND_API_KEY"));
-  const from = requireEnv("RESEND_FROM");
+  const resend = createResend();
+  const from = emailFrom();
 
   const name = (args.name ?? "").trim();
   const firstName = name.split(" ")[0] || "there";

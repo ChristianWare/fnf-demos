@@ -10,6 +10,8 @@ import {
   generateEmailVerificationToken,
   sendEmailVerificationToken,
 } from "@/lib/emailVerification";
+import { emailDeliveryOff } from "@/lib/email/delivery";
+import { db } from "@/lib/db";
 
 // Role areas a `next` link can't send someone into.
 const ROLE_OWNED_PREFIXES = [
@@ -34,7 +36,14 @@ export const login = async (values: LoginSchemaType, next?: string | null) => {
     return { error: "Invalid Credentials" };
   }
 
-  if (!user.emailVerified) {
+  // Demos send no emails, so there's no link to confirm with: confirm the
+  // email here instead (see lib/email/delivery).
+  if (!user.emailVerified && emailDeliveryOff()) {
+    await db.user.update({
+      where: { id: user.id },
+      data: { emailVerified: new Date() },
+    });
+  } else if (!user.emailVerified) {
     const emailVerificationToken = await generateEmailVerificationToken(
       user.email,
     );

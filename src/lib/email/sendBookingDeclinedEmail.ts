@@ -1,13 +1,7 @@
-import { Resend } from "resend";
 import { getCompanySettings } from "../../../actions/admin/companySettings";
 import { SITE } from "@/config/site";
 import { formatPhone } from "@/lib/phone";
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
-}
+import { createResend, emailFrom } from "@/lib/email/delivery";
 
 function formatPickupDate(iso: string, timeZone: string) {
   const d = new Date(iso);
@@ -43,8 +37,8 @@ export async function sendBookingDeclinedEmail(args: {
   contactEmail?: string;
   contactPhone?: string;
 }) {
-  const resend = new Resend(requireEnv("RESEND_API_KEY"));
-  const from = requireEnv("RESEND_FROM");
+  const resend = createResend();
+  const from = emailFrom();
 
   const name = (args.name ?? "").trim();
   const firstName = name.split(" ")[0] || "there";

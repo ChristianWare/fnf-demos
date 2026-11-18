@@ -1,6 +1,5 @@
 "use server";
 
-import { Resend } from "resend";
 import { auth } from "../../auth";
 import { db } from "@/lib/db";
 import { getCompanySettings } from "./companySettings";
@@ -8,12 +7,7 @@ import { revalidatePath } from "next/cache";
 import { generateInvoicePDF } from "@/lib/invoice";
 import { buildInvoiceDataForBooking } from "@/lib/email/sendPaymentConfirmationEmail";
 import { SITE } from "@/config/site";
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
-}
+import { createResend, emailFrom } from "@/lib/email/delivery";
 
 function isValidEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -142,8 +136,8 @@ export async function sendInvoiceEmail(formData: FormData): Promise<{
     `Questions? ${companySettings.supportEmail ?? ""} | ${companySettings.dispatchPhone ?? ""}`,
   ].join("\n");
 
-  const resend = new Resend(requireEnv("RESEND_API_KEY"));
-  const from = requireEnv("RESEND_FROM");
+  const resend = createResend();
+  const from = emailFrom();
 
   const { error: resendError } = await resend.emails.send({
     from,
