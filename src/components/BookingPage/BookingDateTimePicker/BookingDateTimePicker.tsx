@@ -91,6 +91,8 @@ export default function BookingDateTimePicker({
   onVisibleMonthChange,
   timeZone,
   minTime,
+  dateInvalid = false,
+  timeInvalid = false,
 }: {
   date: string;
   time: string;
@@ -101,6 +103,10 @@ export default function BookingDateTimePicker({
   onVisibleMonthChange?: (month: string) => void;
   timeZone: string;
   minTime?: string; // "HH:MM": earlier times are disabled
+  /** Required and still empty: a red border around the days. */
+  dateInvalid?: boolean;
+  /** Required and still empty: red borders on the time selects. */
+  timeInvalid?: boolean;
 }) {
   const todayYMD = useMemo(() => ymdInTz(new Date(), timeZone), [timeZone]);
   const blockedSet = useMemo(() => new Set(blockedDates ?? []), [blockedDates]);
@@ -246,7 +252,9 @@ export default function BookingDateTimePicker({
         </ul>
       </div>
 
-      <div className={styles.grid}>
+      <div
+        className={`${styles.grid}${dateInvalid ? ` ${styles.gridInvalid}` : ""}`}
+      >
         {WEEKDAYS.map((d) => (
           <span key={d} className={styles.dow} aria-hidden='true'>
             {d}
@@ -309,7 +317,7 @@ export default function BookingDateTimePicker({
         <p className={styles.subLabel}>Pickup time</p>
         <div className={styles.timeRow}>
           <select
-            className={styles.select}
+            className={`${styles.select}${timeInvalid && !selectedHH ? ` ${styles.selectInvalid}` : ""}`}
             value={selectedHH}
             onChange={onHourChange}
             aria-label='Hour'
@@ -322,7 +330,7 @@ export default function BookingDateTimePicker({
             ))}
           </select>
           <select
-            className={styles.select}
+            className={`${styles.select}${timeInvalid && !selectedMM ? ` ${styles.selectInvalid}` : ""}`}
             value={selectedMM}
             onChange={onMinuteChange}
             aria-label='Minutes'

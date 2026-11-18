@@ -23,6 +23,8 @@ export default function BookingDateTimeWithBlackouts({
   disablePast = true,
   timeZone,
   minTime,
+  dateInvalid,
+  timeInvalid,
 }: {
   date: string;
   time: string;
@@ -31,6 +33,8 @@ export default function BookingDateTimeWithBlackouts({
   disablePast?: boolean;
   timeZone: string;
   minTime?: string | null;
+  dateInvalid?: boolean;
+  timeInvalid?: boolean;
 }) {
   const initialMonth = useMemo(
     () => monthFromYmd(date) ?? currentMonthKey(),
@@ -71,6 +75,8 @@ export default function BookingDateTimeWithBlackouts({
       onVisibleMonthChange={setVisibleMonth}
       timeZone={timeZone}
       minTime={minTime ?? undefined}
+      dateInvalid={dateInvalid}
+      timeInvalid={timeInvalid}
     />
   );
 }

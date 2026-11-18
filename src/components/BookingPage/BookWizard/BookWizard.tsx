@@ -848,6 +848,11 @@ export default function BookingWizard({
     return `cardTitle h5${hasError ? " redBorder" : ""}`;
   }
 
+  /** A field's class, with a red border while it's required and empty. */
+  function fieldCx(base: string, hasError: unknown) {
+    return hasError ? `${base} ${styles.invalid}` : base;
+  }
+
   function firstErrorMessage(): string {
     const order: (keyof FormValues)[] = [
       "serviceTypeId",
@@ -1567,7 +1572,10 @@ export default function BookingWizard({
           </label>
           {usesPickupAirport ? (
             <div
-              className={styles.airportOptions}
+              className={fieldCx(
+                styles.airportOptions,
+                errors.pickupAirportId,
+              )}
               role='radiogroup'
               aria-label='Pickup airport'
             >
@@ -1616,7 +1624,7 @@ export default function BookingWizard({
               ref={pickupInputRef}
               placeholder='Enter pickup address'
               autoComplete='off'
-              className='input emptySmall'
+              className={fieldCx("input emptySmall", pickupLabelRed)}
               defaultValue={route?.pickup?.address ?? ""}
             />
           )}
@@ -1778,7 +1786,10 @@ export default function BookingWizard({
           </label>
           {usesDropoffAirport ? (
             <div
-              className={styles.airportOptions}
+              className={fieldCx(
+                styles.airportOptions,
+                errors.dropoffAirportId,
+              )}
               role='radiogroup'
               aria-label='Dropoff airport'
             >
@@ -1827,7 +1838,7 @@ export default function BookingWizard({
               ref={dropoffInputRef}
               placeholder='Enter dropoff address'
               autoComplete='off'
-              className='input emptySmall'
+              className={fieldCx("input emptySmall", dropoffLabelRed)}
               defaultValue={route?.dropoff?.address ?? ""}
             />
           )}
@@ -1914,6 +1925,8 @@ export default function BookingWizard({
             clearErrors("pickupAtTime");
           }}
           timeZone={companyTimezone}
+          dateInvalid={Boolean(errors.pickupAtDate)}
+          timeInvalid={Boolean(errors.pickupAtTime)}
         />
         <div className='miniNote' style={{ marginTop: 8 }}>
           All times are in {companyTimezoneLabel}.
@@ -1951,7 +1964,7 @@ export default function BookingWizard({
           });
           clearErrors("passengers");
         }}
-        className='selectBorder emptySmall'
+        className={fieldCx("selectBorder emptySmall", errors.passengers)}
       >
         <option value={0}>Select...</option>
         {Array.from({ length: 56 }, (_, i) => i + 1).map((n) => (
@@ -1979,7 +1992,7 @@ export default function BookingWizard({
                 });
                 clearErrors("luggage");
               }}
-              className='selectBorder emptySmall'
+              className={fieldCx("selectBorder emptySmall", errors.luggage)}
             >
               <option value={0}>None</option>
               {Array.from({ length: 56 }, (_, i) => i + 1).map((n) => (
@@ -2164,7 +2177,10 @@ export default function BookingWizard({
                         }
                       }}
                       // className='input emptySmall'
-                      className='selectBorder emptySmall'
+                      className={fieldCx(
+                        "selectBorder emptySmall",
+                        errors.serviceTypeId,
+                      )}
                       disabled={hasNoServices}
                     >
                       <option value=''>Select a service...</option>
@@ -2199,7 +2215,10 @@ export default function BookingWizard({
                           });
                           clearErrors("hoursRequested");
                         }}
-                        className='input emptySmall'
+                        className={fieldCx(
+                          "input emptySmall",
+                          errors.hoursRequested,
+                        )}
                       />
                       <div style={{ fontSize: 12, opacity: 0.7 }}>
                         Vehicle minimum applies after you choose a vehicle
@@ -2348,7 +2367,9 @@ export default function BookingWizard({
                     <label className={labelCx(Boolean(errors.vehicleId))}>
                       Vehicle category
                     </label>
-                    <div className={styles.vehicles}>
+                    <div
+                      className={fieldCx(styles.vehicles, errors.vehicleId)}
+                    >
                       {filteredVehicles.map((v) => {
                         const isSelected = v.id === vehicleId;
                         const rowQuote = selectedService
@@ -3014,7 +3035,10 @@ export default function BookingWizard({
                             });
                             clearErrors("guestName");
                           }}
-                          className='input subheading'
+                          className={fieldCx(
+                            "input subheading",
+                            errors.guestName,
+                          )}
                           placeholder='Your name'
                         />
                       </div>
@@ -3034,7 +3058,10 @@ export default function BookingWizard({
                               });
                               clearErrors("guestEmail");
                             }}
-                            className='input subheading'
+                            className={fieldCx(
+                              "input subheading",
+                              errors.guestEmail,
+                            )}
                             placeholder='you@email.com'
                             inputMode='email'
                           />
@@ -3057,7 +3084,10 @@ export default function BookingWizard({
                               });
                               clearErrors("guestPhone");
                             }}
-                            className='input subheading'
+                            className={fieldCx(
+                              "input subheading",
+                              errors.guestPhone,
+                            )}
                             placeholder={`(${areaCode}) 555-1234`}
                             inputMode='tel'
                           />
@@ -3089,7 +3119,10 @@ export default function BookingWizard({
                             });
                             clearErrors("contactPhone");
                           }}
-                          className='input subheading'
+                          className={fieldCx(
+                            "input subheading",
+                            errors.contactPhone,
+                          )}
                           placeholder={`(${areaCode}) 555-1234`}
                           inputMode='tel'
                         />

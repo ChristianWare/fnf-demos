@@ -118,6 +118,13 @@
   gap: 6px;
 }
 
+/* No date picked after "Next": a red ring around the days. */
+.gridInvalid {
+  border-radius: 4px;
+  outline: 1px solid var(--danger);
+  outline-offset: 6px;
+}
+
 .dow {
   padding-bottom: 0.4rem;
   font-family: var(--SofiaSansBold);
@@ -260,6 +267,13 @@
   outline: none;
   border-color: var(--gold);
   box-shadow: 0 0 0 3px rgba(201, 162, 74, 0.25);
+}
+
+/* No time picked after "Next". */
+.selectInvalid,
+.selectInvalid:hover:not(:disabled),
+.selectInvalid:focus {
+  border-color: var(--danger);
 }
 
 .select:disabled {

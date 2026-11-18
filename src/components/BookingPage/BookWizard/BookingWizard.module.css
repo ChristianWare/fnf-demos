@@ -182,6 +182,22 @@
     box-shadow 0.2s ease;
 }
 
+/* A required field left empty after "Next": red until it's filled in.
+   On a group (airports, vehicles) every option gets the red border. */
+.container :global(.input).invalid,
+.container :global(.selectBorder).invalid,
+.container :global(.input).invalid:focus,
+.container :global(.selectBorder).invalid:focus,
+.invalid .airportOption,
+.invalid .vehicle {
+  border-color: var(--danger);
+}
+
+.container :global(.input).invalid:focus,
+.container :global(.selectBorder).invalid:focus {
+  box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.15);
+}
+
 .container :global(.input::placeholder) {
   color: var(--steel);
   opacity: 1;
@@ -851,7 +867,7 @@
 
 .includedList {
   display: grid;
-  gap: 0.6rem;
+  gap: 1.2rem;
   margin: 1.2rem 0 0;
   padding-left: 2rem;
   font-size: 1.6rem;
