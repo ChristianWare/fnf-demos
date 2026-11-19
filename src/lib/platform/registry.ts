@@ -226,6 +226,27 @@ export async function setDemoPhotos(
   forgetSlug(demo.slug);
 }
 
+/** The name and contact on the demo's row: the "Preview for …" tag and
+ *  the F&F admin's list. */
+export async function setDemoDetails(
+  demo: DemoRecord,
+  details: {
+    business: string;
+    contactName: string;
+    email: string;
+    phone: string;
+  },
+) {
+  await prismaBase.$executeRaw`
+    UPDATE platform.demos
+    SET business = ${details.business},
+        contact_name = ${details.contactName},
+        email = ${details.email},
+        phone = ${details.phone}
+    WHERE id = ${demo.id}`;
+  forgetSlug(demo.slug);
+}
+
 export async function setDemoExpiry(demo: DemoRecord, expiresAt: Date) {
   await prismaBase.$executeRaw`
     UPDATE platform.demos SET expires_at = ${expiresAt} WHERE id = ${demo.id}`;

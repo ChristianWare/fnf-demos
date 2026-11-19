@@ -17,6 +17,7 @@ import { AirportLeg, Role, ServicePricingStrategy } from "@prisma/client";
 import { db } from "@/lib/db";
 import { cloudinary } from "@/lib/cloudinary";
 import { formatPhone, phoneDigits } from "@/lib/phone";
+import { officeStreet } from "@/lib/brand";
 import { marketById, type Market } from "@/markets";
 import { forgetSchema, isDemoSchema, prismaBase } from "./prismaBase";
 import { runInDemo } from "./context";
@@ -26,6 +27,7 @@ import {
   demoById,
   insertDemo,
   newDemoId,
+  setDemoDetails,
   setDemoExpiry,
   setDemoPhotos,
   setDemoStatus,
@@ -116,6 +118,14 @@ async function uploadPhoto(file: File, demoId: string, name: string) {
     },
   );
   return result.secure_url as string;
+}
+
+async function deletePhoto(demoId: string, name: string) {
+  try {
+    await cloudinary.uploader.destroy(`demos/${demoId}/${name}`);
+  } catch {
+    // Already gone, or no Cloudinary keys: nothing to do.
+  }
 }
 
 async function deletePhotos(demoId: string) {
@@ -363,6 +373,95 @@ export async function createDemo(input: NewDemo) {
 
   const live = (await demoById(id))!;
   return { demo: live, url: demoUrl(live.slug) };
+}
+
+// ── Edit ──
+
+/** What the demo's site shows now (its Company Settings), for the F&F
+ *  admin's Edit form. The prospect or Chris may have changed these in the
+ *  demo's own admin since it was made. */
+export async function demoSiteDetails(demo: DemoRecord) {
+  if (demo.status !== "live") return null;
+  const s = await runInDemo({ schemaName: demo.schemaName, demo }, () =>
+    db.companySettings.findUnique({ where: { id: "default" } }),
+  );
+  return {
+    name: s?.companyName?.trim() || demo.business,
+    address: officeStreet(s?.officeAddress),
+    phone: s?.dispatchPhone?.trim() || demo.phone,
+    email: s?.supportEmail?.trim() || demo.email,
+  };
+}
+
+export type DemoEdit = {
+  business: string;
+  /** "" for none: the logo shows the business name. */
+  shortName: string;
+  contactName: string;
+  phone: string;
+  email: string;
+  address: string;
+  /** A new photo, "default" for the market's, or undefined to keep it. */
+  hero?: File | "default";
+  about?: File | "default";
+};
+
+/** Changes a live demo's name, contact details and photos in place: its
+ *  link, logins, bookings and events stay. */
+export async function editDemo(demo: DemoRecord, edit: DemoEdit) {
+  if (demo.status !== "live") {
+    throw new DemoInputError("Only a live preview can be edited.");
+  }
+  const business = edit.business.trim().slice(0, 200);
+  if (!business) throw new DemoInputError("Add their business name.");
+  const name = edit.shortName.trim().slice(0, 60) || business;
+  const digits = phoneDigits(edit.phone);
+  const email = edit.email.trim();
+
+  const photo = async (
+    choice: DemoEdit["hero"],
+    key: "hero" | "about",
+    current: string | null,
+  ) => {
+    if (choice === undefined) return current;
+    if (choice === "default") {
+      await deletePhoto(demo.id, key);
+      return null;
+    }
+    return uploadPhoto(choice, demo.id, key);
+  };
+  const [heroUrl, aboutUrl] = await Promise.all([
+    photo(edit.hero, "hero", demo.heroUrl),
+    photo(edit.about, "about", demo.aboutUrl),
+  ]);
+
+  await runInDemo({ schemaName: demo.schemaName, demo }, () =>
+    db.companySettings.update({
+      where: { id: "default" },
+      data: {
+        companyName: name,
+        emailSenderName: name,
+        officeName: business,
+        checkPayableTo: business,
+        officeAddress: edit.address.trim().slice(0, 200) || null,
+        dispatchPhone: digits ? formatPhone(digits) : null,
+        dispatchPhoneRaw: digits || null,
+        emergencyPhone: digits ? formatPhone(digits) : null,
+        emergencyPhoneRaw: digits || null,
+        supportEmail: email || null,
+        emailReplyTo: email || null,
+      },
+    }),
+  );
+  await setDemoDetails(demo, {
+    business,
+    contactName: edit.contactName.trim().slice(0, 200),
+    email,
+    phone: edit.phone.trim(),
+  });
+  if (heroUrl !== demo.heroUrl || aboutUrl !== demo.aboutUrl) {
+    await setDemoPhotos(demo, { heroUrl, aboutUrl });
+  }
 }
 
 export async function extendDemo(demo: DemoRecord, days: number) {
