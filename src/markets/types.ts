@@ -79,6 +79,16 @@ export type Market = {
   /** Three places for the sample bookings: two hotels, then a convention
    *  center. */
   places: [MarketPlace, MarketPlace, MarketPlace];
+  /** For a market wider than one city (a whole state): the map opens at
+   *  this zoom on `geo`, and address search leans toward these bounds
+   *  instead of 50 km around `geo`. */
+  reach?: {
+    bounds: { south: number; west: number; north: number; east: number };
+    zoom: number;
+  };
+  /** The two figures on each area card. Default: "From <first airport>"
+   *  and "From <center>". */
+  areaLabels?: { airport: string; center: string };
 
   copy: {
     hero: { heading: [string, string]; subhead: string };

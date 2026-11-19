@@ -5,6 +5,9 @@ import type { Market } from "./types";
 import { LAS_VEGAS } from "./las-vegas";
 import { PHOENIX } from "./phoenix";
 import { LOS_ANGELES } from "./los-angeles";
+import { ATLANTA } from "./atlanta";
+import { WASHINGTON_DC } from "./washington-dc";
+import { FLORIDA } from "./florida";
 
 export type {
   Market,
@@ -18,6 +21,9 @@ export const MARKETS: Record<string, Market> = {
   [LAS_VEGAS.id]: LAS_VEGAS,
   [PHOENIX.id]: PHOENIX,
   [LOS_ANGELES.id]: LOS_ANGELES,
+  [ATLANTA.id]: ATLANTA,
+  [WASHINGTON_DC.id]: WASHINGTON_DC,
+  [FLORIDA.id]: FLORIDA,
 };
 
 export const DEFAULT_MARKET_ID = LAS_VEGAS.id;

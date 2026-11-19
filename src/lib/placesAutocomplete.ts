@@ -23,7 +23,7 @@
  * The Google Cloud key needs "Places API (New)" enabled.
  */
 
-import { marketCenter } from "@/lib/marketGeo";
+import { marketBounds, marketCenter } from "@/lib/marketGeo";
 
 type LegacyPlace = {
   place_id: string;
@@ -245,7 +245,9 @@ export class PlacesAutocomplete {
         await places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
           input: text,
           sessionToken: this.token,
-          locationBias: {
+          // A statewide market leans toward the whole state; a city market
+          // toward 50 km around its center (the most a circle allows).
+          locationBias: marketBounds() ?? {
             center: marketCenter(),
             radius: BIAS_RADIUS_METERS,
           },

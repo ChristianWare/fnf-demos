@@ -18,7 +18,7 @@ export default function MarketProvider({
 }) {
   // Set during render, before any map or address field below mounts. The
   // same value every render, so it's safe to repeat.
-  setMarketCenter(market.geo);
+  setMarketCenter(market.geo, market.reach);
   return (
     <MarketContext.Provider value={market}>{children}</MarketContext.Provider>
   );

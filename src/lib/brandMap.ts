@@ -11,7 +11,7 @@
  * missing.
  */
 
-import { marketCenter } from "@/lib/marketGeo";
+import { marketCenter, marketZoom } from "@/lib/marketGeo";
 
 /** How close the map opens, on the market's center, before any address is
  *  picked. */
@@ -171,7 +171,7 @@ export function brandMapStyles(c: BrandMapColors): any[] {
 export function brandMapOptions(c: BrandMapColors): any {
   return {
     center: marketCenter(),
-    zoom: MAP_DEFAULT_ZOOM,
+    zoom: marketZoom() ?? MAP_DEFAULT_ZOOM,
     // One finger scrolls the page on phones; two fingers move the map.
     gestureHandling: "cooperative",
   };

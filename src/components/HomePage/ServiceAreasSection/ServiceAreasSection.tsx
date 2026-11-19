@@ -11,8 +11,9 @@ import styles from "./ServiceAreasSection.module.css";
 
 export default async function ServiceAreasSection() {
   const market = await getMarket();
-  const fromAirport = `From ${market.airports[0].code}`;
-  const fromCenter = `From ${market.center}`;
+  const fromAirport =
+    market.areaLabels?.airport ?? `From ${market.airports[0].code}`;
+  const fromCenter = market.areaLabels?.center ?? `From ${market.center}`;
   return (
     <section className={styles.section}>
       <LayoutWrapper>
