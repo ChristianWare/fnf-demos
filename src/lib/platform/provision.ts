@@ -39,6 +39,12 @@ export type NewDemo = {
   ref: string;
   slug: string;
   business: string;
+  /** Shorter name for the logo and around the site ("Trinbago"); the
+   *  full business name stays on invoices and receipts. */
+  shortName?: string;
+  /** Their office's street address. Without one the site shows only the
+   *  market's city. */
+  address?: string;
   marketId: string;
   contactName: string;
   email: string;
@@ -131,15 +137,20 @@ function newPassword() {
     .join("");
 }
 
-async function seed(demo: DemoRecord, market: Market) {
+async function seed(
+  demo: DemoRecord,
+  market: Market,
+  extra: { shortName: string; address: string },
+) {
   const digits = phoneDigits(demo.phone);
+  const name = extra.shortName || demo.business;
 
   await db.companySettings.upsert({
     where: { id: "default" },
     update: {},
     create: {
       id: "default",
-      companyName: demo.business,
+      companyName: name,
       companyTagline: `Black car service in ${market.city}`,
       dispatchPhone: digits ? formatPhone(digits) : null,
       dispatchPhoneRaw: digits || null,
@@ -147,9 +158,10 @@ async function seed(demo: DemoRecord, market: Market) {
       emergencyPhoneRaw: digits || null,
       supportEmail: demo.email || null,
       officeName: demo.business,
+      officeAddress: extra.address || null,
       officeCity: market.label,
       timezone: market.timeZone,
-      emailSenderName: demo.business,
+      emailSenderName: name,
       emailReplyTo: demo.email || null,
       checkPayableTo: demo.business,
     },
@@ -334,7 +346,12 @@ export async function createDemo(input: NewDemo) {
     if (heroUrl || aboutUrl) await setDemoPhotos(demo, { heroUrl, aboutUrl });
 
     await createSchema(schemaName);
-    await runInDemo({ schemaName, demo }, () => seed(demo, market));
+    await runInDemo({ schemaName, demo }, () =>
+      seed(demo, market, {
+        shortName: (input.shortName ?? "").trim().slice(0, 60),
+        address: (input.address ?? "").trim().slice(0, 200),
+      }),
+    );
     await setDemoStatus(demo, "live");
   } catch (e) {
     // Leave nothing half-made behind.

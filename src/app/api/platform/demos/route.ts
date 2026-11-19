@@ -4,6 +4,7 @@
 // F&F admin's daily summary).
 //
 // POST is multipart form data: ref (the prospect's id), slug, business,
+// shortName (for the logo), address (their office's street),
 // marketId, contactName, email, phone, days, and optional "hero" and
 // "about" image files.
 
@@ -64,6 +65,8 @@ export async function POST(req: Request) {
       ref: text(form, "ref"),
       slug: text(form, "slug"),
       business: text(form, "business"),
+      shortName: text(form, "shortName"),
+      address: text(form, "address"),
       marketId: text(form, "marketId"),
       contactName: text(form, "contactName"),
       email: text(form, "email"),

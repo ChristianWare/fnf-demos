@@ -9,7 +9,7 @@ import PulseEyeBrow from "@/components/shared/PulseEyeBrow/PulseEyeBrow";
 import { SITE } from "@/config/site";
 import { desksFor, emailDomain } from "@/lib/contact";
 import { getMarket } from "@/lib/market";
-import { getBrand, officeCity } from "@/lib/brand";
+import { getBrand, officeCity, officeStreet } from "@/lib/brand";
 import DeskStatus from "../DeskStatus";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import styles from "./ContactHero.module.css";
@@ -25,9 +25,9 @@ export default async function ContactHero() {
     ? `+1${s.dispatchPhoneRaw}`
     : SITE.phone.tel;
   const email = s.supportEmail || SITE.email.support;
-  const street = s.officeAddress || SITE.address.street;
+  const street = officeStreet(s.officeAddress);
   const city = officeCity(s.officeCity, market);
-  const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${street}, ${city}`)}`;
+  const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(street ? `${street}, ${city}` : city)}`;
   const desks = desksFor({
     areaCode: market.areaCode,
     emailDomain: emailDomain(s.supportEmail, SITE.domain),
@@ -94,8 +94,12 @@ export default async function ContactHero() {
             <dt className={styles.label}>Office</dt>
             <dd className={styles.value}>
               <address className={styles.address}>
-                {street}
-                <br />
+                {street && (
+                  <>
+                    {street}
+                    <br />
+                  </>
+                )}
                 {city}
               </address>
               <a

@@ -3,7 +3,7 @@ import { SITE } from "@/config/site";
 import MountainIcon from "@/components/shared/icons/MountainIcon/MountainIcon";
 import { getCompanySettings } from "../../../../actions/admin/companySettings";
 import { getMarket } from "@/lib/market";
-import { getBrand, officeCity } from "@/lib/brand";
+import { getBrand, officeCity, officeStreet } from "@/lib/brand";
 import styles from "./Footer.module.css";
 
 const RIDE = [
@@ -83,8 +83,12 @@ export default async function Footer() {
                 )}
               </Link>
               <p className={styles.address}>
-                {s.officeAddress || SITE.address.street}
-                <br />
+                {officeStreet(s.officeAddress) && (
+                  <>
+                    {officeStreet(s.officeAddress)}
+                    <br />
+                  </>
+                )}
                 {officeCity(s.officeCity, market)}
               </p>
               <div className={styles.contact}>

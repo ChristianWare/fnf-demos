@@ -25,6 +25,13 @@ export const getBrand = cache(async (): Promise<Brand> => {
   };
 });
 
+/** The office's street, unless it's still the template's placeholder
+ *  ("123 Main St"): then "", and the site shows only the city. */
+export function officeStreet(saved: string | null | undefined) {
+  const street = saved?.trim() ?? "";
+  return street === SITE.address.street ? "" : street;
+}
+
 /** The office's city line: the one in Company Settings, unless it's still
  *  the template's placeholder (src/config/site.ts), then the market's
  *  ("Las Vegas, NV"), so a demo never shows another city. */
