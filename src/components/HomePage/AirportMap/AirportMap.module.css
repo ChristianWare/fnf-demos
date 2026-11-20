@@ -49,6 +49,7 @@
 .headingAccent {
   color: var(--gold);
   font-family: inherit;
+  line-height: inherit;
 }
 
 .copy {
