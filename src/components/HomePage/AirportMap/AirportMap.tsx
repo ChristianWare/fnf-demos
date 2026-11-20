@@ -108,8 +108,9 @@ export default function AirportMap({
         <div className={styles.grid}>
           <div className={`${styles.card} ${styles.intro}`}>
             <PulseEyeBrow text='Airport service' />
-            <h2 id='airport-map-heading' className={styles.heading}>
+            <h2 id='airport-map-heading' className={`${styles.heading} h3`}>
               Your chauffeur at{" "}
+              <br />
               <span className={styles.headingAccent}>every airport.</span>
             </h2>
             <p className={styles.copy}>
