@@ -9,6 +9,7 @@ import FleetSection from "@/components/HomePage/FleetSection/FleetSection";
 import AirportsSection from "@/components/HomePage/AirportsSection/AirportsSection";
 import VideoSection from "@/components/HomePage/VideoSection/VideoSection";
 import ServiceAreasSection from "@/components/HomePage/ServiceAreasSection/ServiceAreasSection";
+import AirportMapSection from "@/components/HomePage/AirportMap/AirportMapSection";
 import ReviewsSection from "@/components/HomePage/ReviewsSection/ReviewsSection";
 import FaqSection from "@/components/HomePage/FaqSection/FaqSection";
 import ClosingCta from "@/components/HomePage/ClosingCta/ClosingCta";
@@ -34,6 +35,7 @@ export default function Page() {
         <FleetSection />
         <AirportsSection />
         <VideoSection />
+        <AirportMapSection />
         <ServiceAreasSection />
         <ReviewsSection />
         <FaqSection />

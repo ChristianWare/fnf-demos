@@ -5,6 +5,7 @@ import { airportFaqs, andList } from "@/markets";
 import SiteNav from "@/components/shared/SiteNav/SiteNav";
 import AirportsHero from "@/components/AirportsPage/AirportsHero/AirportsHero";
 import AirportsServed from "@/components/AirportsPage/AirportsServed/AirportsServed";
+import AirportMapSection from "@/components/HomePage/AirportMap/AirportMapSection";
 import AirportsAviation from "@/components/AirportsPage/AirportsAviation/AirportsAviation";
 import FleetFaq from "@/components/FleetPage/FleetFaq/FleetFaq";
 import ClosingCta from "@/components/HomePage/ClosingCta/ClosingCta";
@@ -69,6 +70,7 @@ export default async function Page() {
       <main>
         <AirportsHero />
         <AirportsServed />
+        <AirportMapSection />
         <AirportsAviation />
         <FleetFaq
           heading={`Questions about ${market.city} airports`}

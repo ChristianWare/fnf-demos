@@ -67,8 +67,10 @@ export const FLORIDA: Market = {
       lng: -80.1506,
     },
     {
-      code: "PBI",
-      name: "Palm Beach International Airport",
+      // Palm Beach International until 2026: renamed, and PBI became DJT
+      // (in airline bookings from August 18, 2026).
+      code: "DJT",
+      name: "President Donald J. Trump International Airport",
       shortName: "Palm Beach",
       kind: "commercial",
       meta: ["One terminal", "About 10 min to Palm Beach"],
@@ -168,7 +170,7 @@ export const FLORIDA: Market = {
     {
       name: "Palm Beach",
       copy: "Worth Avenue, The Breakers and West Palm.",
-      fromAirport: "PBI",
+      fromAirport: "DJT",
       fromCenter: "10 min",
     },
     {
@@ -201,7 +203,7 @@ export const FLORIDA: Market = {
     airportHeading: "Landing in Florida? Your chauffeur's already there.",
     terminals: {
       label: "Every major Florida airport",
-      meta: "MIA, FLL, PBI, MCO, TPA and JAX",
+      meta: "MIA, FLL, DJT, MCO, TPA and JAX",
       value: "6 airports",
     },
     privateAviation: "MIA and Opa-locka",
@@ -212,7 +214,7 @@ export const FLORIDA: Market = {
       airportDesc:
         "Miami, Fort Lauderdale, Palm Beach, Orlando, Tampa and Jacksonville, with flight tracking and meet & greet.",
       airportList:
-        "Miami (MIA), Fort Lauderdale (FLL), Palm Beach (PBI), Orlando (MCO), Tampa (TPA), Jacksonville (JAX) and Opa-locka (OPF).",
+        "Miami (MIA), Fort Lauderdale (FLL), Palm Beach (DJT), Orlando (MCO), Tampa (TPA), Jacksonville (JAX) and Opa-locka (OPF).",
       conventions:
         "Shuttles between hotels and the convention centers in Miami Beach and Orlando.",
       conventionNote:

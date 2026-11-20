@@ -1,0 +1,457 @@
+/* Airport service: map on the left, intro and pills stacked on the right.
+   At 1068px and below: intro, map, pills, one under the other. */
+
+.section {
+  padding: 10rem 0rem;
+  background-color: var(--white);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-areas:
+    "map intro"
+    "map areas";
+  grid-template-rows: 1fr auto;
+  gap: 1.6rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 4rem;
+  border: 1px solid var(--stroke);
+  border-radius: 1.2rem;
+  background-color: var(--white);
+}
+
+/* ── Intro ── */
+
+.intro {
+  grid-area: intro;
+  justify-content: space-between;
+  gap: 2.4rem;
+  border-color: var(--midnight);
+  background-color: var(--midnight);
+  color: var(--ivory);
+}
+
+.intro > :first-child {
+  margin-left: -1.5rem;
+}
+
+.heading {
+  max-width: 480px;
+  color: var(--ivory);
+}
+
+.headingAccent {
+  color: var(--gold);
+  font-family: inherit;
+}
+
+.copy {
+  max-width: 520px;
+  font-size: 1.7rem;
+  line-height: 1.6em;
+  color: var(--ivory);
+  opacity: 0.8;
+  hyphens: none;
+}
+
+/* ── Map ── */
+
+.mapCard {
+  grid-area: map;
+  position: relative;
+  min-height: 640px;
+  overflow: hidden;
+  border: 1px solid var(--stroke);
+  border-radius: 1.2rem;
+  background-color: var(--ivory);
+  isolation: isolate;
+}
+
+/* Two classes: MapLibre's own stylesheet sets .maplibregl-map to
+   position: relative, which would collapse it. */
+.mapCard .map {
+  position: absolute;
+  inset: 0;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ivory);
+}
+
+.placeholderIcon {
+  width: 64px;
+  height: 64px;
+  color: var(--steel);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Zoom in, zoom out, show everything: bottom right. */
+.controls {
+  position: absolute;
+  right: 1.6rem;
+  bottom: 1.6rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--stroke);
+  border-radius: 50%;
+  background-color: var(--white);
+  color: var(--midnight);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.control:hover {
+  border-color: var(--midnight);
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--midnight);
+  outline-offset: 2px;
+}
+
+.control svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* The map's credit line, in the site's type. */
+.mapCard :global(.maplibregl-ctrl-attrib) {
+  font-family: var(--SofiaSansRegular);
+  font-size: 11px;
+}
+
+/* ── Airport markers ──
+   A round dot on the airport (midnight for commercial, white for private
+   aviation and tours), its code and name above, and "Book a pickup" once
+   it's selected. */
+
+.airport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+
+.airportDot {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--white);
+  border-radius: 50%;
+  background-color: var(--midnight);
+  box-shadow:
+    0 0 0 1px var(--midnight),
+    0 2px 6px rgba(11, 15, 26, 0.3);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.airportPrivate .airportDot {
+  border-color: var(--midnight);
+  background-color: var(--white);
+  box-shadow: 0 2px 6px rgba(11, 15, 26, 0.25);
+}
+
+.airportCard {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 99rem;
+  background-color: var(--white);
+  box-shadow: 0 1px 4px rgba(11, 15, 26, 0.16);
+  font-family: var(--SofiaSansRegular);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.airportCard strong {
+  font-family: var(--SofiaSansExtraCondensedBold);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--midnight);
+}
+
+.airportCard span {
+  font-size: 12px;
+  color: var(--slate);
+}
+
+.airportHover .airportCard {
+  border-color: var(--midnight);
+}
+
+.airportSelected .airportDot {
+  background-color: var(--gold);
+  border-color: var(--midnight);
+  box-shadow:
+    0 0 0 6px rgba(255, 159, 0, 0.3),
+    0 2px 6px rgba(11, 15, 26, 0.3);
+}
+
+.airportSelected .airportCard {
+  background-color: var(--midnight);
+}
+
+.airportSelected .airportCard strong {
+  color: var(--gold);
+}
+
+.airportSelected .airportCard span {
+  color: var(--ivory);
+}
+
+/* The hovered or selected airport sits over its neighbours. */
+.airportHover,
+.airportSelected {
+  z-index: 2;
+}
+
+/* "Book a pickup →": only on the selected airport. */
+.airportLink {
+  display: none;
+  padding: 0.6rem 1rem;
+  border-radius: 99rem;
+  background-color: var(--gold);
+  font-family: var(--SofiaSansRegular);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--midnight);
+  white-space: nowrap;
+}
+
+.airportSelected .airportLink {
+  display: inline-block;
+}
+
+/* Zoomed out: just the code on the card. */
+.compact .airportCard span {
+  display: none;
+}
+
+.compact .airportSelected .airportCard span,
+.compact .airportHover .airportCard span {
+  display: inline;
+}
+
+/* Zoomed out on a phone: dots only; the code shows on the one that's
+   hovered or selected. */
+.tiny .airportDot {
+  width: 18px;
+  height: 18px;
+}
+
+.tiny .airportCard {
+  display: none;
+}
+
+.tiny .airportHover .airportCard,
+.tiny .airportSelected .airportCard {
+  display: flex;
+}
+
+/* ── Airports we serve: the pills ── */
+
+.areas {
+  grid-area: areas;
+  gap: 2.4rem;
+}
+
+.areasTitle {
+  color: var(--midnight);
+}
+
+/* Commercial, then private aviation, then air tours. */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.groupLabel {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 44px;
+  padding: 0rem 1.6rem 0rem 1.4rem;
+  border: 1px solid var(--stroke);
+  border-radius: 99rem;
+  background-color: var(--white);
+  font-family: var(--SofiaSansRegular);
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--midnight);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.pillDot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--gold);
+}
+
+.pillText {
+  color: inherit;
+}
+
+/* The code, small and quiet, after the name. */
+.pillCode {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--steel);
+  transition: color 0.2s ease;
+}
+
+.pillHover {
+  border-color: var(--midnight);
+}
+
+.pillSelected,
+.pillSelected.pillHover {
+  border-color: var(--midnight);
+  background-color: var(--midnight);
+  color: var(--ivory);
+}
+
+.pillSelected .pillCode {
+  color: var(--gold);
+}
+
+.pill:focus-visible {
+  outline: 2px solid var(--midnight);
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.6rem 3rem;
+  margin-top: 0.8rem;
+}
+
+/* ── Tablets and phones ── */
+
+@media screen and (max-width: 1068px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "intro"
+      "map"
+      "areas";
+    grid-template-rows: auto;
+  }
+
+  .mapCard {
+    min-height: 0;
+    height: 560px;
+  }
+}
+
+@media screen and (max-width: 568px) {
+  .section {
+    padding: 6rem 0rem;
+  }
+
+  .card {
+    padding: 2.4rem;
+  }
+
+  .mapCard {
+    height: 480px;
+  }
+
+  /* One full-width pill per row: dot and name left, code right. */
+  .pills {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .pill {
+    width: 100%;
+    padding: 0rem 1.4rem;
+  }
+
+  .pillCode {
+    margin-left: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .placeholderIcon {
+    animation: none;
+  }
+}
